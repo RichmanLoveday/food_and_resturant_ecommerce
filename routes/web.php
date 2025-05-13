@@ -21,6 +21,9 @@ Route::middleware(['auth'])->group(function () {
     /** Profile controller Routes */
     Route::controller(FrontendProfileController::class)->group(function () {
         Route::put('/profile', 'updateProfile')->name('profile.udpate');
+        Route::put('/profile/password', 'updatePassword')->name('profile.password.update');
+        Route::post('/profile/avatar', 'updateAvatar')->name('profile.avatar.update');
     });
 });
+
 require __DIR__ . '/auth.php';

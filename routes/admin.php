@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\SliderController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -21,10 +22,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         /** Profile Routes */
-        Route::controller(ProfileController::class)->group(function () {
-            Route::get('profile', 'index')->name('profile.index');
-            Route::put('profile', 'updateProfile')->name('profile.update');
-            Route::put('profile/password', 'updatePassword')->name('profile.password.update');
+        Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
+            Route::get('/', [ProfileController::class, 'index'])->name('index');
+            Route::put('/', [ProfileController::class, 'updateProfile'])->name('update');
+            Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
         });
+
+        /** Slider Routes */
+        Route::resource('slider', SliderController::class)->except(['show']);
     });
 });
