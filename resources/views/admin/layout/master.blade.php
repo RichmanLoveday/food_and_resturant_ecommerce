@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>General Dashboard &mdash; Stisla</title>
 
     <!-- General CSS Files -->
@@ -66,14 +67,17 @@
     <script src="{{ asset('admin/assets/modules/jquery-selectric/jquery.selectric.min.js') }}"></script>
     <script src="{{ asset('admin/assets/modules/upload-preview/assets/js/jquery.uploadPreview.min.js') }}"></script>
     <script src="{{ asset('admin/assets/modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/toastr.min.js') }}"></script>
+    <script src="//cdn.datatables.net/2.3.0/js/dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     {{-- <script src="{{ asset('admin/assets/js/page/features-post-create.js') }}"></script> --}}
 
     <!-- Template JS File -->
     <script src="{{ asset('admin/assets/js/scripts.js') }}"></script>
     <script src="{{ asset('admin/assets/js/custom.js') }}"></script>
 
-    <script src="{{ asset('admin/assets/js/toastr.min.js') }}"></script>
-    <script src="//cdn.datatables.net/2.3.0/js/dataTables.min.js"></script>
+
 
     <!--- show dynamic error messages  --->
     <script>
@@ -86,6 +90,13 @@
     </script>
 
     <script>
+        // set csrf token for ajx request
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         $.uploadPreview({
             input_field: "#image-upload", // Default: .image-upload
             preview_box: "#image-preview", // Default: .image-preview
@@ -94,6 +105,46 @@
             label_selected: "Change File", // Default: Change File
             no_label: false, // Default: false
             success_callback: null // Default: null
+        });
+
+
+        $(document).ready(function() {
+
+            $('body').on('click', '.delete-item', function(e) {
+                e.preventDefault();
+                let url = $(this).attr('href');
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            type: 'DELETE',
+                            success: function(res) {
+                                if (res.status == 'success') {
+                                    toastr.success(res.message);
+                                    // $('#slider-table').DataTable().draw();
+
+                                    window.location.reload();
+                                } else if (res.satatus == 'error') {
+                                    toastr.error(res.message);
+                                }
+                            },
+                            error: function(error) {}
+                        });
+                    }
+                });
+            });
+
         });
     </script>
 

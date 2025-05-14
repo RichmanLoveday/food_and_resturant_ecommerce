@@ -22,3 +22,4 @@ yarn-error.log
 /resources/admin-template
 /resources/frontent-template
 _ide_helper.php
+_ide_helper_models.php

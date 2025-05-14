@@ -22,7 +22,16 @@ class SliderDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'slider.action')
+            ->addColumn('action', function ($query) {
+                $edit = "<a href='" . route('admin.slider.edit', $query->id) . "' class='btn btn-primary mx-1'><i class='fas fa-edit'></i></a>";
+                $delete = "<a href='" . route('admin.slider.destroy', $query->id) . "' class='btn btn-danger mx-1 delete-item'><i class='fas fa-trash'></i></a>";
+
+                return $edit . ' ' . $delete;
+            })->addColumn('image', function ($query) {
+                return "<img src='" . asset($query->image) . "' class='img-fluid' style='width: 80px; height: 80px;'>";
+            })->addColumn('status', function ($query) {
+                return $query->status ? "<span class='badge badge-primary'>Active</span>" : "<span class='badge badge-danger'>Inactive</span>";
+            })->rawColumns(['image', 'action', 'status'])
             ->setRowId('id');
     }
 
@@ -62,14 +71,14 @@ class SliderDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('id')
-                ->addClass('text-center'),
-            Column::make('image'),
+            Column::computed('id')->width(80)->addClass('text-center'),
+            Column::make('image')->width(100)->addClass('text-center'),
             Column::make('title'),
+            Column::make('status'),
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
-                ->width(60)
+                ->width(150)
                 ->addClass('text-center'),
         ];
     }
