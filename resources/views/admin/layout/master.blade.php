@@ -132,8 +132,7 @@
                             success: function(res) {
                                 if (res.status == 'success') {
                                     toastr.success(res.message);
-                                    // $('#slider-table').DataTable().draw();
-
+                                    // $('.table').DataTable().draw();
                                     window.location.reload();
                                 } else if (res.satatus == 'error') {
                                     toastr.error(res.message);
@@ -144,7 +143,6 @@
                     }
                 });
             });
-
         });
     </script>
 

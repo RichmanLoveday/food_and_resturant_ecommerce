@@ -1,95 +1,95 @@
 @extends('frontend.layout.master')
 @section('content')
     <!--=============================
-                                                                BANNER START
-                                                            ==============================-->
+                                                                        BANNER START
+                                                                    ==============================-->
     @include('frontend.home.component.banner')
     <!--=============================
-                                                                BANNER END
-                                                            ==============================-->
+                                                                        BANNER END
+                                                                    ==============================-->
 
 
     <!--=============================
-                                                                WHY CHOOSE START
-                                                            ==============================-->
+                                                                        WHY CHOOSE START
+                                                                    ==============================-->
     @include('frontend.home.component.why-choose-us')
     <!--=============================
-                                                                WHY CHOOSE END
-                                                            ==============================-->
+                                                                        WHY CHOOSE END
+                                                                    ==============================-->
 
 
     <!--=============================
-                                                                OFFER ITEM START
-                                                            ==============================-->
+                                                                        OFFER ITEM START
+                                                                    ==============================-->
     @include('frontend.home.component.offer-item')
 
     <!-- CART POPUT START -->
     @include('frontend.home.component.card-popup')
     <!-- CART POPUT END -->
     <!--=============================
-                                                                OFFER ITEM END
-                                                            ==============================-->
+                                                                        OFFER ITEM END
+                                                                    ==============================-->
 
 
     <!--=============================
-                                                                MENU ITEM START
-                                                            ==============================-->
+                                                                        MENU ITEM START
+                                                                    ==============================-->
     @include('frontend.home.component.menu-item')
     <!--=============================
-                                                                MENU ITEM END
-                                                            ==============================-->
+                                                                        MENU ITEM END
+                                                                    ==============================-->
 
 
     <!--=============================
-                                                                ADD SLIDER START
-                                                            ==============================-->
+                                                                        ADD SLIDER START
+                                                                    ==============================-->
     @include('frontend.home.component.slider')
     <!--=============================
-                                                                ADD SLIDER END
-                                                            ==============================-->
+                                                                        ADD SLIDER END
+                                                                    ==============================-->
 
 
     <!--=============================
-                                                                TEAM START
-                                                            ==============================-->
+                                                                        TEAM START
+                                                                    ==============================-->
     @include('frontend.home.component.team')
     <!--=============================
-                                                                TEAM END
-                                                            ==============================-->
+                                                                        TEAM END
+                                                                    ==============================-->
 
 
     <!--=============================
-                                                                DOWNLOAD APP START
-                                                            ==============================-->
+                                                                        DOWNLOAD APP START
+                                                                    ==============================-->
     @include('frontend.home.component.app-download')
     <!--=============================
-                                                                DOWNLOAD APP END
-                                                            ==============================-->
+                                                                        DOWNLOAD APP END
+                                                                    ==============================-->
 
 
     <!--=============================
-                                                               TESTIMONIAL  START
-                                                            ==============================-->
+                                                                       TESTIMONIAL  START
+                                                                    ==============================-->
     @include('frontend.home.component.testimonial')
     <!--=============================
-                                                                TESTIMONIAL END
-                                                            ==============================-->
+                                                                        TESTIMONIAL END
+                                                                    ==============================-->
 
 
     <!--=============================
-                                                                COUNTER START
-                                                            ==============================-->
+                                                                        COUNTER START
+                                                                    ==============================-->
     @include('frontend.home.component.counter')
     <!--=============================
-                                                                COUNTER END
-                                                            ==============================-->
+                                                                        COUNTER END
+                                                                    ==============================-->
 
 
     <!--=============================
-                                                                BLOG 2 START
-                                                            ==============================-->
+                                                                        BLOG 2 START
+                                                                    ==============================-->
     @include('frontend.home.component.blog')
     <!--=============================
-                                                                BLOG 2 END
-                                                            ==============================-->
+                                                                        BLOG 2 END
+                                                                    ==============================-->
 @endsection

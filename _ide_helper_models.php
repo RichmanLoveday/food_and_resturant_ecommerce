@@ -16,18 +16,41 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string|null $key
+ * @property string|null $value
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SectionTitle newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SectionTitle newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SectionTitle query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SectionTitle whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SectionTitle whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SectionTitle whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SectionTitle whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SectionTitle whereValue($value)
+ */
+	class SectionTitle extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property string $image
- * @property string $offer
+ * @property string|null $offer
  * @property string $title
  * @property string $sub_title
  * @property string $short_description
  * @property int $status
+ * @property string|null $button_link
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Database\Factories\SliderFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereButtonLink($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereImage($value)
@@ -73,5 +96,31 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  */
 	class User extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $icon
+ * @property string $title
+ * @property string $short_description
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Database\Factories\WhyChooseUsFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs whereIcon($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs whereShortDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs whereUpdatedAt($value)
+ */
+	class WhyChooseUs extends \Eloquent {}
 }
 
