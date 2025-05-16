@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProfilePasswordUpdate;
 use App\Http\Requests\Frontend\ProfilePasswordRequest;
 use App\Http\Requests\Frontend\ProfileUpdateRequest;
-use App\Trait\FileUploadTrait;
+use App\Traits\FileUploadTrait;
 use Auth;
 use Hash;
 use Illuminate\Http\JsonResponse;

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Product;
 use App\Models\Slider;
 use App\Models\User;
 use App\Models\WhyChooseUs;
@@ -26,8 +27,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             WhyChooseUsTitleSeeder::class,
+            CategorySeeder::class,
         ]);
+
         Slider::factory(4)->create();
         WhyChooseUs::factory(3)->create();
+        Product::factory(10)->create();
     }
 }

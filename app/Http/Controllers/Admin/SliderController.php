@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SliderCreateRequest;
 use App\Http\Requests\Admin\SliderUpdateRequest;
 use App\Models\Slider;
-use App\Trait\FileUploadTrait;
+use App\Traits\FileUploadTrait;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 

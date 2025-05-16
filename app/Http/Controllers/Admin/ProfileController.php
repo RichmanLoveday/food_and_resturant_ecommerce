@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProfilePasswordUpdate;
 use App\Http\Requests\Admin\ProfileUpdateRequest;
-use App\Trait\FileUploadTrait;
+use App\Traits\FileUploadTrait;
 use Auth;
 use Hash;
 use Illuminate\Contracts\View\View;

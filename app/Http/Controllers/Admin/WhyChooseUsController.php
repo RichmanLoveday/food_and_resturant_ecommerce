@@ -4,19 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\DataTables\WhyChooseUsDataTable;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\WhyChooseUsCreateRequest;
 use App\Models\SectionTitle;
+use App\Models\WhyChooseUs;
+use App\Traits\SectionTitlesTrait;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class WhyChooseUsController extends Controller
 {
+    use SectionTitlesTrait;
     /**
      * Display a listing of the resource.
      */
     public function index(WhyChooseUsDataTable $dataTable)
     {
         $key = ['why_choose_us_top_title', 'why_choose_us_main_title', 'why_choose_us_sub_title'];
-        $titles = SectionTitle::whereIn('key', $key)->pluck('value', 'key'); //? pluck('value', 'key') will return an associative array with key as the key and value as the value
+        $titles = $this->getSectionTitles($key);
 
         return $dataTable->render('admin.why-choose-us.index', compact('titles'));
     }
@@ -32,33 +37,41 @@ class WhyChooseUsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(WhyChooseUsCreateRequest $request): RedirectResponse
     {
-        //
-    }
+        // dd($request->validated());
+        //? store data in whychoose us model
+        WhyChooseUs::create($request->validated());
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        //? flash message
+        toastr()->success('Created Successfully');
+
+        return redirect()->route('admin.why-choose-us.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): View
     {
-        //
+        $whyChooseUs = WhyChooseUs::findOrFail($id);
+        return view('admin.why-choose-us.edit', compact('whyChooseUs'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(WhyChooseUsCreateRequest $request, string $id)
     {
-        //
+        $whyChooseUs = WhyChooseUs::findOrFail($id);
+
+        //? update why choose us data
+        $whyChooseUs->update($request->validated());
+
+        //? flash message
+        toastr()->success('Updated Successfully');
+
+        return redirect()->route('admin.why-choose-us.index');
     }
 
 
@@ -102,6 +115,13 @@ class WhyChooseUsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $whyChooseUs = WhyChooseUs::findOrFail($id);
+            $whyChooseUs->delete($id);
+
+            return response()->json(['status' => 'success', 'message' => 'Deleted Successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'something went wrong'], 200);
+        }
     }
 }

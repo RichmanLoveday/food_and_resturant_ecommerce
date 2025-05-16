@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\Slider;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -12,7 +12,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class SliderDataTable extends DataTable
+class CategoryDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -23,22 +23,25 @@ class SliderDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($query) {
-                $edit = "<a href='" . route('admin.slider.edit', $query->id) . "' class='btn btn-primary mx-1'><i class='fas fa-edit'></i></a>";
-                $delete = "<a href='" . route('admin.slider.destroy', $query->id) . "' class='btn btn-danger mx-1 delete-item'><i class='fas fa-trash'></i></a>";
+                $edit = "<a href='" . route('admin.category.edit', $query->id) . "' class='btn btn-primary mx-1'><i class='fas fa-edit'></i></a>";
+                $delete = "<a href='" . route('admin.category.destroy', $query->id) . "' class='btn btn-danger mx-1 delete-item'><i class='fas fa-trash'></i></a>";
 
                 return $edit . ' ' . $delete;
-            })->addColumn('image', function ($query) {
-                return "<img src='" . asset($query->image) . "' class='img-fluid' style='width: 80px; height: 80px;'>";
-            })->addColumn('status', function ($query) {
+            })
+            ->addColumn('show_at_home', function ($query) {
+                return $query->show_at_home ? "<span class='badge badge-primary'>Yes</span>" : "<span class='badge badge-danger'>No</span>";
+            })
+            ->addColumn('status', function ($query) {
                 return $query->status ? "<span class='badge badge-primary'>Active</span>" : "<span class='badge badge-danger'>Inactive</span>";
-            })->rawColumns(['image', 'action', 'status'])
+            })
+            ->rawColumns(['action', 'show_at_home', 'status'])
             ->setRowId('id');
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(Slider $model): QueryBuilder
+    public function query(Category $model): QueryBuilder
     {
         return $model->newQuery();
     }
@@ -49,7 +52,7 @@ class SliderDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('slider-table')
+            ->setTableId('category-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             //->dom('Bfrtip')
@@ -72,8 +75,8 @@ class SliderDataTable extends DataTable
     {
         return [
             Column::computed('id')->width(80)->addClass('text-center'),
-            Column::make('image')->width(100)->addClass('text-center'),
-            Column::make('title'),
+            Column::make('name'),
+            Column::make('show_at_home'),
             Column::make('status'),
             Column::computed('action')
                 ->exportable(false)
@@ -88,6 +91,6 @@ class SliderDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Slider_' . date('YmdHis');
+        return 'Category_' . date('YmdHis');
     }
 }
