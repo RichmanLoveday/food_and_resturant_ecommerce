@@ -22,6 +22,7 @@ return new class extends Migration
             $table->double('price');
             $table->double('offer_price')->default(0);
             $table->string('sku')->nullable();
+            $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();
             $table->boolean('show_at_home')->default(0);
             $table->boolean('status')->default(1);

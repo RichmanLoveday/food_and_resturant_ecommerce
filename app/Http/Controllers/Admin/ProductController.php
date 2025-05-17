@@ -4,13 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\DataTables\ProductDataTable;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ProductCreateRequest;
+use App\Http\Requests\Admin\ProductUpdateRequest;
 use App\Models\Category;
+use App\Models\Product;
+use App\Traits\FileUploadTrait;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Str;
 
 class ProductController extends Controller
 {
+    use FileUploadTrait;
     /**
      * Display a listing of the resource.
      */
@@ -31,32 +39,84 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductCreateRequest $request): RedirectResponse
     {
-        //
+        // dd($request->all());
+        /** Handle image file upload */
+        $imagePath = $this->uploadImage($request, 'image', '/uploads/thumbnail');
+
+        $product = new Product();
+        $product->thumb_image = $imagePath;
+        $product->name = $request->name;
+        $product->slug = generateUniqueSlug('Product', $request->name);
+        $product->category_id = $request->category;
+        $product->price = $request->price;
+        $product->offer_price = $request->offer_price ?? 0;
+        $product->short_description = $request->short_description;
+        $product->long_description = $request->long_description;
+        $product->sku = $request->sku;
+        $product->seo_title = $request->seo_title;
+        $product->show_at_home = $request->show_at_home;
+        $product->status = $request->status;
+        $product->save();
+
+        toastr()->success('Created Successfully');
+
+        return redirect()->route('admin.product.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): View
     {
-        //
+        $product = Product::findOrFail($id);
+        $categories = Category::all();
+        return view('admin.product.edit', compact('categories', 'product'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProductUpdateRequest $request, string $id): RedirectResponse
     {
-        //
+        // dd($request->all());
+        $product = Product::findOrFail($id);
+
+        $imagePath = $this->uploadImage($request, 'image', '/uploads/thumbnail', $product->thumb_image);
+
+        $product->thumb_image = !is_null($imagePath) ? $imagePath : $product->thumb_image;
+        $product->name = $request->name;
+        $product->slug = $request->name !== $product->name ? generateUniqueSlug('Product', $request->name) : $product->slug;
+        $product->category_id = $request->category;
+        $product->price = $request->price;
+        $product->offer_price = $request->offer_price ?? 0;
+        $product->short_description = $request->short_description;
+        $product->long_description = $request->long_description;
+        $product->sku = $request->sku;
+        $product->seo_title = $request->seo_title;
+        $product->show_at_home = $request->show_at_home;
+        $product->status = $request->status;
+        $product->save();
+
+        toastr()->success('Updated Successfully');
+
+        return redirect()->route('admin.product.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): Response|JsonResponse
     {
-        //
+        try {
+            $product = Product::findOrFail($id);
+            $this->removeImage($product->thumb_image);
+            $product->delete();
+
+            return response()->json(['status' => 'success', 'message' => 'Deleted Successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'something went wrong!']);
+        }
     }
 }
