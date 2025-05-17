@@ -6,11 +6,11 @@ use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
 use Illuminate\Support\Facades\Route;
 
+/** show home page */
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+/** show product */
+Route::get('/product/{slug}', [FrontendController::class, 'showProduct'])->name('product.show');
 
 Route::middleware(['auth'])->group(function () {
     /** Frontend Dashboard Routes */
