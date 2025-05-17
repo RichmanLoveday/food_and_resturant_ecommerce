@@ -1,12 +1,19 @@
 <?php
 
-/*** Create unique slug */
+/**
+ * Create unique slug for a given model and name.
+ *
+ * @param string $model The model name (e.g., 'User')
+ * @param string $name The string to generate the slug from
+ * @return string The unique slug
+ * @throws \InvalidArgumentException If the model class does not exist
+ */
 if (!function_exists('generateUniqueSlug')) {
     function generateUniqueSlug($model, $name): string
     {
         $modelClass = "App\\Models\\$model";
 
-        //? check if model does not exist and throw and excpetion
+        // Check if model does not exist and throw an exception
         if (!class_exists($modelClass)) {
             throw new \InvalidArgumentException("Model $model not found.");
         }

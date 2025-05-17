@@ -46,48 +46,37 @@
                                 ${{ $product->price }}
                             @endif
                         </h3>
-                        <p class="short_description">Pizza is a savory dish of Italian origin consisting of a usually
-                            round, flattened base of leavened wheat-based dough topped with tomatoes, cheese, and often
-                            various other ingredients, which is then baked at a high temperature, traditionally in a
-                            wood-fired oven. A small pizza is sometimes called a pizzetta.</p>
+                        <p class="short_description">{!! $product->short_description !!}</p>
 
                         <div class="details_size">
-                            <h5>select size</h5>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="large"
-                                    checked>
-                                <label class="form-check-label" for="large">
-                                    large <span>+ $350</span>
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="medium">
-                                <label class="form-check-label" for="medium">
-                                    medium <span>+ $250</span>
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="small">
-                                <label class="form-check-label" for="small">
-                                    small <span>+ $150</span>
-                                </label>
-                            </div>
+                            @if ($product->productSizes()->exists())
+                                <h5>select size</h5>
+                                @foreach ($product->productSizes as $size)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                            id="size-{{ $size->id }}" checked>
+                                        <label class="form-check-label" for="size-{{ $size->id }}">
+                                            {{ $size->name }} <span>+ ${{ $size->price }}</span>
+                                        </label>
+                                    </div>
+                                @endforeach
+                            @endif
                         </div>
 
                         <div class="details_extra_item">
-                            <h5>select option <span>(optional)</span></h5>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="coca-cola">
-                                <label class="form-check-label" for="coca-cola">
-                                    coca-cola <span>+ $10</span>
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="7up">
-                                <label class="form-check-label" for="7up">
-                                    7up <span>+ $15</span>
-                                </label>
-                            </div>
+                            @if ($product->productOptions()->exists())
+                                <h5>select option <span>(optional)</span></h5>
+                                @foreach ($product->productOptions as $option)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value=""
+                                            id="option-{{ $option->id }}">
+                                        <label class="form-check-label" for="option-{{ $option->id }}">
+                                            {{ $option->name }} <span>+ ${{ $option->price }}</span>
+                                        </label>
+                                    </div>
+                                @endforeach
+                            @endif
+
                         </div>
 
                         <div class="details_quentity">
@@ -125,58 +114,7 @@
                             <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
                                 aria-labelledby="pills-home-tab" tabindex="0">
                                 <div class="menu_det_description">
-                                    <p>Ipsum dolor, sit amet consectetur adipisicing elit. Doloribus consectetur
-                                        ullam in? Beatae, dolorum ad ea deleniti ratione voluptatum similique omnis
-                                        voluptas tempora optio soluta vero veritatis reiciendis blanditiis architecto.
-                                        Debitis nesciunt inventore voluptate tempora ea incidunt iste, corporis, quo
-                                        cumque facere doloribus possimus nostrum sed magni quasi, assumenda autem!
-                                        Repudiandae nihil magnam provident illo alias vero odit repellendus, ipsa nemo
-                                        itaque. Aperiam fuga, magnam quia illum minima blanditiis tempore. vero
-                                        veritatis reiciendis blanditiis architecto. Debitis nesciunt inventore voluptate
-                                        tempora ea incidunt iste, corporis, quo cumque facere doloribus possimus nostrum
-                                        sed magni quasi</p>
-                                    <ul>
-                                        <li>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Doloribus
-                                            consectetur ullam in</li>
-                                        <li>Dolor sit amet consectetur adipisicing elit. Earum itaque nesciunt.</li>
-                                        <li>Corporis, quo cumque facere doloribus possimus nostrum sed magni quasi.</li>
-                                        <li>Reiciendis blanditiis architecto. Debitis nesciunt inventore voluptate
-                                            tempora ea.</li>
-                                        <li>Incidunt iste, corporis, quo cumque facere doloribus possimus
-                                            nostrum sed magni quasi</li>
-                                        <li>Architecto. Debitis nesciunt inventore voluptate tempora ea incidunt iste
-                                            corporis.</li>
-                                        <li>Earum itaque nesciunt dolor laudantium placeat sed velit aspernatur.</li>
-                                        <li>Laudantium placeat sed velit aspernatur, nobis quos quibusdam distinctio
-                                            voluptatum.</li>
-                                    </ul>
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum itaque nesciunt
-                                        dolor laudantium placeat sed velit aspernatur, nobis quos quibusdam distinctio
-                                        voluptatum officia vel sapiente enim, reprehenderit impedit beatae molestias
-                                        dolorum. A laborum consectetur sed quis exercitationem optio consequatur, unde
-                                        neque est odit, pariatur quae incidunt quasi dolorem nihil aliquid ut veritatis
-                                        porro eaque cupiditate voluptatem vel ad! Asperiores, praesentium. sit amet
-                                        consectetur adipisicing elit. Doloribus consectetur ullam in? Beatae, dolorum ad
-                                        ea deleniti ratione voluptatum similique omnis voluptas tempora optio soluta</p>
-
-                                    <ul>
-                                        <li>Reiciendis blanditiis architecto. Debitis nesciunt inventore voluptate
-                                            tempora ea.</li>
-                                        <li>Incidunt iste, corporis, quo cumque facere doloribus possimus
-                                            nostrum sed magni quasi</li>
-                                        <li>Architecto. Debitis nesciunt inventore voluptate tempora ea incidunt iste
-                                            corporis.</li>
-                                        <li>Earum itaque nesciunt dolor laudantium placeat sed velit aspernatur.</li>
-                                        <li>Laudantium placeat sed velit aspernatur, nobis quos quibusdam distinctio
-                                            voluptatum.</li>
-                                    </ul>
-                                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Doloribus consectetur
-                                        ullam in? Beatae, dolorum ad ea deleniti ratione voluptatum similique omnis
-                                        voluptas tempora optio soluta vero veritatis reiciendis blanditiis architecto.
-                                        Debitis nesciunt inventore voluptate tempora ea incidunt iste, corporis, quo
-                                        cumque facere doloribus possimus nostrum sed magni quasi, assumenda autem!
-                                        Repudiandae nihil magnam provident illo alias vero odit repellendus, ipsa nemo
-                                        itaque. Aperiam fuga, magnam quia illum minima blanditiis tempore.</p>
+                                    {!! $product->long_description !!}
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="pills-contact" role="tabpanel"
@@ -300,144 +238,49 @@
                 </div>
             </div>
             <div class="fp__related_menu mt_90 xs_mt_60">
-                <h2>related item</h2>
-                <div class="row related_product_slider">
-                    <div class="col-xl-3 wow fadeInUp" data-wow-duration="1s">
-                        <div class="fp__menu_item">
-                            <div class="fp__menu_item_img">
-                                <img src="{{ asset('frontend/images/menu2_img_1.jpg') }}" alt="menu"
-                                    class="img-fluid w-100">
-                                <a class="category" href="#">chicken</a>
+                @if (count($relatedProducts) > 0)
+                    <h2>related item</h2>
+                    <div class="row related_product_slider">
+                        @foreach ($relatedProducts as $product)
+                            <div class="col-xl-3 wow fadeInUp" data-wow-duration="1s">
+                                <div class="fp__menu_item">
+                                    <div class="fp__menu_item_img">
+                                        <img src="{{ asset($product->thumb_image) }}" alt="{{ $product->name }}"
+                                            class="img-fluid w-100">
+                                        <a class="category" href="#">{{ $product->category->name }}</a>
+                                    </div>
+                                    <div class="fp__menu_item_text">
+                                        <p class="rating">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                            <i class="far fa-star"></i>
+                                            <span>74</span>
+                                        </p>
+                                        <a class="title"
+                                            href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a>
+                                        <h5 class="price">
+                                            @if ($product->offer_price > 0)
+                                                ${{ $product->offer_price }}
+                                                <del>${{ $product->price }}</del>
+                                            @else
+                                                ${{ $product->price }}
+                                            @endif
+                                        </h5>
+                                        <ul class="d-flex flex-wrap justify-content-center">
+                                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#cartModal"><i
+                                                        class="fas fa-shopping-basket"></i></a></li>
+                                            <li><a href="#"><i class="fal fa-heart"></i></a></li>
+                                            <li><a href="#"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="fp__menu_item_text">
-                                <p class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                    <i class="far fa-star"></i>
-                                    <span>74</span>
-                                </p>
-                                <a class="title" href="menu_details.html">chicken Masala</a>
-                                <h5 class="price">$80.00 <del>90.00</del></h5>
-                                <ul class="d-flex flex-wrap justify-content-center">
-                                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#cartModal"><i
-                                                class="fas fa-shopping-basket"></i></a></li>
-                                    <li><a href="#"><i class="fal fa-heart"></i></a></li>
-                                    <li><a href="#"><i class="far fa-eye"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
-                    <div class="col-xl-3 wow fadeInUp" data-wow-duration="1s">
-                        <div class="fp__menu_item">
-                            <div class="fp__menu_item_img">
-                                <img src="{{ asset('frontend/images/menu2_img_2.jpg') }}" alt="menu"
-                                    class="img-fluid w-100">
-                                <a class="category" href="#">chicken</a>
-                            </div>
-                            <div class="fp__menu_item_text">
-                                <p class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                    <i class="far fa-star"></i>
-                                    <span>120</span>
-                                </p>
-                                <a class="title" href="menu_details.html">chicken Masala</a>
-                                <h5 class="price">$80.00 <del>90.00</del></h5>
-                                <ul class="d-flex flex-wrap justify-content-center">
-                                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#cartModal"><i
-                                                class="fas fa-shopping-basket"></i></a></li>
-                                    <li><a href="#"><i class="fal fa-heart"></i></a></li>
-                                    <li><a href="#"><i class="far fa-eye"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 wow fadeInUp" data-wow-duration="1s">
-                        <div class="fp__menu_item">
-                            <div class="fp__menu_item_img">
-                                <img src="{{ asset('frontend/images/menu2_img_3.jpg') }}" alt="menu"
-                                    class="img-fluid w-100">
-                                <a class="category" href="#">Biryani</a>
-                            </div>
-                            <div class="fp__menu_item_text">
-                                <p class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                    <i class="far fa-star"></i>
-                                    <span>514</span>
-                                </p>
-                                <a class="title" href="menu_details.html">Hyderabadi biryani</a>
-                                <h5 class="price">$70.00</h5>
-                                <ul class="d-flex flex-wrap justify-content-center">
-                                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#cartModal"><i
-                                                class="fas fa-shopping-basket"></i></a></li>
-                                    <li><a href="#"><i class="fal fa-heart"></i></a></li>
-                                    <li><a href="#"><i class="far fa-eye"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 wow fadeInUp" data-wow-duration="1s">
-                        <div class="fp__menu_item">
-                            <div class="fp__menu_item_img">
-                                <img src="{{ asset('frontend/images/menu2_img_4.jpg') }}" alt="menu"
-                                    class="img-fluid w-100">
-                                <a class="category" href="#">grill</a>
-                            </div>
-                            <div class="fp__menu_item_text">
-                                <p class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                    <i class="far fa-star"></i>
-                                    <span>25</span>
-                                </p>
-                                <a class="title" href="menu_details.html">daria shevtsova</a>
-                                <h5 class="price">$99.00</h5>
-                                <ul class="d-flex flex-wrap justify-content-center">
-                                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#cartModal"><i
-                                                class="fas fa-shopping-basket"></i></a></li>
-                                    <li><a href="#"><i class="fal fa-heart"></i></a></li>
-                                    <li><a href="#"><i class="far fa-eye"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 wow fadeInUp" data-wow-duration="1s">
-                        <div class="fp__menu_item">
-                            <div class="fp__menu_item_img">
-                                <img src="{{ asset('frontend/images/menu2_img_5.jpg') }}" alt=" menu"
-                                    class="img-fluid w-100">
-                                <a class="category" href="#">chicken</a>
-                            </div>
-                            <div class="fp__menu_item_text">
-                                <p class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                    <i class="far fa-star"></i>
-                                    <span>324</span>
-                                </p>
-                                <a class="title" href="menu_details.html">chicken Masala</a>
-                                <h5 class="price">$80.00 <del>90.00</del></h5>
-                                <ul class="d-flex flex-wrap justify-content-center">
-                                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#cartModal"><i
-                                                class="fas fa-shopping-basket"></i></a></li>
-                                    <li><a href="#"><i class="fal fa-heart"></i></a></li>
-                                    <li><a href="#"><i class="far fa-eye"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endif
+
             </div>
         </div>
     </section>

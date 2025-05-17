@@ -36,7 +36,6 @@ class FrontendController extends Controller
         // dd($menuItems);
 
 
-
         return view('frontend.home.index', compact(
             'sliders',
             'sectionTitles',
@@ -51,14 +50,26 @@ class FrontendController extends Controller
 
     public function showProduct(string|int $slug): View
     {
-        $product = Product::with(['category', 'productImages'])
+        $product = Product::with(['category', 'productImages', 'productSizes', 'productOptions'])
             ->where(['slug' => $slug, 'status' => true])
             ->firstOrFail();
 
+        $relatedProducts = Product::with(['category', 'productImages', 'productSizes', 'productOptions'])
+            ->where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->take(8)
+            ->latest()
+            ->get();
+
+        // dd($relatedProducts);
         $breadCrumb = ['title' => 'menu details', 'link' => '#'];
 
         // dd($product);
-        return view('frontend.pages.product-view', compact('breadCrumb', 'product'));
+        return view('frontend.pages.product-view', compact(
+            'breadCrumb',
+            'product',
+            'relatedProducts'
+        ));
     }
 
 
