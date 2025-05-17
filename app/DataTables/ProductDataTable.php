@@ -32,6 +32,7 @@ class ProductDataTable extends DataTable
                             </button>
                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
                                 <a class="dropdown-item" href="' . route('admin.product-gallery.show-index', $query->id) . '">Product Gallery</a>
+                                 <a class="dropdown-item" href="' . route('admin.product-size.show-index', $query->id) . '">Product Variants</a>
                             </div>
                         </div>';
 

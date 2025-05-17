@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\ProductGallery;
 use App\Traits\FileUploadTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ProductGalleryController extends Controller
 {
@@ -17,15 +20,13 @@ class ProductGalleryController extends Controller
      */
     public function index(string $productId)
     {
-        return view('admin.product.gallery.index', compact('productId'));
-    }
+        //? get images for a specific product id
+        $images = ProductGallery::where('product_id', $productId)
+            ->orderBy('id', 'desc')
+            ->get();
+        $product = Product::findOrFail($productId);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('admin.product.gallery.index', compact('productId', 'images', 'product'));
     }
 
     /**
@@ -51,34 +52,19 @@ class ProductGalleryController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): Response|JsonResponse
     {
-        //
+        try {
+            //? delete image from product gallery
+            $image = ProductGallery::findOrFail($id);
+            $this->removeImage($image->image);
+            $image->delete();
+
+            return response()->json(['status' => 'success', 'message' => 'Deleted Successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Something went wrong!']);
+        }
     }
 }

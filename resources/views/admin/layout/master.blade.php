@@ -136,8 +136,8 @@
                             success: function(res) {
                                 if (res.status == 'success') {
                                     toastr.success(res.message);
-                                    $('.table').DataTable().draw();
-                                    //window.location.reload();
+                                    //$('.table').DataTable().draw();
+                                    window.location.reload();
                                 } else if (res.status == 'error') {
                                     toastr.error(res.message);
                                 }
