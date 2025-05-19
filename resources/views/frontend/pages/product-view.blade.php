@@ -56,7 +56,7 @@
                                         <input class="form-check-input" type="radio" name="flexRadioDefault"
                                             id="size-{{ $size->id }}" checked>
                                         <label class="form-check-label" for="size-{{ $size->id }}">
-                                            {{ $size->name }} <span>+ ${{ $size->price }}</span>
+                                            {{ $size->name }} <span>+ ${{ currencyPosition($size->price) }}</span>
                                         </label>
                                     </div>
                                 @endforeach
@@ -71,7 +71,7 @@
                                         <input class="form-check-input" type="checkbox" value=""
                                             id="option-{{ $option->id }}">
                                         <label class="form-check-label" for="option-{{ $option->id }}">
-                                            {{ $option->name }} <span>+ ${{ $option->price }}</span>
+                                            {{ $option->name }} <span>+ ${{ currencyPosition($option->price) }}</span>
                                         </label>
                                     </div>
                                 @endforeach
@@ -87,7 +87,7 @@
                                     <input type="text" placeholder="1">
                                     <button class="btn btn-success"><i class="fal fa-plus"></i></button>
                                 </div>
-                                <h3>$320.00</h3>
+                                <h3>{{ currencyPosition($product->price) }}</h3>
                             </div>
                         </div>
                         <ul class="details_button_area d-flex flex-wrap">

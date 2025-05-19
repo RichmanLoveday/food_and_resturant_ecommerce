@@ -219,6 +219,7 @@
         @endif
     </script>
 
+    @include('frontend.layout.global-scripts')
     @stack('scripts')
 </body>
 

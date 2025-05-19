@@ -6,11 +6,14 @@ use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
 use Illuminate\Support\Facades\Route;
 
-/** show home page */
-Route::get('/', [FrontendController::class, 'index'])->name('home');
-
-/** show product */
-Route::get('/product/{slug}', [FrontendController::class, 'showProduct'])->name('product.show');
+Route::controller(FrontendController::class)->group(function () {
+    /** show home page */
+    Route::get('/', 'index')->name('home');
+    /** show product */
+    Route::get('/product/{slug}', 'showProduct')->name('product.show');
+    /**Product Modal Route */
+    Route::get('/load-product-moadl/{productId}', 'loadProductModal')->name('load-product-modal');
+});
 
 Route::middleware(['auth'])->group(function () {
     /** Frontend Dashboard Routes */

@@ -119,4 +119,20 @@ class FrontendController extends Controller
         //? return a collecition of menuitems
         return collect($menuItems);
     }
+
+
+    /**
+     * Ajax method to load a specific product and returns the product detail to a specific view
+     * 
+     * @param string|int $productId
+     * @return view
+     */
+
+    public function loadProductModal(string|int $productId)
+    {
+        $product = Product::with(['category', 'productSizes', 'productOptions'])
+            ->findOrFail($productId);
+
+        return view('frontend.layout.ajax-files.product-popup-modal', compact('product'));
+    }
 }
