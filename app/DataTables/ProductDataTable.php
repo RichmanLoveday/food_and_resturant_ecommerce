@@ -39,10 +39,10 @@ class ProductDataTable extends DataTable
                 return "<div style='display: flex; align-items: center;'>" . $edit . $delete . $more . "</div>";
             })
             ->addColumn('price', function ($query) {
-                return "$ $query->price";
+                return currencyPosition($query->price);
             })
             ->addColumn('offer_price', function ($query) {
-                return "$ $query->offer_price";
+                return currencyPosition($query->offer_price);
             })
             ->addColumn('status', function ($query) {
                 return $query->status ? "<span class='badge badge-primary'>Active</span>" : "<span class='badge badge-danger'>Inactive</span>";

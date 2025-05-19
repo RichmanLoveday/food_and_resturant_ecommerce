@@ -29,3 +29,21 @@ if (!function_exists('generateUniqueSlug')) {
         return $slug;
     }
 }
+
+
+/**
+ * Format price with currency icon based on position setting.
+ *
+ * @param int|float $price The price to format
+ * @return string The formatted price with currency icon
+ */
+if (!function_exists('currencyPosition')) {
+    function currencyPosition(int|float $price): string
+    {
+        if (config('settings.site_currency_icon_position') === 'left') {
+            return config('settings.site_currency_icon') .  $price;
+        } else {
+            return $price . config('settings.site_currency_icon');
+        }
+    }
+}
