@@ -5,7 +5,11 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
+use Illuminate\View\View;
 
 class CartController extends Controller
 {
@@ -13,7 +17,7 @@ class CartController extends Controller
      * Add product in to cart
      */
 
-    public function addToCart(Request $request)
+    public function addToCart(Request $request): Response|JsonResponse
     {
         try {
             $product = Product::with(['productOptions', 'productSizes'])->findOrFail($request->product_id);
@@ -22,11 +26,7 @@ class CartController extends Controller
 
             //? create options value needed in Cart Fasade
             $options = [
-                'product_size' => [
-                    'id' => $productSize?->id,
-                    'name' => $productSize?->name,
-                    'price' => $productSize?->price
-                ],
+                'product_size' => [],
                 'product_options' => [],
                 'product_info' => [
                     'image' => $product->thumb_image,
@@ -34,6 +34,15 @@ class CartController extends Controller
                 ],
             ];
 
+
+            //? check if productsize exist
+            if (!is_null($productSize)) {
+                $options['product_size'] = [
+                    'id' => $productSize?->id,
+                    'name' => $productSize?->name,
+                    'price' => $productSize?->price
+                ];
+            }
 
             //? append product options to options array
             foreach ($prodcutOptions as $option) {
@@ -58,16 +67,21 @@ class CartController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Product added to cart',
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             logger("Unable to add product in cart: " . $e->getMessage());
 
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong',
-            ]);
+            ], 500);
         }
+    }
 
-        dd($options);
+
+    public function getCartProducts()
+    {
+        $product = Cart::content();
+        return view('frontend.layout.ajax-files.sidebar-cart-item')->render();
     }
 }

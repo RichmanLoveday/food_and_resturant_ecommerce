@@ -21,6 +21,7 @@ Route::controller(FrontendController::class)->group(function () {
 /**CART CONTROLLER */
 Route::controller(CartController::class)->group(function () {
     Route::post('/add-to-cart', 'addToCart')->name('add-to-cart');
+    Route::get('/get-cart-products', 'getCartProducts')->name('get-cart-products');
 });
 
 

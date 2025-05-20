@@ -227,6 +227,12 @@
     </script>
 
     @include('frontend.layout.global-scripts')
+
+    <script>
+        $(document).ready(function() {
+            updateSideBarCart();
+        });
+    </script>
     @stack('scripts')
 </body>
 

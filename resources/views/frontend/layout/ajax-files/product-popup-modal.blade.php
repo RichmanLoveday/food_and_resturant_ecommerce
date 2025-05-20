@@ -76,7 +76,7 @@
                  </div>
              </div>
              <ul class="details_button_area d-flex flex-wrap">
-                 <li><button type="submit" class="common_btn" href="#">add to cart</button></li>
+                 <li><button type="submit" class="common_btn modal_cart_button">add to cart</button></li>
              </ul>
          </div>
      </form>
@@ -156,17 +156,42 @@
          //? Add to cart function
          $("#modal_add_to_cart_form").on('submit', function(e) {
              e.preventDefault();
+
+             //? validation
+             let selectedSize = $("input[name='product_size']");
+
+             if (selectedSize.length > 0) {
+                 if ($("input[name='product_size']:checked").val() === undefined) {
+                     toastr.error("Please select a size");
+                     console.error('Please select a size')
+                     return;
+                 }
+             }
+
              let formData = $(this).serialize();
 
              $.ajax({
                  method: 'POST',
                  url: '{{ route('add-to-cart') }}',
                  data: formData,
+                 beforeSend: function() {
+                     $('.modal_cart_button').prop('disabled', true).html(
+                         '<span class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span>Loading...'
+                     );
+                 },
                  success: function(response) {
                      console.log(response);
+                     if (response.status === 'success') {
+                         updateSideBarCart();
+                         toastr.success(response.message);
+                     }
                  },
                  error: function(xhr, status, error) {
-                     console.error(error);
+                     let errorMessage = xhr.responseJSON.message;
+                     toastr.error(errorMessage);
+                 },
+                 complete: function() {
+                     $('.modal_cart_button').prop('disabled', false).html('add to cart');
                  }
              })
 
