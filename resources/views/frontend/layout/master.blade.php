@@ -19,12 +19,12 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/toastr.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/custom.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/responsive.css') }}">
     <!-- <link rel="stylesheet" href="('frontend/css/rtl.css')"> -->
 </head>
 
 <body>
-
     <!--=============================
         TOPBAR START
     ==============================-->
@@ -168,6 +168,13 @@
     <!--=============================
         SCROLL BUTTON END
     ==============================-->
+
+    <div class="overlay-container">
+        <div class="overlay">
+            <span class="loader"></span>
+        </div>
+    </div>
+
 
 
     <!--jquery library js-->

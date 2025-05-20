@@ -1,7 +1,8 @@
  <div class="modal-body">
      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
              class="fal fa-times"></i></button>
-     <form action="">
+     <form action="" id="modal_add_to_cart_form">
+         <input type="hidden" name="product_id" value="{{ $product->id }}">
          <div class="fp__cart_popup_img">
              <img src="{{ asset($product->thumb_image) }}" alt="{{ $product->name }}" class="img-fluid w-100">
          </div>
@@ -33,14 +34,13 @@
                      @foreach ($product->productSizes as $size)
                          <div class="form-check">
                              <input class="form-check-input" data-price="{{ $size->price }}" type="radio"
-                                 name="product_size" id="size-{{ $size->id }}" checked>
+                                 name="product_size" value="{{ $size->id }}" id="size-{{ $size->id }}">
                              <label class="form-check-label" for="size-{{ $size->id }}">
                                  {{ $size->name }} <span>+ ${{ currencyPosition($size->price) }}</span>
                              </label>
                          </div>
                      @endforeach
                  @endif
-
              </div>
 
              <div class="details_extra_item">
@@ -49,7 +49,7 @@
                      @foreach ($product->productOptions as $option)
                          <div class="form-check">
                              <input class="form-check-input" data-price="{{ $option->price }}" type="checkbox"
-                                 value="" name="product_option" id="option-{{ $option->id }}">
+                                 value="{{ $option->id }}" name="product_option[]" id="option-{{ $option->id }}">
                              <label class="form-check-label" for="option-{{ $option->id }}">
                                  {{ $option->name }} <span>+ ${{ currencyPosition($option->price) }}</span>
                              </label>
@@ -62,9 +62,9 @@
                  <h5>select quentity</h5>
                  <div class="quentity_btn_area d-flex flex-wrapa align-items-center">
                      <div class="quentity_btn">
-                         <button class="btn btn-danger"><i class="fal fa-minus"></i></button>
-                         <input type="text" placeholder="1">
-                         <button class="btn btn-success"><i class="fal fa-plus"></i></button>
+                         <button type="button" class="btn btn-danger decrement"><i class="fal fa-minus"></i></button>
+                         <input type="text" id="quantity" name="quantity" placeholder="1" value="1" readonly>
+                         <button type="button" class="btn btn-success increment"><i class="fal fa-plus"></i></button>
                      </div>
                      <h3 id="total_price">
                          @if ($product->offer_price > 0)
@@ -76,7 +76,7 @@
                  </div>
              </div>
              <ul class="details_button_area d-flex flex-wrap">
-                 <li><a class="common_btn" href="#">add to cart</a></li>
+                 <li><button type="submit" class="common_btn" href="#">add to cart</button></li>
              </ul>
          </div>
      </form>
@@ -85,40 +85,91 @@
 
  <script>
      $(document).ready(function() {
+         //? when a product size is seleted
          $('input[name="product_size"]').on('change', function() {
              //  alert('working');
              updateTotalPrice();
          });
 
 
-         $('input[name="product_option"]').on('change', function() {
+         //? when an option is changed
+         $('input[name="product_option[]"]').on('change', function() {
              //  alert('working');
              updateTotalPrice();
          });
 
+         //? when increment button is clicked
+         $('.increment').on('click', function(e) {
+             e.preventDefault();
+
+             let quantity = $('#quantity');
+             let currentQty = parseFloat(quantity.val());
+             quantity.val(currentQty + 1);
+             updateTotalPrice();
+
+         });
+
+
+         //? when decrement button is clicked
+         $('.decrement').on('click', function(e) {
+             e.preventDefault();
+
+             let quantity = $('#quantity');
+             let currentQty = parseFloat(quantity.val());
+
+             if (currentQty > 1) {
+                 quantity.val(currentQty - 1);
+                 updateTotalPrice();
+             }
+         });
+
+
          // Function to update the total price based on seleted options
          function updateTotalPrice() {
-             let basePrice = parseFloat($('input[name="base_price"]').val());
+             let basePrice = parseFloat($('input[name="base_price"]').val()).toFixed(2) * 1;
              let seletedSizePrice = 0;
              let selectedOptionsPrice = 0;
+             let quantity = parseFloat($('#quantity').val());
 
              // calculate the selected size price
              let seletedSize = $('input[name="product_size"]:checked');
+             //  console.log(seletedSize);
              if (seletedSize.length > 0) {
-                 seletedSizePrice = parseFloat(seletedSize.data("price"));
+                 seletedSizePrice = parseFloat(seletedSize.data("price")).toFixed(2) * 1;
              }
 
              // calculate seleted options price
-             let selectedOptions = $('input[name="product_option"]:checked');
+             let selectedOptions = $('input[name="product_option[]"]:checked');
+             //  console.log(selectedOptions);
              $(selectedOptions).each(function() {
-                 selectedOptionsPrice += parseFloat($(this).data('price'));
+                 selectedOptionsPrice += parseFloat($(this).data('price')).toFixed(2) * 1;
              });
-
 
              // calculate the total price
              let totalPrice = basePrice + seletedSizePrice + selectedOptionsPrice;
-             $('#total_price').text("{{ config('settings.site_currency_icon') }}" + totalPrice);
-
+             $('#total_price').text("{{ config('settings.site_currency_icon') }}" + (totalPrice * quantity)
+                 .toFixed(2) *
+                 1);
          }
+
+
+         //? Add to cart function
+         $("#modal_add_to_cart_form").on('submit', function(e) {
+             e.preventDefault();
+             let formData = $(this).serialize();
+
+             $.ajax({
+                 method: 'POST',
+                 url: '{{ route('add-to-cart') }}',
+                 data: formData,
+                 success: function(response) {
+                     console.log(response);
+                 },
+                 error: function(xhr, status, error) {
+                     console.error(error);
+                 }
+             })
+
+         });
      })
  </script>

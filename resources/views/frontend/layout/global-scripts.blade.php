@@ -8,12 +8,18 @@
                 '__PRODUCT_ID__', productId),
             method: "GET",
             contentType: 'application/json',
+            beforeSend: function() {
+                $('.overlay').toggleClass('active');
+            },
             success: function(res) {
                 $(".load_product_modal_body").html(res);
                 $('#cartModal').modal('show');
             },
             error: function(xhr, status, error) {
                 console.log(error);
+            },
+            complete: function() {
+                $('.overlay').toggleClass('active');
             }
         });
     }

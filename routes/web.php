@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
 use Illuminate\Support\Facades\Route;
 
+/**FRONTEND CONTROLLER */
 Route::controller(FrontendController::class)->group(function () {
     /** show home page */
     Route::get('/', 'index')->name('home');
@@ -14,6 +16,13 @@ Route::controller(FrontendController::class)->group(function () {
     /**Product Modal Route */
     Route::get('/load-product-moadl/{productId}', 'loadProductModal')->name('load-product-modal');
 });
+
+
+/**CART CONTROLLER */
+Route::controller(CartController::class)->group(function () {
+    Route::post('/add-to-cart', 'addToCart')->name('add-to-cart');
+});
+
 
 Route::middleware(['auth'])->group(function () {
     /** Frontend Dashboard Routes */
