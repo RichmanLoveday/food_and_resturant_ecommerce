@@ -25,7 +25,7 @@
     }
 
     /** Update side bar cart **/
-    function updateSideBarCart() {
+    function updateSideBarCart(callBack = null) {
         $.ajax({
             url: '{{ route('get-cart-products') }}',
             method: "GET",
@@ -37,6 +37,11 @@
                 let cartCount = $('#cart_product_count').val();
                 $('.cart_subtotal').text(`{{ currencyPosition('${cartTotal}') }}`);
                 $('.cart_count').text(cartCount);
+
+
+                if (callBack && typeof callBack === 'function') {
+                    callBack();
+                }
             },
             error: function(xhr, status, error) {
 
@@ -61,17 +66,16 @@
             },
             success: function(response) {
                 if (response.status === 'success') {
-                    updateSideBarCart();
-                    toastr.success(response.message);
+                    updateSideBarCart(function() {
+                        toastr.success(response.message);
+                        $('.overlay').toggleClass('active');
+                    });
                 }
             },
             error: function(xhr, status, error) {
                 let errorMessage = xhr.responseJSON.message;
                 toastr.error(errorMessage);
             },
-            complete: function() {
-                $('.overlay').toggleClass('active');
-            }
         })
     }
 </script>

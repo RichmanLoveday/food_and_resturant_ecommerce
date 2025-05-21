@@ -20,10 +20,11 @@ class CartController extends Controller
     public function addToCart(Request $request): Response|JsonResponse
     {
         try {
+
             $product = Product::with(['productOptions', 'productSizes'])->findOrFail($request->product_id);
             $productSize = $product->productSizes->where('id', $request->product_size)->first();
             $prodcutOptions = $product->productOptions->whereIn('id', $request->product_option);
-
+            // dd($prodcutOptions);
             //? create options value needed in Cart Fasade
             $options = [
                 'product_size' => [],
