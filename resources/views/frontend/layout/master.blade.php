@@ -64,7 +64,7 @@
 
 
     @yield('content')
-
+    {{-- {{ Cart::destroy() }} --}}
 
     <!--=============================
         FOOTER START
@@ -230,6 +230,7 @@
 
     <script>
         $(document).ready(function() {
+            //? update side bar cart when page loads
             updateSideBarCart();
         });
     </script>

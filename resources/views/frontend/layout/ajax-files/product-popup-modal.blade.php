@@ -192,6 +192,7 @@
                  },
                  complete: function() {
                      $('.modal_cart_button').prop('disabled', false).html('add to cart');
+                     $('#cartModal').modal('hide');
                  }
              })
 

@@ -22,6 +22,7 @@ Route::controller(FrontendController::class)->group(function () {
 Route::controller(CartController::class)->group(function () {
     Route::post('/add-to-cart', 'addToCart')->name('add-to-cart');
     Route::get('/get-cart-products', 'getCartProducts')->name('get-cart-products');
+    Route::get('/cart-product-remove/{rowId}', 'cartProductRemove')->name('cart-product-remove');
 });
 
 

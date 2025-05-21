@@ -84,4 +84,29 @@ class CartController extends Controller
         $product = Cart::content();
         return view('frontend.layout.ajax-files.sidebar-cart-item')->render();
     }
+
+    /**
+     * Remove cart product from session
+     *
+     * @param string $rowId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function cartProductRemove(string $rowId): JsonResponse
+    {
+        // dd($rowId);
+        try {
+            Cart::remove($rowId);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Item removed from cart successfully!'
+            ], 200);
+        } catch (\Exception $e) {
+            logger('Unable to remove item from cart: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Sorry something went wrong!'
+            ], 500);
+        }
+    }
 }
