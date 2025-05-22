@@ -19,7 +19,7 @@
              <h4 class="price">
 
                  @if ($product->offer_price > 0)
-                     <input type="hidden" name="base_price" value="{{ $product->offer_price }}">
+                     <input type="hidden" name="base_price" class="base_price" value="{{ $product->offer_price }}">
                      {{ currencyPosition($product->offer_price) }}
                      <del>{{ currencyPosition($product->price) }}</del>
                  @else
@@ -34,7 +34,8 @@
                      @foreach ($product->productSizes as $size)
                          <div class="form-check">
                              <input class="form-check-input" data-price="{{ $size->price }}" type="radio"
-                                 name="product_size" value="{{ $size->id }}" id="size-{{ $size->id }}">
+                                 name="product_size" class="product_size" value="{{ $size->id }}"
+                                 id="size-{{ $size->id }}">
                              <label class="form-check-label" for="size-{{ $size->id }}">
                                  {{ $size->name }} <span>+ ${{ currencyPosition($size->price) }}</span>
                              </label>
@@ -48,8 +49,9 @@
                      <h5>select option <span>(optional)</span></h5>
                      @foreach ($product->productOptions as $option)
                          <div class="form-check">
-                             <input class="form-check-input" data-price="{{ $option->price }}" type="checkbox"
-                                 value="{{ $option->id }}" name="product_option[]" id="option-{{ $option->id }}">
+                             <input class="form-check-input product_option" data-price="{{ $option->price }}"
+                                 type="checkbox" value="{{ $option->id }}" name="product_option[]"
+                                 id="option-{{ $option->id }}">
                              <label class="form-check-label" for="option-{{ $option->id }}">
                                  {{ $option->name }} <span>+ ${{ currencyPosition($option->price) }}</span>
                              </label>
@@ -86,14 +88,14 @@
  <script>
      $(document).ready(function() {
          //? when a product size is seleted
-         $('input[name="product_size"]').on('change', function() {
+         $('.product_size').on('change', function() {
              //  alert('working');
              updateTotalPrice();
          });
 
 
          //? when an option is changed
-         $('input[name="product_option[]"]').on('change', function() {
+         $('.product_option').on('change', function() {
              //  alert('working');
              updateTotalPrice();
          });
@@ -126,20 +128,20 @@
 
          // Function to update the total price based on seleted options
          function updateTotalPrice() {
-             let basePrice = parseFloat($('input[name="base_price"]').val()).toFixed(2) * 1;
+             let basePrice = parseFloat($('.base_price').val()).toFixed(2) * 1;
              let seletedSizePrice = 0;
              let selectedOptionsPrice = 0;
              let quantity = parseFloat($('#quantity').val());
 
              // calculate the selected size price
-             let seletedSize = $('input[name="product_size"]:checked');
+             let seletedSize = $('.product_size:checked');
              //  console.log(seletedSize);
              if (seletedSize.length > 0) {
                  seletedSizePrice = parseFloat(seletedSize.data("price")).toFixed(2) * 1;
              }
 
              // calculate seleted options price
-             let selectedOptions = $('input[name="product_option[]"]:checked');
+             let selectedOptions = $('.product_option:checked');
              //  console.log(selectedOptions);
              $(selectedOptions).each(function() {
                  selectedOptionsPrice += parseFloat($(this).data('price')).toFixed(2) * 1;
@@ -158,10 +160,11 @@
              e.preventDefault();
 
              //? validation
-             let selectedSize = $("input[name='product_size']");
+             let selectedSize = $(".product_size");
 
+             console.log(selectedSize);
              if (selectedSize.length > 0) {
-                 if ($("input[name='product_size']:checked").val() === undefined) {
+                 if ($(".product_size:checked").val() === undefined) {
                      toastr.error("Please select a size");
                      console.error('Please select a size')
                      return;

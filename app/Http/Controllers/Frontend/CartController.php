@@ -19,6 +19,7 @@ class CartController extends Controller
 
     public function addToCart(Request $request): Response|JsonResponse
     {
+        // dd($request->product_option);
         try {
 
             $product = Product::with(['productOptions', 'productSizes'])->findOrFail($request->product_id);

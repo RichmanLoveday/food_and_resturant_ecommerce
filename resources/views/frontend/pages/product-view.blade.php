@@ -76,7 +76,7 @@
                                         <div class="form-check">
                                             <input data-price="{{ $option->price }}"
                                                 class="form-check-input v_product_option" name="product_option[]"
-                                                type="checkbox" value="{{ $option->price }}"
+                                                type="checkbox" value="{{ $option->id }}"
                                                 id="option-{{ $option->id }}">
                                             <label class="form-check-label" for="option-{{ $option->id }}">
                                                 {{ $option->name }} <span>+ {{ currencyPosition($option->price) }}</span>
@@ -101,12 +101,12 @@
                                     </h3>
                                 </div>
                             </div>
-                            <ul class="details_button_area d-flex flex-wrap">
-                                <li><button class="common_btn v_submit_button" type="submit">add to cart</button></li>
-                                <li><a class="wishlist" href="#"><i class="far fa-heart"></i></a></li>
-                            </ul>
                         </form>
 
+                        <ul class="details_button_area d-flex flex-wrap">
+                            <li><a href="#" class="common_btn v_submit_button">add to cart</a></li>
+                            <li><a class="wishlist" href="#"><i class="far fa-heart"></i></a></li>
+                        </ul>
                     </div>
                 </div>
                 <div class="col-12 wow fadeInUp" data-wow-duration="1s">
@@ -250,8 +250,8 @@
                     </div>
                 </div>
             </div>
-            <div class="fp__related_menu mt_90 xs_mt_60">
-                @if (count($relatedProducts) > 0)
+            @if (count($relatedProducts) > 0)
+                <div class="fp__related_menu mt_90 xs_mt_60">
                     <h2>related item</h2>
                     <div class="row related_product_slider">
                         @foreach ($relatedProducts as $product)
@@ -282,7 +282,8 @@
                                             @endif
                                         </h5>
                                         <ul class="d-flex flex-wrap justify-content-center">
-                                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#cartModal"><i
+                                            <li><a href="#" onclick="loadProductModal(this, '{{ $product->id }}')"
+                                                    data-bs-toggle="modal" data-bs-target="#cartModal"><i
                                                         class="fas fa-shopping-basket"></i></a></li>
                                             <li><a href="#"><i class="fal fa-heart"></i></a></li>
                                             <li><a href="#"><i class="far fa-eye"></i></a></li>
@@ -292,9 +293,9 @@
                             </div>
                         @endforeach
                     </div>
-                @endif
 
-            </div>
+                </div>
+            @endif
         </div>
     </section>
 
@@ -377,6 +378,12 @@
         }
 
 
+        //? prevent default behaviour of button, and submit form
+        $('.v_submit_button').on('click', function(e) {
+            e.preventDefault();
+            $('#v_add_to_cart_form').submit();
+        });
+
         //? Add to cart function
         $("#v_add_to_cart_form").on('submit', function(e) {
             e.preventDefault();
@@ -408,6 +415,13 @@
                     if (response.status === 'success') {
                         updateSideBarCart();
                         toastr.success(response.message);
+                        $('#v_add_to_cart_form')[0].reset();
+                        $('.v_product_option').prop('checked', false);
+                        $('.v_product_size').prop('checked', false);
+                        $('#v_quantity').val(1);
+
+                        //? update total price
+                        v_updateTotalPrice();
                     }
                 },
                 error: function(xhr, status, error) {
