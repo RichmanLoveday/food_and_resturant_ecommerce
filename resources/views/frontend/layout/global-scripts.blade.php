@@ -1,13 +1,8 @@
 <script>
     /** show or hide loader **/
-    function showLoader() {
-        $('.overlay').addClass('active');
+    function showOrHideLoader() {
+        $('.overlay').toggleClass('active');
     }
-
-    function hideLoader() {
-        $('.overlay').remove('active');
-    }
-
 
     /** Load product modal **/
     function loadProductModal(e, productId) {
@@ -72,13 +67,13 @@
 
             method: 'GET',
             beforeSend: function() {
-                showLoader();
+                showOrHideLoader();
             },
             success: function(response) {
                 if (response.status === 'success') {
                     updateSideBarCart(function() {
                         toastr.success(response.message);
-                        hideLoader();
+                        showOrHideLoader()
                     });
                 }
             },

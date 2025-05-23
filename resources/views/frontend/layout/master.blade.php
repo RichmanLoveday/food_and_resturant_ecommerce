@@ -247,6 +247,7 @@
             updateSideBarCart();
         });
     </script>
+
     @stack('scripts')
 </body>
 

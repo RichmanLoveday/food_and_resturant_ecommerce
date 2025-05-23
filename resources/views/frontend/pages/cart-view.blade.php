@@ -2,8 +2,8 @@
 @section('content')
     @include('frontend.common-component.breadcrumb')
     <!--============================
-                                                                                                                                                                                                                                                                                                CART VIEW START
-                                                                                                                                                                                                                                                                                            ==============================-->
+                                                                                                                                                                                                                                                                                                                            CART VIEW START
+                                                                                                                                                                                                                                                                                                                        ==============================-->
     <section class="fp__cart_view mt_125 xs_mt_95 mb_100 xs_mb_70">
         <div class="container">
             <div class="row">
@@ -106,8 +106,8 @@
         </div>
     </section>
     <!--============================
-                                                                                                                                                                                                                                                                                                CART VIEW END
-                                                                                                                                                                                                                                                                                            ==============================-->
+                                                                                                                                                                                                                                                                                                                            CART VIEW END
+                                                                                                                                                                                                                                                                                                                        ==============================-->
 @endsection
 
 
@@ -145,19 +145,19 @@
                         rowId: rowId,
                         qty: qty,
                     },
-                    sendBefore: function(response) {
-                        showLoader();
+                    beforeSend: function() {
+                        showOrHideLoader();
                     },
                     success: function(response) {
                         toastr.success(response.message);
                     },
                     error: function(xhr, status, error) {
                         let errorMessage = xhr.responseJSON.message;
-                        hideLoader();
+                        showOrHideLoader();
                         toastr.error(errorMessage);
                     },
                     complete: function(response) {
-                        hideLoader();
+                        showOrHideLoader();
                     }
                 });
             }
