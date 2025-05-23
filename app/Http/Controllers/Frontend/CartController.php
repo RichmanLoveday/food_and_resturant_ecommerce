@@ -13,6 +13,12 @@ use Illuminate\View\View;
 
 class CartController extends Controller
 {
+
+    public function index(): View
+    {
+        $breadCrumb = ['title' => 'cart view', 'link' => '#'];
+        return view('frontend.pages.cart-view', compact('breadCrumb'));
+    }
     /**
      * Add product in to cart
      */
@@ -108,6 +114,25 @@ class CartController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Sorry something went wrong!'
+            ], 500);
+        }
+    }
+
+
+    public function cartQtyUpdate(Request $request): JsonResponse
+    {
+        // dd($request->all());
+        try {
+            Cart::update($request->rowId, $request->qty);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Updated Cart Successfully!'
+            ], 200);
+        } catch (\Exception $e) {
+            logger("Unable to update quantity: " . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong, please reload the page!'
             ], 500);
         }
     }

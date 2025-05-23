@@ -1,4 +1,14 @@
 <script>
+    /** show or hide loader **/
+    function showLoader() {
+        $('.overlay').addClass('active');
+    }
+
+    function hideLoader() {
+        $('.overlay').remove('active');
+    }
+
+
     /** Load product modal **/
     function loadProductModal(e, productId) {
         // e.preventDefault();
@@ -62,13 +72,13 @@
 
             method: 'GET',
             beforeSend: function() {
-                $('.overlay').toggleClass('active');
+                showLoader();
             },
             success: function(response) {
                 if (response.status === 'success') {
                     updateSideBarCart(function() {
                         toastr.success(response.message);
-                        $('.overlay').toggleClass('active');
+                        hideLoader();
                     });
                 }
             },
