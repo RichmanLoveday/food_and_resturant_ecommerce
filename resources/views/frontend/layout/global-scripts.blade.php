@@ -1,7 +1,11 @@
 <script>
     /** show or hide loader **/
-    function showOrHideLoader() {
-        $('.overlay').toggleClass('active');
+    function showLoader() {
+        $('.overlay').addClass('active');
+    }
+
+    function hideLoader() {
+        $('.overlay').removeClass('active');
     }
 
     /** Load product modal **/
@@ -43,7 +47,6 @@
                 $('.cart_subtotal').text(`{{ currencyPosition('${cartTotal}') }}`);
                 $('.cart_count').text(cartCount);
 
-
                 if (callBack && typeof callBack === 'function') {
                     callBack();
                 }
@@ -73,7 +76,7 @@
                 if (response.status === 'success') {
                     updateSideBarCart(function() {
                         toastr.success(response.message);
-                        showOrHideLoader()
+                        showOrHideLoader();
                     });
                 }
             },

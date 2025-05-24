@@ -53,6 +53,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" name="quantity" value="{{ $product->quantity }}" class="form-control">
+                    </div>
+
+                    <div class="form-group">
                         <label>Short Description</label>
                         <textarea name="short_description" class="form-control" style="resize: none" id="" cols="30"
                             rows="30">{!! $product->short_description !!}</textarea>

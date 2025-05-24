@@ -1,9 +1,6 @@
 @extends('frontend.layout.master')
 @section('content')
     @include('frontend.common-component.breadcrumb')
-    <!--============================
-                                                                                                                                                                                                                                                                                                                            CART VIEW START
-                                                                                                                                                                                                                                                                                                                        ==============================-->
     <section class="fp__cart_view mt_125 xs_mt_95 mb_100 xs_mb_70">
         <div class="container">
             <div class="row">
@@ -34,10 +31,10 @@
                                         </th>
 
                                         <th class="fp__pro_icon">
-                                            <a class="clear_all" href="#">clear all</a>
+                                            <a class="clear_all" href="{{ route('cart.destroy') }}">clear all</a>
                                         </th>
                                     </tr>
-                                    @foreach (Cart::content() as $cartProduct)
+                                    @forelse (Cart::content() as $cartProduct)
                                         <tr>
                                             <td class="fp__pro_img"><img
                                                     src="{{ asset($cartProduct->options->product_info['image']) }}"
@@ -75,14 +72,22 @@
                                             </td>
 
                                             <td class="fp__pro_tk">
-                                                <h6>$180,00</h6>
+                                                <h6 class="product_cart_total">
+                                                    {{ currencyPosition(productTotal($cartProduct->rowId)) }}</h6>
                                             </td>
 
                                             <td class="fp__pro_icon">
-                                                <a href="#"><i class="far fa-times"></i></a>
+                                                <a href="#" data-id="{{ $cartProduct->rowId }}"
+                                                    class="remove_cart_product"><i class="far fa-times"></i></a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="d-inline  w-100">Cart is empty!</td>
+                                        </tr>
+                                    @endforelse
+                                    {{-- @foreach (Cart::content() as $cartProduct)
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -106,8 +111,8 @@
         </div>
     </section>
     <!--============================
-                                                                                                                                                                                                                                                                                                                            CART VIEW END
-                                                                                                                                                                                                                                                                                                                        ==============================-->
+                                                                                                                                                                                                                                                                          CART VIEW END
+                                                                                                                                                                                                                                                                        ==============================-->
 @endsection
 
 
@@ -120,8 +125,26 @@
                 let currValue = +inputField.val();
                 let rowId = $(this).data('id');
 
+                //? incement value 
                 inputField.val(currValue + 1);
-                cartQtyUpdate(rowId, +inputField.val());
+
+                // update cart quantity and handle callback 
+                cartQtyUpdate(rowId, +inputField.val(), function(response) {
+                    if (response.status === 'success') {
+                        inputField.val(response.qty);
+                        let productTotal = response.product_total;
+
+                        //? change value of product cart total
+                        $(e.target).closest('tr').find('.product_cart_total').text(
+                            "{{ currencyPosition(':productTotal') }}".replace(":productTotal",
+                                productTotal));
+
+                        toastr.success(response.message);
+                    } else {
+                        inputField.val(response.qty);
+                        toastr.error(response.message);
+                    }
+                });
             });
 
             //? decrement quantity
@@ -131,13 +154,32 @@
                 let rowId = $(this).data('id');
 
                 if (currValue > 1) {
+                    //? decrement value 
                     inputField.val(currValue - 1);
-                    cartQtyUpdate(rowId, +inputField.val());
+
+                    // update cart quantity and handle callback 
+                    cartQtyUpdate(rowId, +inputField.val(), function(response) {
+                        if (response.status === 'success') {
+                            inputField.val(response.qty);
+                            let productTotal = response.product_total;
+
+                            //? change value of product cart total
+                            $(e.target).closest('tr').find('.product_cart_total').text(
+                                "{{ currencyPosition(':productTotal') }}".replace(
+                                    ":productTotal",
+                                    productTotal));
+
+                            toastr.success(response.message);
+                        } else {
+                            inputField.val(response.qty);
+                            toastr.error(response.message);
+                        }
+                    });
                 }
             });
 
 
-            function cartQtyUpdate(rowId, qty) {
+            function cartQtyUpdate(rowId, qty, callback) {
                 $.ajax({
                     method: 'POST',
                     url: '{{ route('cart.quantity-update') }}',
@@ -146,20 +188,61 @@
                         qty: qty,
                     },
                     beforeSend: function() {
-                        showOrHideLoader();
+                        showLoader();
                     },
                     success: function(response) {
-                        toastr.success(response.message);
+                        //? update the side bar cart
+                        updateSideBarCart();
+
+                        //? return a call back when cartQty update is called
+                        if (callback && typeof callback === 'function') {
+                            callback(response);
+                        }
+
                     },
                     error: function(xhr, status, error) {
                         let errorMessage = xhr.responseJSON.message;
-                        showOrHideLoader();
+                        hideLoader();
                         toastr.error(errorMessage);
                     },
                     complete: function(response) {
-                        showOrHideLoader();
+                        hideLoader();
                     }
                 });
+            }
+
+
+            $('.remove_cart_product').on('click', function(e) {
+                e.preventDefault();
+                removeCartProduct($(this).data('id'));
+                $(this).closest('tr').remove(); //? remove dom row
+            });
+
+
+            /** Remove cart product */
+            function removeCartProduct(rowId) {
+                $.ajax({
+                    url: '{{ route('cart-product-remove', ['rowId' => '__ROW_ID__']) }}'
+                        .replace(
+                            '__ROW_ID__', rowId),
+
+                    method: 'GET',
+                    beforeSend: function() {
+                        showLoader();
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            updateSideBarCart(); //? update side bar content
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        let errorMessage = xhr.responseJSON.message;
+                        toastr.error(errorMessage);
+                    },
+                    complete: function() {
+                        hideLoader();
+                    }
+                })
             }
         });
     </script>

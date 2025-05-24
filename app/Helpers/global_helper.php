@@ -78,3 +78,30 @@ if (!function_exists('cartTotal')) {
         return $total;
     }
 }
+
+
+if (!function_exists('productTotal')) {
+    /**
+     * Calculate the total price of a product in the cart.
+     *
+     * @return int|float The total product value
+     */
+    function productTotal(string $rowId): int|float
+    {
+        $total = 0;
+
+        $product = Cart::get($rowId);
+        $productPrice = $product->price;
+        $sizePrice = $product->options?->product_size['price'] ?? 0;
+        $optionsPrice = 0;
+
+        //? loop through options and calculate prices of options
+        foreach ($product->options->product_options as $option) {
+            $optionsPrice += $option['price'];
+        }
+
+        $total += round(($productPrice + $sizePrice + $optionsPrice) * $product->qty, 2);
+
+        return $total;
+    }
+}

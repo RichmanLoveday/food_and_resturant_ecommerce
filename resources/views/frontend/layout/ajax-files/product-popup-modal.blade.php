@@ -78,7 +78,12 @@
                  </div>
              </div>
              <ul class="details_button_area d-flex flex-wrap">
-                 <li><button type="submit" class="common_btn modal_cart_button">add to cart</button></li>
+                 @if ($product->quantity === 0)
+                     <li><button type="button" class="common_btn modal_cart_button bg-danger">Out of stock</button>
+                     </li>
+                 @else
+                     <li><button type="submit" class="common_btn modal_cart_button">add to cart</button></li>
+                 @endif
              </ul>
          </div>
      </form>
@@ -88,14 +93,13 @@
  <script>
      $(document).ready(function() {
          //? when a product size is seleted
-         $('.product_size').on('change', function() {
-             //  alert('working');
+         $('input[name="product_size"]').on('change', function() {
              updateTotalPrice();
          });
 
 
          //? when an option is changed
-         $('.product_option').on('change', function() {
+         $('input[name="product_option[]"]').on('change', function() {
              //  alert('working');
              updateTotalPrice();
          });
@@ -128,20 +132,22 @@
 
          // Function to update the total price based on seleted options
          function updateTotalPrice() {
-             let basePrice = parseFloat($('.base_price').val()).toFixed(2) * 1;
+             console.log($('input[name="base_price"]').val());
+             let basePrice = parseFloat($('input[name="base_price"]').val()).toFixed(2) * 1;
+             //  console.log(basePrice);
              let seletedSizePrice = 0;
              let selectedOptionsPrice = 0;
              let quantity = parseFloat($('#quantity').val());
 
              // calculate the selected size price
-             let seletedSize = $('.product_size:checked');
+             let seletedSize = $('input[name="product_size"]:checked');
              //  console.log(seletedSize);
              if (seletedSize.length > 0) {
                  seletedSizePrice = parseFloat(seletedSize.data("price")).toFixed(2) * 1;
              }
 
              // calculate seleted options price
-             let selectedOptions = $('.product_option:checked');
+             let selectedOptions = $('input[name="product_option[]"]:checked');
              //  console.log(selectedOptions);
              $(selectedOptions).each(function() {
                  selectedOptionsPrice += parseFloat($(this).data('price')).toFixed(2) * 1;
@@ -149,6 +155,8 @@
 
              // calculate the total price
              let totalPrice = basePrice + seletedSizePrice + selectedOptionsPrice;
+
+             //  console.log(basePrice, selectedOptionsPrice, seletedSizePrice, totalPrice);
              $('#total_price').text("{{ config('settings.site_currency_icon') }}" + (totalPrice * quantity)
                  .toFixed(2) *
                  1);
@@ -160,11 +168,11 @@
              e.preventDefault();
 
              //? validation
-             let selectedSize = $(".product_size");
+             let selectedSize = $("input[name='product_size']");
 
              console.log(selectedSize);
              if (selectedSize.length > 0) {
-                 if ($(".product_size:checked").val() === undefined) {
+                 if ($("input[name='product_size']:checked").val() === undefined) {
                      toastr.error("Please select a size");
                      console.error('Please select a size')
                      return;
@@ -198,7 +206,6 @@
                      $('#cartModal').modal('hide');
                  }
              })
-
          });
      })
  </script>

@@ -52,6 +52,7 @@ class ProductController extends Controller
         $product->category_id = $request->category;
         $product->price = $request->price;
         $product->offer_price = $request->offer_price ?? 0;
+        $product->quantity = $request->quantity;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
         $product->sku = $request->sku;
@@ -91,6 +92,7 @@ class ProductController extends Controller
         $product->category_id = $request->category;
         $product->price = $request->price;
         $product->offer_price = $request->offer_price ?? 0;
+        $product->quantity = $request->quantity;
         $product->short_description = $request->short_description;
         $product->long_description = $request->long_description;
         $product->sku = $request->sku;

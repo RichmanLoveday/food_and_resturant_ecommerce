@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class CartController extends Controller
@@ -25,13 +27,24 @@ class CartController extends Controller
 
     public function addToCart(Request $request): Response|JsonResponse
     {
-        // dd($request->product_option);
+        // dd($request->all());
         try {
 
             $product = Product::with(['productOptions', 'productSizes'])->findOrFail($request->product_id);
             $productSize = $product->productSizes->where('id', $request->product_size)->first();
             $prodcutOptions = $product->productOptions->whereIn('id', $request->product_option);
             // dd($prodcutOptions);
+
+            //? check if product quantiy is less than the requested quantity
+            if ($product->quantity < $request->quantity) {
+                // throw ValidationException::withMessages(['Quantity is not available!']);
+                logger("Unable to add product in cart: " . 'Quantity is not available!');
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Quantity is not available!',
+                ], 500);
+            }
+
             //? create options value needed in Cart Fasade
             $options = [
                 'product_size' => [],
@@ -119,13 +132,41 @@ class CartController extends Controller
     }
 
 
+    /**
+     * Update the quantity of a cart item.
+     *
+     * Handles the request to update the quantity of a specific item in the shopping cart.
+     * Returns a JSON response indicating success or failure.
+     *
+     * @param  \Illuminate\Http\Request  $request  The incoming HTTP request containing 'rowId' and 'qty'.
+     * @return \Illuminate\Http\JsonResponse       JSON response with status and message.
+     */
     public function cartQtyUpdate(Request $request): JsonResponse
     {
         // dd($request->all());
         try {
-            Cart::update($request->rowId, $request->qty);
+            $cartItem = Cart::get($request->rowId);
+            $product = Product::findOrFail($cartItem->id);      //? find product based on cart session
+
+            // dd($product);
+
+            //? check if product quantiy is less than the requested quantity
+            if ($product->quantity < (int) $request->qty) {
+                // throw ValidationException::withMessages(['Quantity is not available!']);
+                logger("Unable to add product in cart: " . 'Quantity is not available!');
+                return response()->json([
+                    'status' => 'error',
+                    'qty' => $cartItem->qty,
+                    'message' => 'Quantity is not available!',
+                ]);
+            }
+
+            //? update quantity in cart session
+            $cart = Cart::update($request->rowId, $request->qty);
             return response()->json([
                 'status' => 'success',
+                'product_total' => productTotal($request->rowId),
+                'qty' => $cart->qty,
                 'message' => 'Updated Cart Successfully!'
             ], 200);
         } catch (\Exception $e) {
@@ -135,5 +176,21 @@ class CartController extends Controller
                 'message' => 'Something went wrong, please reload the page!'
             ], 500);
         }
+    }
+
+
+    /**
+     * Destroy all items in the cart.
+     *
+     * Clears the entire shopping cart and redirects back with a success message.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function cartDestroy(): RedirectResponse
+    {
+        Cart::destroy();
+
+        toastr()->success('Cart cleared successfully!');
+        return redirect()->back();
     }
 }

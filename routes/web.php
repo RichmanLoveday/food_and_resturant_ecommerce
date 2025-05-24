@@ -28,6 +28,7 @@ Route::controller(CartController::class)->group(function () {
     /** Cart Page Route */
     Route::get('/cart', 'index')->name('cart.index');
     Route::post('/cart-update-qty', 'cartQtyUpdate')->name('cart.quantity-update');
+    Route::get('/cart-destroy', 'cartDestroy')->name('cart.destroy');
 });
 
 

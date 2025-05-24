@@ -58,7 +58,7 @@
                                     <h5>select size</h5>
                                     @foreach ($product->productSizes as $size)
                                         <div class="form-check">
-                                            <input data-price="{{ $size->price }}" value="{{ $size->price }}"
+                                            <input data-price="{{ $size->price }}" value="{{ $size->id }}"
                                                 name="product_size" class="form-check-input v_product_size" type="radio"
                                                 name="flexRadioDefault" id="size-{{ $size->id }}">
                                             <label class="form-check-label" for="size-{{ $size->id }}">
@@ -104,7 +104,12 @@
                         </form>
 
                         <ul class="details_button_area d-flex flex-wrap">
-                            <li><a href="#" class="common_btn v_submit_button">add to cart</a></li>
+                            @if ($product->quantity === 0)
+                                <li><a href="javascript:;" class="common_btn bg-danger">Out of
+                                        stock</a></li>
+                            @else
+                                <li><a href="#" class="common_btn v_submit_button">add to cart</a></li>
+                            @endif
                             <li><a class="wishlist" href="#"><i class="far fa-heart"></i></a></li>
                         </ul>
                     </div>
