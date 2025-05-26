@@ -4,14 +4,18 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\SectionTitle;
 use App\Models\Slider;
 use App\Models\WhyChooseUs;
 use App\Traits\SectionTitlesTrait;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+
 
 class FrontendController extends Controller
 {
@@ -134,5 +138,62 @@ class FrontendController extends Controller
             ->findOrFail($productId);
 
         return view('frontend.layout.ajax-files.product-popup-modal', compact('product'));
+    }
+
+
+    public function applyCoupon(Request $request): Response|JsonResponse
+    {
+        //? validate the request
+        $request->validate([
+            'code' => 'required|string|max:255',
+            'subTotal' => 'required|numeric|min:0',
+        ]);
+
+        $code = $request->code;
+        $subTotal = $request->subTotal;
+
+        //? check if coupon code is valid
+        $coupon = Coupon::where('code', $code)->first();
+
+        if (!$coupon) {
+            return  response()->json([
+                'status' => 'error',
+                'message' => 'Invalid coupon code!',
+            ], 422);
+        }
+
+        //? check if coupon quantity is greater than 0
+        if ($coupon->quantity <= 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Coupon has been fully redeemed!',
+            ], 422);
+        }
+
+        //? check if coupon is expired
+        if ($coupon->expire_date < now()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Coupon has expired!',
+            ], 422);
+        }
+
+        if ($coupon->discount_type === 'percent') {
+            //? calculate discont in percentage
+            $discount = $subTotal * ($coupon->discount / 100);
+        } elseif ($coupon->discount_type === 'amount') {
+            //? calculate discont in amount
+            $discount = $coupon->discount;
+        }
+
+        //? get the final total after applying the discount
+        $finalTotal = $subTotal - $discount;
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Coupon Applied Successfully!',
+            'discount' => (int) $discount,
+            'finalTotal' => $finalTotal,
+        ], 200);
     }
 }

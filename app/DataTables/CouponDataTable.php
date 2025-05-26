@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\Category;
+use App\Models\Coupon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -12,7 +12,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class CategoryDataTable extends DataTable
+class CouponDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -23,25 +23,25 @@ class CategoryDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($query) {
-                $edit = "<a href='" . route('admin.category.edit', $query->id) . "' class='btn btn-primary mx-1'><i class='fas fa-edit'></i></a>";
-                $delete = "<a href='" . route('admin.category.destroy', $query->id) . "' class='btn btn-danger mx-1 delete-item'><i class='fas fa-trash'></i></a>";
+                $edit = "<a href='" . route('admin.coupon.edit', $query->id) . "' class='btn btn-primary mx-1'><i class='fas fa-edit'></i></a>";
+                $delete = "<a href='" . route('admin.coupon.destroy', $query->id) . "' class='btn btn-danger mx-1 delete-item'><i class='fas fa-trash'></i></a>";
 
                 return $edit . ' ' . $delete;
-            })
-            ->addColumn('show_at_home', function ($query) {
-                return $query->show_at_home ? "<span class='badge badge-primary'>Yes</span>" : "<span class='badge badge-danger'>No</span>";
             })
             ->addColumn('status', function ($query) {
                 return $query->status ? "<span class='badge badge-primary'>Active</span>" : "<span class='badge badge-danger'>Inactive</span>";
             })
-            ->rawColumns(['action', 'show_at_home', 'status'])
-            ->setRowId('id');
+            ->addColumn('expire_date', function ($query) {
+                return date('M d, Y', strtotime($query->expire_date));
+            })
+            ->setRowId('id')
+            ->rawColumns(['action', 'status', 'expire_date']);
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(Category $model): QueryBuilder
+    public function query(Coupon $model): QueryBuilder
     {
         return $model->newQuery();
     }
@@ -52,7 +52,7 @@ class CategoryDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('category-table')
+            ->setTableId('coupon-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             //->dom('Bfrtip')
@@ -74,10 +74,18 @@ class CategoryDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('id')->width(80)->addClass('text-center'),
+            Column::make('id')
+                ->addClass('text-left'),
             Column::make('name'),
-            Column::make('show_at_home'),
+            Column::make('code'),
+            Column::make('quantity')
+                ->addClass('text-center'),
+            Column::make('discount_type'),
+            Column::make('discount')
+                ->addClass('text-center'),
             Column::make('status'),
+            Column::make('expire_date')
+                ->addClass('text-center'),
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
@@ -91,6 +99,6 @@ class CategoryDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Category_' . date('YmdHis');
+        return 'Coupon_' . date('YmdHis');
     }
 }

@@ -167,6 +167,7 @@ class CartController extends Controller
                 'status' => 'success',
                 'product_total' => productTotal($request->rowId),
                 'qty' => $cart->qty,
+                'subTotal' => cartTotal(),
                 'message' => 'Updated Cart Successfully!'
             ], 200);
         } catch (\Exception $e) {

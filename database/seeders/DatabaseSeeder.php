@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\Slider;
 use App\Models\User;
@@ -33,5 +34,6 @@ class DatabaseSeeder extends Seeder
         Slider::factory(4)->create();
         WhyChooseUs::factory(3)->create();
         Product::factory(10)->create();
+        Coupon::factory(3)->create();
     }
 }

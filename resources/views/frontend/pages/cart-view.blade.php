@@ -78,7 +78,8 @@
 
                                             <td class="fp__pro_icon">
                                                 <a href="#" data-id="{{ $cartProduct->rowId }}"
-                                                    class="remove_cart_product"><i class="far fa-times"></i></a>
+                                                    class="remove_cart_product"><i class="far fa-times"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                     @empty
@@ -96,12 +97,12 @@
                 <div class="col-lg-4 wow fadeInUp" data-wow-duration="1s">
                     <div class="fp__cart_list_footer_button">
                         <h6>total cart</h6>
-                        <p>subtotal: <span>$124.00</span></p>
-                        <p>delivery: <span>$00.00</span></p>
-                        <p>discount: <span>$10.00</span></p>
-                        <p class="total"><span>total:</span> <span>$134.00</span></p>
-                        <form>
-                            <input type="text" placeholder="Coupon Code">
+                        <p>subtotal: <span id="subTotal">{{ currencyPosition(cartTotal()) }}</span></p>
+                        <p>delivery: <span id="delivery">$00.00</span></p>
+                        <p>discount: <span id="discount">$10.00</span></p>
+                        <p class="total"><span>total:</span> <span id="finalTotal">$134.00</span></p>
+                        <form id="coupon_form">
+                            <input type="text" name="code" id="coupon_code" placeholder="Coupon Code">
                             <button type="submit">apply</button>
                         </form>
                         <a class="common_btn" href=" #">checkout</a>
@@ -111,8 +112,8 @@
         </div>
     </section>
     <!--============================
-                                                                                                                                                                                                                                                                          CART VIEW END
-                                                                                                                                                                                                                                                                        ==============================-->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                      CART VIEW END
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    ==============================-->
 @endsection
 
 
@@ -138,6 +139,10 @@
                         $(e.target).closest('tr').find('.product_cart_total').text(
                             "{{ currencyPosition(':productTotal') }}".replace(":productTotal",
                                 productTotal));
+
+                        //? update value of sub total
+                        $('#subTotal').text("{{ config('settings.site_currency_icon') }}" +
+                            response.subTotal);
 
                         toastr.success(response.message);
                     } else {
@@ -168,6 +173,9 @@
                                 "{{ currencyPosition(':productTotal') }}".replace(
                                     ":productTotal",
                                     productTotal));
+
+                            $('#subTotal').text("{{ config('settings.site_currency_icon') }}" +
+                                response.subTotal);
 
                             toastr.success(response.message);
                         } else {
@@ -238,6 +246,59 @@
                     error: function(xhr, status, error) {
                         let errorMessage = xhr.responseJSON.message;
                         toastr.error(errorMessage);
+                    },
+                    complete: function() {
+                        hideLoader();
+                    }
+                })
+            }
+
+
+            /** apply coupon on submit */
+            $('#coupon_form').on('submit', function(e) {
+                e.preventDefault();
+
+                let couponCode = $('#coupon_code').val();
+                let subTotal = getCartTotal();
+
+                if (couponCode) {
+                    couponApply(couponCode, subTotal);
+                } else {
+                    toastr.error('Please enter a coupon code');
+                }
+            });
+
+            /** apply coupon */
+            function couponApply(code, subTotal) {
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route('apply-coupon') }}',
+                    data: {
+                        code: code,
+                        subTotal: subTotal,
+                    },
+                    beforeSend: function() {
+                        showLoader();
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            //? update the html
+                            $('#discount').text("{{ config('settings.site_currency_icon') }}" +
+                                response.discount);
+                            $('#finalTotal').text("{{ config('settings.site_currency_icon') }}" +
+                                response.finalTotal);
+
+                            toastr.success(response.message);
+                        } else {
+                            toastr.error(response.message);
+                        }
+
+
+                    },
+                    error: function(xhr, status, error) {
+                        let errorMessage = xhr.responseJSON.message;
+                        toastr.error(errorMessage);
+                        hideLoader();
                     },
                     complete: function() {
                         hideLoader();
