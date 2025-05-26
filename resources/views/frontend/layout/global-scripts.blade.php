@@ -90,6 +90,6 @@
 
     /** Get current cart total amount */
     function getCartTotal() {
-        return parseInt("{{ cartTotal() }}");
+        return parseFloat("{{ cartTotal() }}");
     }
 </script>

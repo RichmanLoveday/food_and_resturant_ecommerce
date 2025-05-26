@@ -20,6 +20,9 @@ Route::controller(FrontendController::class)->group(function () {
 
     /** Coupon Routes */
     Route::post('/apply-coupon', 'applyCoupon')->name('apply-coupon');
+
+    /** Remove Coupon Route */
+    Route::get('/destroy-coupon', 'destroyCoupon')->name('destroy-coupon');
 });
 
 

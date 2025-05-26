@@ -43,9 +43,9 @@ if (!function_exists('currencyPosition')) {
     function currencyPosition(int|float|string $price): string
     {
         if (config('settings.site_currency_icon_position') === 'left') {
-            return config('settings.site_currency_icon') .  $price;
+            return config('settings.site_currency_icon') . ' ' .  $price;
         } else {
-            return $price . config('settings.site_currency_icon');
+            return $price . ' ' .  config('settings.site_currency_icon');
         }
     }
 }
@@ -72,7 +72,9 @@ if (!function_exists('cartTotal')) {
                 $optionsPrice += $option['price'];
             }
 
-            $total += ($productPrice + $sizePrice + $optionsPrice) * $item->qty;
+            // $total += ($productPrice + $sizePrice + $optionsPrice) * $item->qty;
+
+            $total += number_format(($productPrice + $sizePrice + $optionsPrice) * $item->qty, 2, '.', '');
         }
 
         return $total;
@@ -100,8 +102,36 @@ if (!function_exists('productTotal')) {
             $optionsPrice += $option['price'];
         }
 
-        $total += round(($productPrice + $sizePrice + $optionsPrice) * $product->qty, 2);
+        // round(($productPrice + $sizePrice + $optionsPrice) * $product->qty, 2);
+
+        $total += number_format(($productPrice + $sizePrice + $optionsPrice) * $product->qty, 2, '.', '');
 
         return $total;
+    }
+}
+
+
+if (!function_exists('grandCartTotal')) {
+    /**
+     * Grand cart total
+     *
+     * @return int|float The total product value
+     */
+    function grandCartTotal(): int|float
+    {
+        $catTotal = cartTotal();
+        $total = 0;
+
+        if (Session::has('coupon')) {
+            $coupon = Session::get('coupon');
+            $discount = $coupon['discount'];
+
+            $total = number_format($catTotal - $discount, 2, '.', '');
+
+            return $total;
+        } else {
+            $total = $catTotal;
+            return $total;
+        }
     }
 }

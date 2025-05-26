@@ -143,11 +143,20 @@ class FrontendController extends Controller
 
     public function applyCoupon(Request $request): Response|JsonResponse
     {
+        // dd($request->all());
         //? validate the request
         $request->validate([
             'code' => 'required|string|max:255',
             'subTotal' => 'required|numeric|min:0',
         ]);
+
+        //? check if coupon exist in session
+        if (session()->has('coupon')) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Coupon already applied!',
+            ], 422);
+        }
 
         $code = $request->code;
         $subTotal = $request->subTotal;
@@ -179,21 +188,62 @@ class FrontendController extends Controller
         }
 
         if ($coupon->discount_type === 'percent') {
-            //? calculate discont in percentage
-            $discount = $subTotal * ($coupon->discount / 100);
+            //? calculate discount in percentage and round to 2 decimal places
+            $discount = number_format(($subTotal * $coupon->discount) / 100, 2, '.', '');
         } elseif ($coupon->discount_type === 'amount') {
             //? calculate discont in amount
-            $discount = $coupon->discount;
+            $discount = number_format($coupon->discount, 2, '.', '');
         }
 
         //? get the final total after applying the discount
         $finalTotal = $subTotal - $discount;
 
+        //? store discount and code in session
+        session()->put('coupon', [
+            'code' => $code,
+            'discount_type' => $coupon->discount_type,
+            'discount' => $discount,
+        ]);
+
+
         return response()->json([
             'status' => 'success',
             'message' => 'Coupon Applied Successfully!',
-            'discount' => (int) $discount,
+            'coupon_code' => $code,
+            'discount' => $discount,
             'finalTotal' => $finalTotal,
         ], 200);
+    }
+
+
+    public function destroyCoupon(): JsonResponse
+    {
+        try {
+            //? check if coupon exist in session
+            if (session()->has('coupon')) {
+                //? remove coupon from session
+                session()->forget('coupon');
+
+                return response()->json([
+                    'status' => 'success',
+                    'discount' => 0,
+                    'grandTotal' => grandCartTotal(),
+                    'subTotal' => cartTotal(),
+                    'message' => 'Coupon removed successfully!',
+                ], 200);
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No coupon applied!',
+            ], 422);
+        } catch (\Exception $e) {
+            logger('Unable to remove coupon: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong while removing the coupon.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

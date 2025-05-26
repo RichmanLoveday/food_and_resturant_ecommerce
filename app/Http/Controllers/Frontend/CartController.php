@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Session;
 
 class CartController extends Controller
 {
@@ -120,6 +121,8 @@ class CartController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'subTotal' => cartTotal(),
+                'grandTotal' => grandCartTotal(),
                 'message' => 'Item removed from cart successfully!'
             ], 200);
         } catch (\Exception $e) {
@@ -168,6 +171,7 @@ class CartController extends Controller
                 'product_total' => productTotal($request->rowId),
                 'qty' => $cart->qty,
                 'subTotal' => cartTotal(),
+                'grandTotal' => grandCartTotal(),
                 'message' => 'Updated Cart Successfully!'
             ], 200);
         } catch (\Exception $e) {
@@ -190,7 +194,7 @@ class CartController extends Controller
     public function cartDestroy(): RedirectResponse
     {
         Cart::destroy();
-
+        Session::forget('coupon');
         toastr()->success('Cart cleared successfully!');
         return redirect()->back();
     }

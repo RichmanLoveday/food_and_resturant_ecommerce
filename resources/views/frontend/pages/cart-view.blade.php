@@ -96,15 +96,35 @@
                 </div>
                 <div class="col-lg-4 wow fadeInUp" data-wow-duration="1s">
                     <div class="fp__cart_list_footer_button">
+                        @php
+                            $discount = Session::get('coupon')['discount'] ?? 0;
+                            $finalTotal = $discount > 0 ? cartTotal() - $discount : cartTotal();
+                        @endphp
                         <h6>total cart</h6>
                         <p>subtotal: <span id="subTotal">{{ currencyPosition(cartTotal()) }}</span></p>
                         <p>delivery: <span id="delivery">$00.00</span></p>
-                        <p>discount: <span id="discount">$10.00</span></p>
-                        <p class="total"><span>total:</span> <span id="finalTotal">$134.00</span></p>
+                        <p>discount: <span id="discount">{{ config('settings.site_currency_icon') }}
+                                {{ $discount }}</span></p>
+                        <p class="total"><span>total:</span> <span
+                                id="finalTotal">{{ config('settings.site_currency_icon') }} {{ $finalTotal }}</span></p>
                         <form id="coupon_form">
                             <input type="text" name="code" id="coupon_code" placeholder="Coupon Code">
                             <button type="submit">apply</button>
                         </form>
+
+                        <div class="coupon_card">
+                            @if (Session::has('coupon'))
+                                <div class="card mt-2">
+                                    <div class="d-flex justify-content-between align-items-center p-3">
+                                        <span><b class="v_coupon_code">Applied Coupon:
+                                                {{ Session::get('coupon')['code'] }}</b></span>
+                                        <button type="button" class="remove_coupon" id="destroyCoupon"><i
+                                                class="far fa-times"></i></button>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
                         <a class="common_btn" href=" #">checkout</a>
                     </div>
                 </div>
@@ -112,8 +132,8 @@
         </div>
     </section>
     <!--============================
-                                                                                                                                                                                                                                                                                                                                                                                                                                                      CART VIEW END
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    ==============================-->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          CART VIEW END
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ==============================-->
 @endsection
 
 
@@ -144,6 +164,18 @@
                         $('#subTotal').text("{{ config('settings.site_currency_icon') }}" +
                             response.subTotal);
 
+                        $('#finalTotal').text("{{ config('settings.site_currency_icon') }}" +
+                            response.productTotal);
+
+                        //? clear coupon code
+
+                        //? update discount value
+                        // $('#discount').text("{{ config('settings.site_currency_icon') }}" +
+                        //     (response.discount ?? '0.00'));
+
+                        //? update finale total
+                        $('#finalTotal').text("{{ config('settings.site_currency_icon') }}" +
+                            (response.grandTotal));
                         toastr.success(response.message);
                     } else {
                         inputField.val(response.qty);
@@ -177,6 +209,15 @@
                             $('#subTotal').text("{{ config('settings.site_currency_icon') }}" +
                                 response.subTotal);
 
+                            //? clear coupon code
+
+                            //? update discount value
+                            // $('#discount').text("{{ config('settings.site_currency_icon') }}" +
+                            //     (response.discount ?? '0.00'));
+
+                            //? update finale total
+                            $('#finalTotal').text("{{ config('settings.site_currency_icon') }}" +
+                                (response.grandTotal));
                             toastr.success(response.message);
                         } else {
                             inputField.val(response.qty);
@@ -241,6 +282,19 @@
                     success: function(response) {
                         if (response.status === 'success') {
                             updateSideBarCart(); //? update side bar content
+
+                            $('#subTotal').text("{{ config('settings.site_currency_icon') }}" +
+                                response.subTotal);
+
+                            //? clear coupon code
+
+                            // //? update discount value
+                            // $('#discount').text("{{ config('settings.site_currency_icon') }}" +
+                            //     (response.discount ?? '0.00'));
+
+                            //? update finale total
+                            $('#finalTotal').text("{{ config('settings.site_currency_icon') }}" +
+                                (response.grandTotal));
                         }
                     },
                     error: function(xhr, status, error) {
@@ -283,17 +337,23 @@
                     success: function(response) {
                         if (response.status === 'success') {
                             //? update the html
-                            $('#discount').text("{{ config('settings.site_currency_icon') }}" +
+                            $('#discount').text("{{ config('settings.site_currency_icon') }} " +
                                 response.discount);
-                            $('#finalTotal').text("{{ config('settings.site_currency_icon') }}" +
+                            $('#finalTotal').text("{{ config('settings.site_currency_icon') }} " +
                                 response.finalTotal);
+
+                            let couponCardHtml = `<div class="card mt-2">
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span><b class="v_coupon_code">Applied Coupon: ${response.coupon_code}</b></span>
+                                    <button type="button" class="remove_coupon" id="destroyCoupon"><i class="far fa-times"></i></button>
+                                </div>`;
+
+                            $('.coupon_card').html(couponCardHtml);
 
                             toastr.success(response.message);
                         } else {
                             toastr.error(response.message);
                         }
-
-
                     },
                     error: function(xhr, status, error) {
                         let errorMessage = xhr.responseJSON.message;
@@ -302,8 +362,52 @@
                     },
                     complete: function() {
                         hideLoader();
+                        $('#coupon_code').val(''); //? clear the coupon code input
                     }
                 })
+            }
+
+
+            $(document).on('click', '#destroyCoupon', function(e) {
+                e.preventDefault();
+                destroyCoupon();
+            });
+
+            /** remove coupon */
+            function destroyCoupon() {
+                $.ajax({
+                    method: 'GET',
+                    url: '{{ route('destroy-coupon') }}',
+                    beforeSend: function() {
+                        showLoader();
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            //? update the html
+                            $('#discount').text(
+                                "{{ config('settings.site_currency_icon') }}" + response.discount);
+
+                            $('#subTotal').text(
+                                "{{ config('settings.site_currency_icon') }} " + response.subTotal);
+
+                            $('#finalTotal').text(
+                                "{{ config('settings.site_currency_icon') }} " +
+                                response.grandTotal);
+
+                            $('.coupon_card').html('');
+                            toastr.success(response.message);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        let errorMessage = xhr.responseJSON.message;
+                        toastr.error(errorMessage);
+                    },
+                    complete: function() {
+                        hideLoader();
+                    }
+                });
             }
         });
     </script>
