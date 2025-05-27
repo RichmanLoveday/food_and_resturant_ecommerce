@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     /** Frontend Dashboard Routes */
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('dashboard');
+        Route::post('/address', 'createAddress')->name('address.store');
     });
 
     /** Profile controller Routes */
