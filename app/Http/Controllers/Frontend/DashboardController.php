@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\AddressCreateRequest;
 use App\Models\Address;
 use App\Models\DeliveryArea;
+use Auth;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -14,16 +15,36 @@ class DashboardController extends Controller
     public function index(): View
     {
         $deliveryAreas = DeliveryArea::where('status', true)->get();
-        return view('frontend.dashboard.index', compact('deliveryAreas'));
+        $userAddresses = Address::with(['deliveryArea'])
+            ->where('user_id', Auth::user()->id)->get();
+
+        // dd($userAddresses->toArray());
+
+        return view('frontend.dashboard.index', compact('deliveryAreas', 'userAddresses'));
     }
 
 
     public function createAddress(AddressCreateRequest $request)
     {
+        // dd($request->all());
         $address = new Address();
+        $address->user_id = Auth::user()->id;
         $address->delivery_area_id = $request->area;
         $address->first_name = $request->first_name;
         $address->last_name = $request->last_name;
-        // $address->email = $
+        $address->email = $request->email;
+        $address->phone = $request->phone;
+        $address->address = $request->address;
+        $address->type = $request->type;
+        $address->save();
+
+        toastr()->success('Created Successfully');
+
+        return redirect()->back();
     }
+
+
+    public function editAddress() {}
+
+    public function updateAddress() {}
 }
