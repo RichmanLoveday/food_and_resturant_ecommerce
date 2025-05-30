@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Requests\Frontend;
+
+use App\Models\Address;
+use Auth;
+use Illuminate\Foundation\Http\FormRequest;
+
+class AddressUpdateRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        //? define if current user has access to update address
+        $addressId = $this->route('id');
+        $address = Address::find($addressId);
+
+        return $address && $address->user_id === Auth::user()->id;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'area' => ['required', 'integer'],
+            'first_name' => ['required', 'max:255'],
+            'last_name' => ['nullable', 'max:255'],
+            'phone' => ['required', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'address' => ['required'],
+            'type' => ['required', 'in:home,office'],
+        ];
+    }
+}

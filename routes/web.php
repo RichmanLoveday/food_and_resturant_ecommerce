@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
@@ -45,6 +46,8 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('dashboard');
         Route::post('/address', 'createAddress')->name('address.store');
+        Route::put('/address/{id}/edit', 'updateAddress')->name('address.update');
+        Route::delete('/address/{id}', 'destroyAddress')->name('address.destroy');
     });
 
     /** Profile controller Routes */
@@ -52,6 +55,12 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/profile', 'updateProfile')->name('profile.udpate');
         Route::put('/profile/password', 'updatePassword')->name('profile.password.update');
         Route::post('/profile/avatar', 'updateAvatar')->name('profile.avatar.update');
+    });
+
+    /*** Checkout Controller Routes */
+    Route::controller(CheckoutController::class)->group(function () {
+        Route::get('/checkout', 'index')->name('checkout.index');
+        Route::get('/checkout/{id}/delivery-cal', 'calculateDeliveryCharge')->name('checkout.delivery.cal');
     });
 });
 

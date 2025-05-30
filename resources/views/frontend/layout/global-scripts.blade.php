@@ -1,4 +1,40 @@
 <script>
+    /** Show confirm message  */
+    $('body').on('click', '.delete-item', function(e) {
+        e.preventDefault();
+        let url = $(this).attr('href');
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    type: 'DELETE',
+                    success: function(res) {
+                        if (res.status == 'success') {
+                            toastr.success(res.message);
+                            //$('.table').DataTable().draw();
+                            window.location.reload();
+                        } else if (res.status == 'error') {
+                            toastr.error(res.message);
+                        }
+                    },
+                    error: function(error) {}
+                });
+            }
+        });
+    });
+
     /** show or hide loader **/
     function showLoader() {
         $('.overlay').addClass('active');
