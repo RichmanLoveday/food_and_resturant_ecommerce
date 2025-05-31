@@ -151,7 +151,7 @@
                                 {{ $discount }}</span></p>
                         <p class="total"><span>total:</span> <span
                                 id="grand_total">{{ currencyPosition(grandCartTotal()) }}</span></p>
-                        <a class="common_btn" href=" #">checkout</a>
+                        <a class="common_btn" href="#" id="proceed_pmt_button">Proceed To Payment</a>
                     </div>
                 </div>
             </div>
@@ -162,6 +162,8 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            $('.v_address').prop('checked', false);
+
             $('.v_address').on('click', function() {
                 let address = $(this).val();
                 let deliveryFee = $('#delivery_fee');
@@ -170,14 +172,14 @@
                 $.ajax({
                     method: 'GET',
                     url: '{{ route('checkout.delivery.cal', ':id') }}'.replace(":id", address),
-                    beforesend: function() {
+                    beforeSend: function() {
                         showLoader();
                     },
                     success: function(response) {
                         deliveryFee.text("{{ currencyPosition(':amount') }}".replace(
-                            ":amount", response.delivery_fee));
+                            ":amount", response.delivery_fee.toFixed(2)));
                         grandTotal.text("{{ currencyPosition(':amount') }}".replace(
-                            ":amount", response.grand_total))
+                            ":amount", response.grand_total.toFixed(2)))
                     },
                     error: function(xhr, status, error) {
                         let errorMsg = xhr.responseJSON.message;
@@ -186,7 +188,39 @@
                     complete: function() {
                         hideLoader();
                     }
-                })
+                });
+            });
+
+            $('#proceed_pmt_button').on('click', function(e) {
+                e.preventDefault();
+
+                let address = $('.v_address:checked').val();
+
+                if (!address || address.length === 0) {
+                    toastr.error('Please select an Address!');
+                    return;
+                }
+
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route('checkout.redirect') }}',
+                    data: {
+                        id: address
+                    },
+                    beforeSend: function() {
+                        showLoader();
+                    },
+                    success: function(response) {
+                        window.location.href = response.redirect_url;
+                    },
+                    error: function(xhr, status, error) {
+                        let errorMsg = xhr.responseJSON.message;
+                        toastr.success(errorMsg);
+                    },
+                    complete: function() {
+                        hideLoader();
+                    }
+                });
             });
         });
     </script>

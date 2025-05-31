@@ -117,7 +117,7 @@ if (!function_exists('grandCartTotal')) {
      *
      * @return int|float The total product value
      */
-    function grandCartTotal(): int|float
+    function grandCartTotal(int|float $deliveryFee = 0): int|float
     {
         $catTotal = cartTotal();
         $total = 0;
@@ -126,12 +126,30 @@ if (!function_exists('grandCartTotal')) {
             $coupon = Session::get('coupon');
             $discount = $coupon['discount'];
 
-            $total = number_format($catTotal - $discount, 2, '.', '');
+            $total = number_format(($catTotal + $deliveryFee) - $discount, 2, '.', '');
 
             return $total;
         } else {
             $total = $catTotal;
             return $total;
         }
+    }
+}
+
+
+if (!function_exists('generateInvoiceId')) {
+    /**
+     * Generate invoice id
+     *
+     * @return int|float The total product value
+     */
+    function generateInvoiceId(): int|string
+    {
+        $randomNumber = rand(1, 9999);
+        $currentDateTime = now();
+
+        $invoiceId = $randomNumber . $currentDateTime->format('ymd') . $currentDateTime->format('s');
+
+        return $invoiceId;
     }
 }

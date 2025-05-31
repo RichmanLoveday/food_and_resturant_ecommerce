@@ -22,6 +22,12 @@ class CheckoutController extends Controller
     }
 
 
+    /**
+     * Calculate the delivery charge and grand total for a given address.
+     *
+     * @param string|int $id Address ID
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function calculateDeliveryCharge(string|int $id)
     {
         try {
@@ -34,5 +40,23 @@ class CheckoutController extends Controller
             logger($e);
             return response()->json(['message' => 'something went wrong!'], 422);
         }
+    }
+
+
+    public function checkoutRedirect(Request $request)
+    {
+        $request->validate([
+            'id' => ['required', 'integer'],
+        ]);
+
+        //? get user user selected address, and delivery area relation
+        $address = Address::with('deliveryArea')->findOrFail($request->id);
+        $selectedAddress = "{$address->address} Area: {$address->deliveryArea?->area_name}";
+
+        //? store address in a session
+        session()->put('address', $selectedAddress);
+        session()->put('delivery_charge', $address->deliveryArea?->delivery_fee);
+
+        return response()->json(['redirect_url' => route('payment.index')]);
     }
 }

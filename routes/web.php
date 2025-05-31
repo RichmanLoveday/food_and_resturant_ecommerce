@@ -5,6 +5,7 @@ use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\FrontendController;
+use App\Http\Controllers\Frontend\PaymentController;
 use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +62,14 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(CheckoutController::class)->group(function () {
         Route::get('/checkout', 'index')->name('checkout.index');
         Route::get('/checkout/{id}/delivery-cal', 'calculateDeliveryCharge')->name('checkout.delivery.cal');
+        Route::post('/checkout', 'checkoutRedirect')->name('checkout.redirect');
+    });
+
+
+    /*** Payment Controller Routes */
+    Route::controller(PaymentController::class)->group(function () {
+        Route::get('/payment', 'index')->name('payment.index');
+        Route::post('/make-payment', 'makePayment')->name('make-payement');
     });
 });
 
