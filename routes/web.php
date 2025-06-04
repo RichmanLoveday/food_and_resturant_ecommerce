@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\DashboardController;
