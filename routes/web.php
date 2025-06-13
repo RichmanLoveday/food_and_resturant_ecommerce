@@ -69,6 +69,8 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(PaymentController::class)->group(function () {
         Route::get('/payment', 'index')->name('payment.index');
         Route::post('/make-payment', 'makePayment')->name('make-payement');
+        Route::get('/payment-success', 'paymentSuccess')->name('payment.success');
+        Route::get('/payment-cancel', 'paymentCancel')->name('payment.cancel');
 
         /** Paypal Routes */
         Route::get('/paypal/payment', 'paywithPaypal')->name('paypal.payment');

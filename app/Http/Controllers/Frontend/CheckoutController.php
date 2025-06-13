@@ -64,6 +64,7 @@ class CheckoutController extends Controller
         //? store address in a session
         session()->put('address', $selectedAddress);
         session()->put('delivery_charge', $address->deliveryArea?->delivery_fee);
+        session()->put('delivery_area_id', $address->deliveryArea?->id);
 
         return response()->json(['redirect_url' => route('payment.index')]);
     }

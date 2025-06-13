@@ -35,6 +35,19 @@ class PaymentController extends Controller
     }
 
 
+    public function paymentSuccess()
+    {
+        $breadCrumb = ['title' => 'order', 'link' => '#'];
+        return view('frontend.pages.payment-success', compact('breadCrumb'));
+    }
+
+    public function paymentCancel()
+    {
+        $breadCrumb = ['title' => 'order', 'link' => '#'];
+        return view('frontend.pages.payment-cancel', compact('breadCrumb'));
+    }
+
+
     public function makePayment(Request $request, OrderService $orderService)
     {
         // dd($request->all());
@@ -132,6 +145,9 @@ class PaymentController extends Controller
                     return redirect()->away($link['href']);
                 }
             }
+        } else {
+            return redirect()->route('payment.cancel')
+                ->withErrors(['errors' => $response['error']['message']]);
         }
     }
 
@@ -160,9 +176,16 @@ class PaymentController extends Controller
             //? fire order payment update event
             event(new OrderPaymentUpdateEvent($orderId, $paymentInfo, 'PayPal'));
 
-            dd('success');
+            return redirect()->route('payment.success');
+        } else {
+            //? redirect user to error page if any error is encountered
+            return redirect()->route('payment.cancel')
+                ->withErrors(['errors' => $response['error']['message']]);
         }
     }
 
-    public function paypalCancel() {}
+    public function paypalCancel()
+    {
+        return redirect()->route('payment.cancel');
+    }
 }

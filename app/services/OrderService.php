@@ -21,6 +21,7 @@ class OrderService
             $order = new Order();
             $order->invoice_id = generateInvoiceId();
             $order->user_id = Auth::user()->id;
+            $order->delivery_area_id = session()->get('delivery_area_id');
             $order->address = session()->get('address');
             $order->discount = session()->get('coupon')['discount'] ?? 0;
             $order->delivery_charge = session()->get('delivery_charge');
