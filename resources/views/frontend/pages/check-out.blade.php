@@ -114,15 +114,21 @@
                                 @foreach ($addresses as $address)
                                     @php
                                         $icon_type = 'fa-home';
+                                        $checked = '';
                                         if ($address->type === 'office') {
                                             $icon_type = 'fa-car-building';
+                                        }
+
+                                        if ($address->id === Session::get('address')) {
+                                            $checked = 'checked';
                                         }
                                     @endphp
                                     <div class="col-md-6">
                                         <div class="fp__checkout_single_address">
                                             <div class="form-check">
                                                 <input class="form-check-input v_address" value="{{ $address->id }}"
-                                                    type="radio" name="flexRadioDefault" id="home_{{ $address->id }}">
+                                                    type="radio" name="flexRadioDefault"
+                                                    id="home_{{ $address->id }}"{{ $checked }}>
                                                 <label class="form-check-label" for="home_{{ $address->id }}">
                                                     <span class="icon"><i class="fas {{ $icon_type }}"></i>
                                                         home</span>
@@ -140,17 +146,20 @@
 
                 <div class="col-lg-4 wow fadeInUp" data-wow-duration="1s">
                     <div id="sticky_sidebar" class="fp__cart_list_footer_button">
-                        <h6>total cart</h6>
-                        <p>subtotal: <span>{{ currencyPosition(cartTotal()) }}</span></p>
-                        <p>delivery: <span id="delivery_fee">$00.00</span></p>
                         @php
                             $discount = Session::get('coupon')['discount'] ?? 0;
                             $finalTotal = $discount > 0 ? cartTotal() - $discount : cartTotal();
+                            $deliveryCharge = Session::get('delivery_charge') ?? 00.0;
                         @endphp
+                        <h6>total cart</h6>
+                        <p>subtotal: <span>{{ currencyPosition(cartTotal()) }}</span></p>
+                        <p>delivery: <span id="delivery_fee"> {{ config('settings.site_currency_icon') }}
+                                {{ $deliveryCharge }}</span></p>
+
                         <p>discount: <span id="discount">{{ config('settings.site_currency_icon') }}
                                 {{ $discount }}</span></p>
                         <p class="total"><span>total:</span> <span
-                                id="grand_total">{{ currencyPosition(grandCartTotal()) }}</span></p>
+                                id="grand_total">{{ currencyPosition(grandCartTotal($deliveryCharge)) }}</span></p>
                         <a class="common_btn" href="#" id="proceed_pmt_button">Proceed To Payment</a>
                     </div>
                 </div>

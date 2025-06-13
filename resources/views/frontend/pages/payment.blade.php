@@ -49,7 +49,11 @@
                     beforeSend: function() {
                         showLoader();
                     },
-                    success: function() {},
+                    success: function(response) {
+                        if (response.status == 'success') {
+                            window.location.href = response.redirect_url;
+                        }
+                    },
                     error: function(xhr, status, error) {
                         let errors = xhr.responseJSON.errors;
                         $.each(errors, function(index, value) {

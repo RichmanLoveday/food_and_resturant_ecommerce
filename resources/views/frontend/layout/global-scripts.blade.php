@@ -106,13 +106,13 @@
 
             method: 'GET',
             beforeSend: function() {
-                showOrHideLoader();
+                showLoader();
             },
             success: function(response) {
                 if (response.status === 'success') {
                     updateSideBarCart(function() {
                         toastr.success(response.message);
-                        showOrHideLoader();
+                        hideLoader();
                     });
                 }
             },

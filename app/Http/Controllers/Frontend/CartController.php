@@ -153,7 +153,7 @@ class CartController extends Controller
 
             // dd($product);
 
-            //? check if product quantiy is less than the requested quantity
+            //? check if product quantity is less than the requested quantity
             if ($product->quantity < (int) $request->qty) {
                 // throw ValidationException::withMessages(['Quantity is not available!']);
                 logger("Unable to add product in cart: " . 'Quantity is not available!');

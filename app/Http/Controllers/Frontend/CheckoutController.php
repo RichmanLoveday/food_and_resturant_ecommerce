@@ -16,6 +16,14 @@ class CheckoutController extends Controller
         $addresses = Address::where(['user_id' => Auth::user()->id])->get();
         $deliveryAreas = DeliveryArea::where('status', true)->get();
 
+        //? check if user has selected address in session
+        // if (session()->has('address')) {
+        //     //? get user selected address
+        //     $selectedAddress = Address::with('deliveryArea')->findOrFail(session()->get('address'));
+
+        //     //? restore delivery area fee in session
+        //     session()->put('delivery_charge', $selectedAddress->deliveryArea?->delivery_fee);
+        // }
         // dd($deliveryAreas);
 
         return view('frontend.pages.check-out', compact('breadCrumb', 'addresses', 'deliveryAreas'));
@@ -33,7 +41,7 @@ class CheckoutController extends Controller
         try {
             $address = Address::findOrFail($id);
             $deliveryAmount = $address->deliveryArea?->delivery_fee;
-            $grandTotal = grandCartTotal() + $deliveryAmount;
+            $grandTotal = grandCartTotal($deliveryAmount);
 
             return response()->json(['delivery_fee' => $deliveryAmount, 'grand_total' => $grandTotal]);
         } catch (\Exception $e) {
