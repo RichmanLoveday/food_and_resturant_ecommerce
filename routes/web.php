@@ -72,10 +72,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/payment-success', 'paymentSuccess')->name('payment.success');
         Route::get('/payment-cancel', 'paymentCancel')->name('payment.cancel');
 
+
         /** Paypal Routes */
         Route::get('/paypal/payment', 'paywithPaypal')->name('paypal.payment');
         Route::get('/paypal/success', 'paypalSuccess')->name('paypal.success');
         Route::get('/paypal/cancel', 'paypalCancel')->name('paypal.cancel');
+
+
+        /** Stripe Routes */
+        Route::get('/stripe/payment', 'paywithStripe')->name('stripe.payment');
+        Route::get('/stripe/success', 'stripeSuccess')->name('stripe.success');
+        Route::get('/stripe/cancel', 'stripeCancel')->name('stripe.cancel');
+
+        /** Razor Routes */
     });
 });
 

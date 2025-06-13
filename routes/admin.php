@@ -82,6 +82,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::controller(PaymentGatewayController::class)->group(function () {
             Route::get('/payment-setting', 'index')->name('payment-setting.index');
             Route::put('/paypal-setting', 'paypalSettingUpdate')->name('paypal-setting.update');
+            Route::put('/stripe-setting', 'stripeSettingUpdate')->name('stripe-setting.update');
+            Route::put('/razorpay-setting', 'razorpaySettingUpdate')->name('razorpay-setting.update');
         });
     });
 });

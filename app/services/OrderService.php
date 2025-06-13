@@ -67,5 +67,16 @@ class OrderService
     }
 
     /** Clear Session Items */
-    public function clearSession() {}
+    public function clearSession()
+    {
+        Cart::destroy();
+        session()->forget([
+            'address',
+            'delivery_charge',
+            'delivery_area_id',
+            'coupon',
+            'grand_total',
+            'order_id'
+        ]);
+    }
 }
