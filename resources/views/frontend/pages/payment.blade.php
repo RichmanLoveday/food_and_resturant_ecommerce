@@ -8,33 +8,37 @@
                 <div class="col-lg-8">
                     <div class="fp__payment_area">
                         <div class="row">
-                            <div class="col-lg-3 col-6 col-sm-4 col-md-3 wow fadeInUp" data-wow-duration="1s">
-                                <a class="fp__single_payment payment-card" data-name="paypal" data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal" href="#">
-                                    <img src="{{ asset(config('gatewaySettings.paypal_logo')) }}" alt="payment method"
-                                        class="img-fluid w-100">
-                                </a>
-                            </div>
+                            @if (config('gatewaySettings.paypal_status'))
+                                <div class="col-lg-3 col-6 col-sm-4 col-md-3 wow fadeInUp" data-wow-duration="1s">
+                                    <a class="fp__single_payment payment-card" data-name="paypal" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal" href="#">
+                                        <img src="{{ asset(config('gatewaySettings.paypal_logo')) }}" alt="payment method"
+                                            class="img-fluid w-100">
+                                    </a>
+                                </div>
+                            @endif
 
-                            <div class="col-lg-3 col-6 col-sm-4 col-md-3 wow fadeInUp" data-wow-duration="1s">
-                                <a class="fp__single_payment payment-card" data-name="stripe" data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal" href="#">
-                                    <img src="{{ asset(config('gatewaySettings.stripe_logo')) }}" alt="payment method"
-                                        class="img-fluid w-100">
-                                </a>
-                            </div>
 
-                            <div class="col-lg-3 col-6 col-sm-4 col-md-3 wow fadeInUp" data-wow-duration="1s">
-                                <a class="fp__single_payment payment-card" data-name="razorpay" data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal" href="#">
-                                    <img src="{{ asset(config('gatewaySettings.razorpay_logo')) }}" alt="payment method"
-                                        class="img-fluid w-100">
-                                </a>
+                            @if (config('gatewaySettings.stripe_status'))
+                                <div class="col-lg-3 col-6 col-sm-4 col-md-3 wow fadeInUp" data-wow-duration="1s">
+                                    <a class="fp__single_payment payment-card" data-name="stripe" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal" href="#">
+                                        <img src="{{ asset(config('gatewaySettings.stripe_logo')) }}" alt="payment method"
+                                            class="img-fluid w-100">
+                                    </a>
+                                </div>
+                            @endif
 
-                                <script src="https://checkout.razorpay.com/v1/checkout.js" data-key="{{ config('gatewaySettings.razorpay_api_key') }}"
-                                    data-amount="10000" data-buttontext="pay" data-name="Payment" data-description="Payment for product"
-                                    data-prefill.name="Jhon" data-prefill.email="test@gmail.com" data-theme.color="#ff7529"></script>
-                            </div>
+
+                            @if (config('gatewaySettings.razorpay_status'))
+                                <div class="col-lg-3 col-6 col-sm-4 col-md-3 wow fadeInUp" data-wow-duration="1s">
+                                    <a class="fp__single_payment payment-card" data-name="razorpay" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal" href="#">
+                                        <img src="{{ asset(config('gatewaySettings.razorpay_logo')) }}" alt="payment method"
+                                            class="img-fluid w-100">
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

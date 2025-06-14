@@ -7,8 +7,8 @@
              <div class="form-group">
                  <label for="stie-name">Stripe Status</label> <br>
                  <select name="stripe_status" class="select3 form-control" id="default-currency">
-                     <option @selected(@$paypalGateway['stripe_status'] === 1) value="1">Active</option>
-                     <option @selected(@$paypalGateway['stripe_status'] === 0) value="0">Inactive</option>
+                     <option @selected(@$paypalGateway['stripe_status'] == 1) value="1">Active</option>
+                     <option @selected(@$paypalGateway['stripe_status'] == 0) value="0">Inactive</option>
                  </select>
              </div>
 

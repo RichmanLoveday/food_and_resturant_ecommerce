@@ -7,8 +7,8 @@
              <div class="form-group">
                  <label for="stie-name">Razorpay Status</label> <br>
                  <select name="razorpay_status" class="select4 form-control" id="default-currency">
-                     <option @selected(@$paypalGateway['razorpay_status'] === 1) value="1">Active</option>
-                     <option @selected(@$paypalGateway['razorpay_status'] === 0) value="0">Inactive</option>
+                     <option @selected(@$paypalGateway['razorpay_status'] == 1) value="1">Active</option>
+                     <option @selected(@$paypalGateway['razorpay_status'] == 0) value="0">Inactive</option>
                  </select>
              </div>
 

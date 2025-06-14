@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DeliveryAreaController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductGalleryController;
@@ -84,6 +85,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::put('/paypal-setting', 'paypalSettingUpdate')->name('paypal-setting.update');
             Route::put('/stripe-setting', 'stripeSettingUpdate')->name('stripe-setting.update');
             Route::put('/razorpay-setting', 'razorpaySettingUpdate')->name('razorpay-setting.update');
+        });
+
+
+        /** Order Routes */
+        Route::controller(OrderController::class)->group(function () {
+            Route::get('/orders', 'index')->name('orders.index');
         });
     });
 });

@@ -172,6 +172,7 @@ class PaymentGatewayController extends Controller
 
                 //? remove old image 
                 $oldPaypalLogo = PaymentGatewaySetting::where('key', 'razorpay_logo')->first();
+                
                 if ($oldPaypalLogo) $this->removeImage($oldPaypalLogo->value);   //? remove image
 
                 //? store image

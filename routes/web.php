@@ -84,7 +84,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/stripe/success', 'stripeSuccess')->name('stripe.success');
         Route::get('/stripe/cancel', 'stripeCancel')->name('stripe.cancel');
 
+
         /** Razor Routes */
+        Route::get('/razorpay-redirect', 'paywithRazorpayRedirect')->name('razorpay-redirect');
+        Route::post('/razorpay/payment', 'paywithRazorpay')->name('razorpay.payment');
     });
 });
 
