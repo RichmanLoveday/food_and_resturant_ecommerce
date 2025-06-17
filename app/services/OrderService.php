@@ -21,7 +21,6 @@ class OrderService
             $order = new Order();
             $order->invoice_id = generateInvoiceId();
             $order->user_id = Auth::user()->id;
-            $order->delivery_area_id = session()->get('delivery_area_id');
             $order->address = session()->get('address');
             $order->discount = session()->get('coupon')['discount'] ?? 0;
             $order->delivery_charge = session()->get('delivery_charge');
@@ -35,6 +34,7 @@ class OrderService
             $order->coupon_info = session()->get('coupon') ? json_encode(session()->get('coupon')) : Null;
             $order->currency_name = NULL;
             $order->order_status = 'pending';
+            $order->address_id = session()->get('address_id');
 
             $saved = $order->save();
 
@@ -73,7 +73,7 @@ class OrderService
         session()->forget([
             'address',
             'delivery_charge',
-            'delivery_area_id',
+            'address_id',
             'coupon',
             'grand_total',
             'order_id'

@@ -190,7 +190,7 @@ class PaymentController extends Controller
             $paymentInfo = [
                 'transaction_id' => $capture['id'],
                 'currency' => $capture['amount']['currency_code'],
-                'status' => $capture['status'],
+                'status' => 'completed',
             ];
 
             //? fire order payment update event
@@ -266,7 +266,7 @@ class PaymentController extends Controller
             $paymentInfo = [
                 'transaction_id' => $response->payment_intent,
                 'currency' => $response->currency,
-                'status' => $response->status,
+                'status' => 'completed',
             ];
 
             //? fire order payment update event
@@ -332,7 +332,7 @@ class PaymentController extends Controller
                     $paymentInfo = [
                         'transaction_id' => $response['id'],
                         'currency' => $response['currency'],
-                        'status' => 'COMPLETED',
+                        'status' => 'completed',
                     ];
 
                     //? fire order payment update event

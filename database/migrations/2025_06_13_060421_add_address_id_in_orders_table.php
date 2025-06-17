@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->foreignId('delivery_area_id');
+            $table->foreignId('address_id')->after('user_id');
         });
     }
 
@@ -22,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign(['delivery_area_id']);
-            $table->dropColumn('delivery_area_id');
+            $table->dropColumn('address_id');
         });
     }
 };

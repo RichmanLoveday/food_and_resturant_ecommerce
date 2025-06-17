@@ -76,6 +76,7 @@
                     <span>Manage Orders</span></a>
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="{{ route('admin.orders.index') }}">All Orders</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.orders.index') }}">Pending Orders</a></li>
                 </ul>
             </li>
 
