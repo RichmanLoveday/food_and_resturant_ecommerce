@@ -95,6 +95,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::get('/orders/status/{id}', 'getOrderStatus')->name('orders.status');
             Route::put('/orders/status-update/{id}', 'orderStatusUpdate')->name('orders.status-update');
             Route::delete('/orders/{id}', 'destroy')->name('orders.destroy');
+            Route::get('/pending-orders', 'pendingOrders')->name('orders.pending');
+            Route::get('/in-process-orders', 'inProcessOrders')->name('orders.in-process');
+            Route::get('/delivered-orders', 'deliveredOrders')->name('orders.delivered');
+            Route::get('/declined-orders', 'declinedOrders')->name('orders.declined');
         });
     });
 });

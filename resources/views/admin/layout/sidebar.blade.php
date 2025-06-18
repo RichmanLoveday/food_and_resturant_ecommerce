@@ -76,7 +76,10 @@
                     <span>Manage Orders</span></a>
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="{{ route('admin.orders.index') }}">All Orders</a></li>
-                    <li><a class="nav-link" href="{{ route('admin.orders.index') }}">Pending Orders</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.orders.pending') }}">Pending Orders</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.orders.in-process') }}">InProcess Orders</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.orders.delivered') }}">Delivered Orders</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.orders.declined') }}">Declined Orders</a></li>
                 </ul>
             </li>
 

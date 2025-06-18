@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTables\DeclinedOrderDataTable;
+use App\DataTables\DeliveredOrderDataTable;
+use App\DataTables\InProcessOrderDataTable;
 use App\DataTables\OrderDataTable;
+use App\DataTables\PendingOrderDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
@@ -11,12 +15,24 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    /**
+     * Display a listing of the orders.
+     *
+     * @param OrderDataTable $dataTable
+     * @return \Illuminate\Contracts\View\View|JsonResponse
+     */
     public function index(OrderDataTable $dataTable)
     {
         return $dataTable->render('admin.order.index');
     }
 
 
+    /**
+     * Display the specified order.
+     *
+     * @param int|string $id
+     * @return \Illuminate\Contracts\View\View
+     */
     public function show($id)
     {
         $order = Order::with(['user', 'deliveryArea', 'orderItems'])
@@ -27,6 +43,13 @@ class OrderController extends Controller
     }
 
 
+    /**
+     * Update the order status and payment status.
+     *
+     * @param Request $request
+     * @param string|int $id
+     * @return RedirectResponse|JsonResponse
+     */
     public function orderStatusUpdate(Request $request, string|int $id): RedirectResponse|JsonResponse
     {
         //dd($request->all());
@@ -56,7 +79,13 @@ class OrderController extends Controller
     }
 
 
-    public function getOrderStatus(Request $request, string|int $id)
+    /**
+     * Get the order status and payment status.
+     * @param Request $request
+     * @param string|int $id
+     * @return JsonResponse
+     */
+    public function getOrderStatus(Request $request, string|int $id): JsonResponse
     {
         try {
             $order = Order::select(['order_status', 'payment_status'])
@@ -75,6 +104,48 @@ class OrderController extends Controller
     }
 
 
+    /**
+     * Display a listing of pending orders.
+     */
+    public function pendingOrders(PendingOrderDataTable $dataTable)
+    {
+        return $dataTable->render('admin.order.pending-orders-index');
+    }
+
+
+    /**
+     * Display a listing of in-process orders.
+     *
+     * @param OrderDataTable $dataTable
+     * @return \Illuminate\Contracts\View\View|JsonResponse
+     */
+    public function inProcessOrders(InProcessOrderDataTable $dataTable)
+    {
+        return $dataTable->render('admin.order.inprocess-orders-index');
+    }
+
+
+    /**
+     * Display a listing of delivered orders.
+     *
+     * @param DeliveredOrderDataTable $dataTable
+     * @return \Illuminate\Contracts\View\View|JsonResponse
+     */
+    public function deliveredOrders(DeliveredOrderDataTable $dataTable)
+    {
+        return $dataTable->render('admin.order.delivered-orders-index');
+    }
+
+
+    public function declinedOrders(DeclinedOrderDataTable $dataTable)
+    {
+        return $dataTable->render('admin.order.declined-orders-index');
+    }
+
+
+    /**
+     * Remove the specified order from storage.
+     */
     public function destroy(string|int $id): JsonResponse
     {
         try {

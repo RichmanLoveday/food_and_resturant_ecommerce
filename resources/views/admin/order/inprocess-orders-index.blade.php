@@ -2,12 +2,12 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h1>Pending Orders</h1>
+            <h1>InProcess Orders</h1>
         </div>
 
         <div class="card card-primary">
             <div class="card-header">
-                <h4>All Pending Orders</h4>
+                <h4>All InProcess Orders</h4>
             </div>
             <div class="card-body">
                 {{ $dataTable->table() }}
@@ -91,6 +91,7 @@
                         $('.submit_btn').prop('disabled', true);
                     },
                     success: function(response) {
+                        console.log(response);
                         if (response.status === 'success') {
                             payment_status.each(function() {
                                 if ($(this).val() === response.order.payment_status) {
@@ -135,7 +136,7 @@
                         if (response.status === 'success') {
                             $('#order_modal').modal('hide');
                             toastr.success(response.message);
-                            $('#order-table').DataTable().draw();
+                            $('#inprocessorder-table').DataTable().draw();
                         } else {
                             toastr.error(response.message);
                         }
