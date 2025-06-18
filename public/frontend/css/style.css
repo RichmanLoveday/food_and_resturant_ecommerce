@@ -5604,7 +5604,7 @@ CHECKOUT PAGE START
 }
 
 .fp__track_order ul li {
-    width: 20%;
+    width: 33%;
     position: relative;
     font-size: 16px;
     font-weight: 500;
@@ -5628,7 +5628,7 @@ CHECKOUT PAGE START
 
 .fp__track_order ul li::before {
     position: absolute;
-    content: "\f1ce";
+    content: "\f017";
     color: var(--colorPrimary);
     font-family: "Font Awesome 5 Free";
     font-size: 16px;
@@ -5673,6 +5673,16 @@ CHECKOUT PAGE START
     background: #4caf50;
     color: var(--colorWhite);
 }
+
+.fp__track_order ul li.declined_status::before {
+    background: #f70303 !important;
+    color: var(--colorWhite);
+}
+
+.fp__track_order ul li.declined_status::after {
+    background: #f70303 !important;
+}
+
 
 .fp__invoice_header {
     display: flex;
