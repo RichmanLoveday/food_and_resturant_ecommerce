@@ -44,4 +44,34 @@ class SettingsController extends Controller
         toastr()->success('Updated Successfully');
         return redirect()->back();
     }
+
+
+
+    public function UpdatePusherSetting(Request $request)
+    {
+        // dd($request->all());
+        $validatedData = $request->validate([
+            'pusher_app_id' => 'required',
+            'pusher_key' => 'required',
+            'pusher_secret' => 'required',
+            'pusher_cluster' => 'required',
+        ]);
+
+        //? loop and update validated data for pusher settings
+        foreach ($validatedData as $key => $value) {
+            Setting::updateOrCreate(
+                ['key' => $key],
+                ['value' => $value],
+            );
+        }
+
+
+        //? clear settings cache memory
+        $settingsService = app(SettingsService::class);
+        $settingsService->clearCacheSettings();
+
+        //? flash success message
+        toastr()->success('Updated Successfully');
+        return redirect()->back();
+    }
 }

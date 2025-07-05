@@ -97,7 +97,9 @@
                                      <th class="qnty">Quantity</th>
                                      <th class="total">Total</th>
                                  </tr>
-
+                                 @php
+                                     $totalQuantity = 0;
+                                 @endphp
                                  @foreach ($order->orderItems as $orderItem)
                                      @php
                                          $size = json_decode($orderItem->product_size);
@@ -105,6 +107,7 @@
                                          // dd($options);
 
                                          $qty = $orderItem->qty;
+                                         $totalQuantity += $qty;
                                          $unitPrice = $orderItem->unit_price;
                                          $sizePrice = $size->price;
                                          $optionPrice = 0;
@@ -146,7 +149,7 @@
                                          <b>sub total</b>
                                      </td>
                                      <td class="qnty">
-                                         <b>12</b>
+                                         <b>{{ $totalQuantity }}</b>
                                      </td>
                                      <td class="total">
                                          <b>{{ currencyPosition($order->subtotal) }}</b>

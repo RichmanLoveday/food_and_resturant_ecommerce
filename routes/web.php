@@ -1,11 +1,13 @@
 <?php
 
+use App\Events\RTOrderPlacedNotificationEvent;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\PaymentController;
 use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
+use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
 /**FRONTEND CONTROLLER */
@@ -88,6 +90,13 @@ Route::middleware(['auth'])->group(function () {
         /** Razor Routes */
         Route::get('/razorpay-redirect', 'paywithRazorpayRedirect')->name('razorpay-redirect');
         Route::post('/razorpay/payment', 'paywithRazorpay')->name('razorpay.payment');
+    });
+
+
+    Route::get('test', function () {
+        //dd(config('broadcasting'));
+        $order = Order::first();
+        event(new RTOrderPlacedNotificationEvent($order));
     });
 });
 

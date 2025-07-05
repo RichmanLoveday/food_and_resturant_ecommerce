@@ -77,6 +77,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::controller(SettingsController::class)->group(function () {
             Route::get('/setting', 'index')->name('settings.index');
             Route::put('/general-setting', 'UpdateGeneralSetting')->name('general-setting.update');
+            Route::put('/pusher-setting', 'UpdatePusherSetting')->name('pusher-setting.update');
         });
 
         /** Payment Gateway Routes */
