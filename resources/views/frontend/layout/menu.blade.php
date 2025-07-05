@@ -63,6 +63,10 @@
                             class="cart_count">{{ count(Cart::content()) }}</span></a>
                 </li>
                 <li>
+                    <a class="cart_icon message_icon"><i class="fas fa-comment-alt-dots"></i> <span>7</span></a>
+                </li>
+
+                <li>
                     <a href="{{ route('login') }}"><i class="fas fa-user"></i></a>
                 </li>
                 <li>

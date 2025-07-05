@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DeliveryAreaController;
 use App\Http\Controllers\Admin\OrderController;
@@ -35,7 +36,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::get('dashboard',  'index')->name('dashboard');
 
             /** Order Notification Routes */
-            Route::get('clear-notification', 'clearNotification')->name('clear-notification');
             Route::get('clear-notification', 'clearNotification')->name('clear-notification');
         });
 
@@ -108,6 +108,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::get('/in-process-orders', 'inProcessOrders')->name('orders.in-process');
             Route::get('/delivered-orders', 'deliveredOrders')->name('orders.delivered');
             Route::get('/declined-orders', 'declinedOrders')->name('orders.declined');
+        });
+
+
+        /** Chat Routes */
+        Route::controller(ChatController::class)->group(function () {
+            Route::get('/chat', 'index')->name('chat.index');
         });
     });
 });

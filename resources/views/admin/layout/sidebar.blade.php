@@ -198,6 +198,9 @@
             </li>
 
 
+            <li><a href="{{ route('admin.chat.index') }}" class="nav-link"><i class="far fa-square"></i>
+                    <span>Messages</span></a></li>
+
             <li><a href="{{ route('admin.settings.index') }}" class="nav-link"><i class="far fa-square"></i>
                     <span>Settings</span></a></li>
 

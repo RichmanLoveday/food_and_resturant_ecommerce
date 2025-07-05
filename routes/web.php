@@ -2,6 +2,7 @@
 
 use App\Events\RTOrderPlacedNotificationEvent;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\ChatController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\FrontendController;
@@ -90,6 +91,12 @@ Route::middleware(['auth'])->group(function () {
         /** Razor Routes */
         Route::get('/razorpay-redirect', 'paywithRazorpayRedirect')->name('razorpay-redirect');
         Route::post('/razorpay/payment', 'paywithRazorpay')->name('razorpay.payment');
+    });
+
+
+    /** Chat Controller Routes */
+    Route::controller(ChatController::class)->group(function () {
+        Route::post('chat/send-message', 'sendMessage')->name('chat.send-message');
     });
 });
 
