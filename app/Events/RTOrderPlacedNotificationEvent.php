@@ -16,8 +16,9 @@ class RTOrderPlacedNotificationEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
-    public $orderId;
+    public string $message;
+    public int|string $orderId;
+    public $date;
 
     /**
      * Create a new event instance.
@@ -27,6 +28,7 @@ class RTOrderPlacedNotificationEvent implements ShouldBroadcastNow
         //? set order model
         $this->message = "# {$order->invoice_id} a new order has been placed!";
         $this->orderId = $order->id;
+        $this->date = date('h:i A | d-F-Y', strtotime($order->created_at));
     }
 
     /**

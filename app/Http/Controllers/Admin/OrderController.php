@@ -9,6 +9,7 @@ use App\DataTables\OrderDataTable;
 use App\DataTables\PendingOrderDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderPlacedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,6 +38,10 @@ class OrderController extends Controller
     {
         $order = Order::with(['user', 'deliveryArea', 'orderItems'])
             ->findOrFail($id);
+
+        //? update order notification as seen
+        $notification = OrderPlacedNotification::where('order_id', $order->id)
+            ->update(['seen' => 1]);
 
         // dd($order->orderItems);
         return view('admin.order.show', compact('order'));

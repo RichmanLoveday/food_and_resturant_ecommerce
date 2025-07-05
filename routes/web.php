@@ -91,13 +91,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/razorpay-redirect', 'paywithRazorpayRedirect')->name('razorpay-redirect');
         Route::post('/razorpay/payment', 'paywithRazorpay')->name('razorpay.payment');
     });
-
-
-    Route::get('test', function () {
-        //dd(config('broadcasting'));
-        $order = Order::first();
-        event(new RTOrderPlacedNotificationEvent($order));
-    });
 });
 
 require __DIR__ . '/auth.php';

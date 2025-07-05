@@ -30,7 +30,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     //? middleware for when admin is logged in
     Route::middleware(['auth', 'role:admin'])->group(function () {
-        Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        /*** Admin Dashboard Routes */
+        Route::controller(AdminDashboardController::class)->group(function () {
+            Route::get('dashboard',  'index')->name('dashboard');
+
+            /** Order Notification Routes */
+            Route::get('clear-notification', 'clearNotification')->name('clear-notification');
+            Route::get('clear-notification', 'clearNotification')->name('clear-notification');
+        });
+
 
         /** Profile Routes */
         Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {

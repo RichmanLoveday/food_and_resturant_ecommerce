@@ -88,9 +88,9 @@
                                             $options = json_decode($orderItem->product_option);
                                             // dd($options);
 
-                                            $qty = $orderItem->qty;
-                                            $unitPrice = $orderItem->unit_price;
-                                            $sizePrice = $size->price;
+                                            $qty = @$orderItem->qty;
+                                            $unitPrice = @$orderItem->unit_price;
+                                            $sizePrice = @$size->price;
                                             $optionPrice = 0;
 
                                             foreach ($options as $optionItem) {
@@ -104,7 +104,8 @@
                                             <td>{{ ++$loop->index }}</td>
                                             <td>{{ $orderItem->product_name }}</td>
                                             <td>
-                                                {{ @$size->name }} ({{ currencyPosition(@$size->price) }})
+                                                {{ @$size->name }}
+                                                ({{ isset($size->price) ? currencyPosition($size->price) : '' }})
                                                 <br>
                                                 options:
                                                 @foreach ($options as $option)

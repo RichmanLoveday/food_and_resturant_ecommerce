@@ -78,30 +78,32 @@
             $notifications = \App\Models\OrderPlacedNotification::where('seen', 0)->latest()->take(10)->get();
         @endphp
         <li class="dropdown dropdown-list-toggle">
-            <a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i
+            <a href="#" data-toggle="dropdown"
+                class="nav-link notification-toggle nav-link-lg notification_beep {{ count($notifications) > 0 ? 'beep' : '' }}"><i
                     class="far fa-bell"></i>
             </a>
             <div class="dropdown-menu dropdown-list dropdown-menu-right">
                 <div class="dropdown-header">Notifications
                     <div class="float-right">
-                        <a href="#">Mark All As Read</a>
+                        <a href="{{ route('admin.clear-notification') }}">Mark All As Read</a>
                     </div>
                 </div>
-                <div class="dropdown-list-content dropdown-list-icons">
+                <div class="dropdown-list-content dropdown-list-icons rt_notification">
                     @foreach ($notifications as $notification)
                         <a href="{{ route('admin.order.show', $notification->order_id) }}" class="dropdown-item">
                             <div class="dropdown-item-icon bg-info text-white">
                                 <i class="fas fa-bell"></i>
                             </div>
                             <div class="dropdown-item-desc">
-                                Welcome to Stisla template!
-                                <div class="time">Yesterday</div>
+                                {{ $notification->message }}
+                                <div class="time">{{ date('h:i A | d-F-Y', strtotime($notification->created_at)) }}
+                                </div>
                             </div>
                         </a>
                     @endforeach
                 </div>
                 <div class="dropdown-footer text-center">
-                    <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+                    <a href="{{ route('admin.orders.index') }}">View All <i class="fas fa-chevron-right"></i></a>
                 </div>
             </div>
         </li>
