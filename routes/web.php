@@ -96,7 +96,8 @@ Route::middleware(['auth'])->group(function () {
 
     /** Chat Controller Routes */
     Route::controller(ChatController::class)->group(function () {
-        Route::post('chat/send-message', 'sendMessage')->name('chat.send-message');
+        Route::post('/chat/send-message', 'sendMessage')->name('chat.send-message');
+        Route::get('/get-conversation/{senderId}', 'getConversation')->name('chat.get-conversation');
     });
 });
 

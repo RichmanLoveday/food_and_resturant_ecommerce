@@ -40,3 +40,7 @@ window.Echo.channel('order-placed')
         $('.rt_notification').prepend(html);
         $('.notification_beep').addClass('beep');       //? add notification beeping icon
     });
+
+
+
+
