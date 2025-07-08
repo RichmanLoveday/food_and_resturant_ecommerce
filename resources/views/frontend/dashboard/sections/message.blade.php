@@ -30,8 +30,7 @@
                 </div>
                 <form class="fp__single_chat_bottom chat_input">
                     @csrf
-                    <label for="select_file"><i class="far fa-file-medical" aria-hidden="true"></i></label>
-                    <input id="select_file" type="file" hidden="">
+                    <input type="hidden" name="msg_temp_id" class="msg_temp_id" value="">
                     <input type="text" placeholder="Type a message..." name="message" class="fp_send_message">
                     <input type="hidden" name="receiver_id" value="1">
                     <button class="fp__massage_btn" type="submit"><i class="fas fa-paper-plane" aria-hidden="true"></i>
@@ -85,6 +84,7 @@
                             `;
 
                             $('.fp__chat_body').append(html);
+                            $('.unseen-messages-count').text(0);
                         });
 
                         scrollToBottom();
@@ -95,14 +95,15 @@
 
             $('.chat_input').on('submit', function(e) {
                 e.preventDefault();
+                let msgId = Math.random();
+                $('.msg_temp_id').val(msgId);
 
                 let formData = $(this).serialize();
                 $.ajax({
                     method: 'POST',
                     url: "{{ route('chat.send-message') }}",
                     data: formData,
-                    beforeSend: function() {},
-                    success: function(response) {
+                    beforeSend: function() {
                         let message = $('.fp_send_message').val();
                         let html = `
                         <div class="fp__chating tf_chat_right">
@@ -111,13 +112,16 @@
                             </div>
                             <div class="fp__chating_text">
                                 <p>${message}</p>
-                                <small>sending...</small>
+                                <small class="msg_sending" ${msgId}>sending...</small>
                             </div>
                         </div>`;
                         $('.fp__chat_body').append(html);
                         $('.fp_send_message').val('');
 
                         scrollToBottom();
+                    },
+                    success: function(response) {
+
 
                     },
                     error: function(xhr, status, error) {

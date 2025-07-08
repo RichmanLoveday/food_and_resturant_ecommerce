@@ -19,16 +19,20 @@ class ChatEvent implements ShouldBroadcastNow
     public int|string $receiverId;
     public int|string $senderId;
     public string $avatar;
+    public string $created_at;
+    public string $senderName;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(string $message, int|string $receiverId, int|string $senderId, string $avatar)
+    public function __construct(string $message, int|string $receiverId, int|string $senderId, string $avatar, string $created_at, string $senderName)
     {
         $this->message = $message;
         $this->receiverId = $receiverId;
         $this->senderId = $senderId;
         $this->avatar = $avatar;
+        $this->created_at = $created_at;
+        $this->senderName = $senderName;
     }
 
     /**

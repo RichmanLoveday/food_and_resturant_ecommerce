@@ -1,8 +1,8 @@
 @extends('frontend.layout.master')
 @section('content')
     <!--=============================
-                                                                                                                                                                                                                                                                        BREADCRUMB START
-                                                                                                                                                                                                                                                                    ==============================-->
+                                                                                                                                                                                                                                                                                        BREADCRUMB START
+                                                                                                                                                                                                                                                                                    ==============================-->
     <section class="fp__breadcrumb" style="background: url({{ asset('frontend/images/counter_bg.jpg') }});">
         <div class="fp__breadcrumb_overlay">
             <div class="container">
@@ -17,13 +17,13 @@
         </div>
     </section>
     <!--=============================
-                                                                                                                                                                                                                                                                        BREADCRUMB END
-                                                                                                                                                                                                                                                                    ==============================-->
+                                                                                                                                                                                                                                                                                        BREADCRUMB END
+                                                                                                                                                                                                                                                                                    ==============================-->
 
 
     <!--=========================
-                                                                                                                                                                                                                                                                        DASHBOARD START
-                                                                                                                                                                                                                                                                    ==========================-->
+                                                                                                                                                                                                                                                                                        DASHBOARD START
+                                                                                                                                                                                                                                                                                    ==========================-->
     <section class="fp__dashboard mt_120 xs_mt_90 mb_100 xs_mb_70">
         <div class="container">
             <div class="fp__dashboard_area">
@@ -68,11 +68,17 @@
                                     aria-controls="v-pills-reviews" aria-selected="false"><span><i
                                             class="fas fa-star"></i></span> Reviews</button>
 
+                                @php
+                                    $unseenMessages = App\Models\Chat::where('receiver_id', auth()->id())
+                                        ->where('seen', false)
+                                        ->where('sender_id', '!=', auth()->id())
+                                        ->count();
+                                @endphp
                                 <button class="nav-link fp_chat_message" id="v-pills-messages-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-pills-messages" type="button" role="tab"
                                     aria-controls="v-pills-messages" aria-selected="false"><span><i
                                             class="far fa-comment-dots">
-                                        </i></span> Message <b>7</b>
+                                        </i></span> Message <b class="unseen-messages-count">{{ $unseenMessages ?? 0 }}</b>
                                 </button>
 
                                 <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"

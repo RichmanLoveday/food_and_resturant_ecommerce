@@ -20,13 +20,14 @@
                         <div class="card-body" style="overflow-y:scroll;">
                             <ul class="list-unstyled list-unstyled-border">
                                 @foreach ($senders as $sender)
-                                    <li class="media fp_chat_user" data-name="{{ $sender->name }}"
+                                    <li class="media fp_chat_user" data-name="{{ $sender->sender->name }}"
                                         data-user="{{ $sender->sender->id }}" style="cursor: pointer">
                                         <img alt="image" class="mr-3 rounded-circle" width="50" height="50"
                                             src="{{ asset($sender->sender->avatar) }}"
                                             style="object-fit: cover; height:50px; width:50px;">
                                         <div class="media-body">
-                                            <div class="mt-0 mb-1 font-weight-bold">{{ $sender->sender->name }}</div>
+                                            <div class="mt-0 mb-1 font-weight-bold">
+                                                {{ Str::ucfirst($sender->sender->name) }}</div>
                                             <div class="text-warning text-small font-600-bold got_new_message">
                                                 @if ($sender->unseen_messages > 0)
                                                     <i class="beep"></i> New Message
@@ -42,12 +43,29 @@
                 <div class="col-12 col-sm-6 col-lg-9">
                     <div class="card chat-box card-success" data-inbox="" id="mychatbox" style="height: 70vh;">
                         <div class="card-header">
-                            <h4 id="chat_header"><i class="fas fa-circle text-success mr-2" title="Online"
-                                    data-toggle="tooltip"></i> Chat
-                                with Ryan</h4>
+                            <h4 id="chat_header">
+                                @isset($senderDetails->name)
+                                    {{-- <i class="fas fa-circle text-success mr-2" title="Online" data-toggle="tooltip"></i> --}}
+                                    Chat with {{ Str::ucfirst(@$senderDetails->name) }}
+                                </h4>
+                            @endisset
                         </div>
                         <div class="card-body chat-content" tabindex="2" style="overflow: hidden; outline: none;">
 
+                            @isset($messages)
+                                @foreach ($messages as $message)
+                                    <div class="chat-item {{ $message->sender_id == auth()->user()->id ? 'chat-right' : 'chat-left' }}"
+                                        style="">
+                                        <img style="width:40px; height:40px; object-fit:cover;"
+                                            src="{{ asset($message->sender->avatar) }}" alt="person"
+                                            class="img-fluid rounded-circle">
+                                        <div class="chat-details">
+                                            <div class="chat-text">{{ $message->message }}</div>
+                                            {{-- <div class="chat-time">{{ $message->created_at->diffForHumans() }}</div> --}}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endisset
                         </div>
                         <div class="card-footer chat-form">
                             <form id="chat-form2">
@@ -78,13 +96,15 @@
                 let chatContent = $('.chat-content');
                 chatContent.scrollTop(chatContent.prop("scrollHeight"));
             }
+            scrollToBottom();
 
             //? Load chat messages when a user is clicked
             $('.fp_chat_user').on('click', function(e) {
                 e.preventDefault();
                 let senderId = $(this).data('user');
                 let senderName = $(this).data('name');
-                let clickedElement = $(this);
+                console.log(senderName);
+                let clickedElement = $(this)
 
                 //? Set the chat box index and receiver ID
                 $('#mychatbox').attr('data-inbox', senderId);
@@ -98,7 +118,15 @@
                         senderId),
                     method: "GET",
                     beforeSend: function() {
-                        $('#chat_header').text(`Chat with ${senderName}`);
+                        history.pushState(null, '',
+                            "{{ route('admin.chat.conversation', ':senderId') }}".replace(
+                                ":senderId",
+                                senderId
+                            ));
+
+                        $('#chat_header').text(
+                            `Chat with ${senderName.charAt(0).toUpperCase() + senderName.slice(1)}`
+                        );
                         $('.chat-content').empty();
                     },
                     success: function(response) {
@@ -116,8 +144,18 @@
                             </div>
                             `;
 
-                            clickedElement.find('.got_new_message').remove();
+                            clickedElement.find('.got_new_message').empty();
                             $('.chat-content').append(html);
+
+                            //? remove user notification message 
+                            $('.fp_messages_notification_list').each(function() {
+                                let senderId = $(this).attr('data-user');
+                                //console.log('rrrrrrrrrrrrr', senderId);
+
+                                if (senderId == message.sender_id) {
+                                    $(this).find('.got_new_message').empty();
+                                }
+                            });
                         });
 
                         scrollToBottom();
@@ -135,9 +173,6 @@
                     url: "{{ route('admin.chat.send-message') }}",
                     data: formData,
                     beforeSend: function() {
-
-                    },
-                    success: function(response) {
                         let message = $('.fp_send_message').val();
                         let html = `
                             <div class="chat-item chat-right" style=""><img style="width:40px; height:40px; object-fit:cover; src="${avatar}">
@@ -151,8 +186,19 @@
                         $('.chat-content').append(html);
                         $('.fp_send_message').val('');
 
-                        clickedElement.find('.got_new_message').remove();
                         scrollToBottom();
+
+                        //? remove beep notification
+                        $('.fp_chat_user').each(function() {
+                            let senderId = $(this).data('user');
+
+                            if ($('#mychatbox').attr('data-inbox') == senderId) {
+                                $(this).find('.got_new_message').remove();
+                            }
+                        });
+                    },
+                    success: function(response) {
+
                     },
                     error: function(xhr, status, error) {
                         let errors = xhr.responseJSON.errors;

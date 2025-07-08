@@ -62,8 +62,18 @@
                     <a class="cart_icon"><i class="fas fa-shopping-basket"></i> <span
                             class="cart_count">{{ count(Cart::content()) }}</span></a>
                 </li>
+                @php
+                    $unseenMessages = App\Models\Chat::where('receiver_id', auth()->id())
+                        ->where('seen', false)
+                        ->where('sender_id', '!=', auth()->id())
+                        ->count();
+                @endphp
+
                 <li>
-                    <a class="cart_icon message_icon"><i class="fas fa-comment-alt-dots"></i> <span>7</span></a>
+                    <a class="cart_icon message_icon">
+                        <i class="fas fa-comment-alt-dots"></i>
+                        <span class="unseen-messages-count">{{ $unseenMessages > 0 ? $unseenMessages : 0 }}</span>
+                    </a>
                 </li>
 
                 <li>

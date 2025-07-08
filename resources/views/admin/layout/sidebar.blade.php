@@ -7,70 +7,56 @@
         </ul>
     </form>
     <ul class="navbar-nav navbar-right">
+        @php
+            $messages = \App\Models\Chat::where('receiver_id', auth()->user()->id)
+                ->where('seen', false)
+                ->whereIn('id', function ($query) {
+                    $query
+                        ->selectRaw('MAX(id)')
+                        ->from('chats')
+                        ->where('receiver_id', auth()->user()->id)
+                        ->groupBy('sender_id');
+                })
+                ->with([
+                    'sender' => function ($query) {
+                        $query->select('id', 'name', 'avatar');
+                    },
+                ])
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get();
+        @endphp
         <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
-                class="nav-link nav-link-lg message-toggle beep"><i class="far fa-envelope"></i></a>
+                class="nav-link nav-link-lg fp_message_envelope message-toggle {{ count($messages) > 0 ? 'beep' : '' }}"><i
+                    class="far fa-envelope"></i></a>
+
+
             <div class="dropdown-menu dropdown-list dropdown-menu-right">
                 <div class="dropdown-header">Messages
                     <div class="float-right">
                         <a href="#">Mark All As Read</a>
                     </div>
                 </div>
-                <div class="dropdown-list-content dropdown-list-message">
-                    <a href="#" class="dropdown-item dropdown-item-unread">
-                        <div class="dropdown-item-avatar">
-                            <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle">
-                            <div class="is-online"></div>
-                        </div>
-                        <div class="dropdown-item-desc">
-                            <b>Kusnaedi</b>
-                            <p>Hello, Bro!</p>
-                            <div class="time">10 Hours Ago</div>
-                        </div>
-                    </a>
-                    <a href="#" class="dropdown-item dropdown-item-unread">
-                        <div class="dropdown-item-avatar">
-                            <img alt="image" src="assets/img/avatar/avatar-2.png" class="rounded-circle">
-                        </div>
-                        <div class="dropdown-item-desc">
-                            <b>Dedik Sugiharto</b>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                            <div class="time">12 Hours Ago</div>
-                        </div>
-                    </a>
-                    <a href="#" class="dropdown-item dropdown-item-unread">
-                        <div class="dropdown-item-avatar">
-                            <img alt="image" src="assets/img/avatar/avatar-3.png" class="rounded-circle">
-                            <div class="is-online"></div>
-                        </div>
-                        <div class="dropdown-item-desc">
-                            <b>Agung Ardiansyah</b>
-                            <p>Sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            <div class="time">12 Hours Ago</div>
-                        </div>
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <div class="dropdown-item-avatar">
-                            <img alt="image" src="assets/img/avatar/avatar-4.png" class="rounded-circle">
-                        </div>
-                        <div class="dropdown-item-desc">
-                            <b>Ardian Rahardiansyah</b>
-                            <p>Duis aute irure dolor in reprehenderit in voluptate velit ess</p>
-                            <div class="time">16 Hours Ago</div>
-                        </div>
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <div class="dropdown-item-avatar">
-                            <img alt="image" src="assets/img/avatar/avatar-5.png" class="rounded-circle">
-                        </div>
-                        <div class="dropdown-item-desc">
-                            <b>Alfa Zulkarnain</b>
-                            <p>Exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
-                            <div class="time">Yesterday</div>
-                        </div>
-                    </a>
+                <div class="dropdown-list-content dropdown-list-message fp_messages_notification_list">
+                    @foreach ($messages as $message)
+                        <a data-user="{{ $message->sender_id }}"
+                            href="{{ route('admin.chat.conversation', $message->sender_id) }}"
+                            class="dropdown-item dropdown-item-unread got_new_message">
+                            <div class="dropdown-item-avatar">
+                                <img style="width: 50px; height:50px; object-fit:cover;" alt="image"
+                                    src="{{ asset($message->sender->avatar) }}" class="rounded-circle">
+                                {{-- <div class="is-online"></div> --}}
+                            </div>
+                            <div class="dropdown-item-desc">
+                                <b>{{ Str::ucfirst($message->sender->name) }}</b>
+                                <p>{{ $message->message }}</p>
+                                <div class="time">{{ $message->created_at->diffForHumans() }}</div>
+                            </div>
+                        </a>
+                    @endforeach
                 </div>
                 <div class="dropdown-footer text-center">
-                    <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+                    <a href="{{ route('admin.chat.index') }}">View All <i class="fas fa-chevron-right"></i></a>
                 </div>
             </div>
         </li>
@@ -109,7 +95,8 @@
         </li>
         <li class="dropdown"><a href="#" data-toggle="dropdown"
                 class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                <img alt="image" src="{{ asset(auth()->user()->avatar) }}" class="rounded-circle mr-1">
+                <img style="width: 30px; height:30px; object-fit:cover;" alt="image"
+                    src="{{ asset(auth()->user()->avatar) }}" class="rounded-circle mr-1">
                 <div class="d-sm-none d-lg-inline-block">Hi, {{ auth()->user()->name }}</div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">

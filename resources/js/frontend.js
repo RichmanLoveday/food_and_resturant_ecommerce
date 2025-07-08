@@ -21,4 +21,5 @@ window.Echo.private(`chat.${loggedInUserId}`)
         $('.fp__chat_body').append(html);
 
         scrollToBottom(); //? scroll to bottom after appending the message
+        $('.unseen-messages-count').text(1);
     });
