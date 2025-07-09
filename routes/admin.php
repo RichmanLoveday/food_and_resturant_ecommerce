@@ -117,6 +117,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::get('/get-conversation/{senderId}', 'getConversation')->name('chat.get-conversation');
             Route::post('/chat/send-message', 'sendMessage')->name('chat.send-message');
             Route::get('/chat/conversation/{senderId}', 'getUserConversations')->name('chat.conversation');
+            Route::put('/chat/mart-as-read', 'markAllAsRead')->name('chat.mark-as-read');
         });
     });
 });

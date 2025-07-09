@@ -18,7 +18,7 @@
                             <h4>Who's Online?</h4>
                         </div>
                         <div class="card-body" style="overflow-y:scroll;">
-                            <ul class="list-unstyled list-unstyled-border">
+                            <ul class="list-unstyled list-unstyled-border fp_chat_user_list">
                                 @foreach ($senders as $sender)
                                     <li class="media fp_chat_user" data-name="{{ $sender->sender->name }}"
                                         data-user="{{ $sender->sender->id }}" style="cursor: pointer">
@@ -70,9 +70,11 @@
                         <div class="card-footer chat-form">
                             <form id="chat-form2">
                                 @csrf
+                                <input type="hidden" name="msg_temp_id" class="msg_temp_id" value="">
                                 <input type="text" class="form-control fp_send_message" name="message"
                                     placeholder="Type a message">
-                                <input type="hidden" id="receiver_id" name="receiver_id" value="">
+                                <input type="hidden" id="receiver_id" name="receiver_id"
+                                    value="{{ $senderDetails->id ?? '' }}">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="far fa-paper-plane"></i>
                                 </button>
@@ -89,8 +91,8 @@
     <script>
         $(document).ready(function() {
             var userId = "{{ auth()->user()->id }}";
-            var avatar = "{{ asset(auth()->user()->avatar) }}";
-            $('#receiver_id').val('');
+            var avatar = "{{ auth()->user()->avatar }}";
+            // $('#receiver_id').val('');
 
             function scrollToBottom() {
                 let chatContent = $('.chat-content');
@@ -99,12 +101,12 @@
             scrollToBottom();
 
             //? Load chat messages when a user is clicked
-            $('.fp_chat_user').on('click', function(e) {
+            $(document).on('click', '.fp_chat_user', function(e) {
                 e.preventDefault();
                 let senderId = $(this).data('user');
                 let senderName = $(this).data('name');
                 console.log(senderName);
-                let clickedElement = $(this)
+                let clickedElement = $(this);
 
                 //? Set the chat box index and receiver ID
                 $('#mychatbox').attr('data-inbox', senderId);
@@ -148,14 +150,18 @@
                             $('.chat-content').append(html);
 
                             //? remove user notification message 
-                            $('.fp_messages_notification_list').each(function() {
-                                let senderId = $(this).attr('data-user');
-                                //console.log('rrrrrrrrrrrrr', senderId);
+                            $('.fp_user_message_notification').each(function() {
+                                let senderId = $(this).data('user');
 
                                 if (senderId == message.sender_id) {
-                                    $(this).find('.got_new_message').empty();
+                                    $(this).remove();
                                 }
                             });
+
+                            // If no .fp_user_message_notification left, remove beep class from .fp_message_envelope
+                            if ($('.fp_user_message_notification').length === 0) {
+                                $('.fp_message_envelope').removeClass('beep');
+                            }
                         });
 
                         scrollToBottom();
@@ -166,6 +172,10 @@
 
             $("#chat-form2").on('submit', function(e) {
                 e.preventDefault();
+                let msgId = Math.floor(Math.random() * (1 - 1000 + 1)) +
+                    10000; //? Generate a random message ID
+                $('.msg_temp_id').val(msgId);
+
                 let formData = $(this).serialize();
 
                 $.ajax({
@@ -175,10 +185,10 @@
                     beforeSend: function() {
                         let message = $('.fp_send_message').val();
                         let html = `
-                            <div class="chat-item chat-right" style=""><img style="width:40px; height:40px; object-fit:cover; src="${avatar}">
+                         <div class="chat-item chat-right" style=""><img style="width:40px; height:40px; object-fit:cover;" src="{{ asset('') }}${avatar}">
                                 <div class="chat-details">
                                     <div class="chat-text">${message}</div>
-                                    <div class="chat-time">sending...</div>
+                                    <div class="chat-time ${msgId}">sending...</div>
                                 </div>
                             </div>
                             `;
@@ -196,9 +206,28 @@
                                 $(this).find('.got_new_message').remove();
                             }
                         });
+
+
+                        //? remove user notification message 
+                        $('.fp_user_message_notification').each(function() {
+                            let senderId = $(this).data('user');
+
+                            if (senderId == message.sender_id) {
+                                $(this).remove();
+                            }
+                        });
+
+                        // If no .fp_user_message_notification left, remove beep class from .fp_message_envelope
+                        if ($('.fp_user_message_notification').length === 0) {
+                            $('.fp_message_envelope').removeClass('beep');
+                        }
                     },
                     success: function(response) {
-
+                        //? Remove the "sending..." message
+                        console.log(response)
+                        if ($('.msg_temp_id').val() == response.msgId) {
+                            $(`.${response.msgId}`).remove();
+                        }
                     },
                     error: function(xhr, status, error) {
                         let errors = xhr.responseJSON.errors;

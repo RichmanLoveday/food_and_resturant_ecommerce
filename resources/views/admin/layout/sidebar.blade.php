@@ -33,15 +33,20 @@
 
             <div class="dropdown-menu dropdown-list dropdown-menu-right">
                 <div class="dropdown-header">Messages
-                    <div class="float-right">
-                        <a href="#">Mark All As Read</a>
-                    </div>
+                    <form action="{{ route('admin.chat.mark-as-read') }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="d-flex justify-content-end align-items-center">
+                            <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">Mark All
+                                As Read</a>
+                        </div>
+                    </form>
                 </div>
                 <div class="dropdown-list-content dropdown-list-message fp_messages_notification_list">
                     @foreach ($messages as $message)
                         <a data-user="{{ $message->sender_id }}"
                             href="{{ route('admin.chat.conversation', $message->sender_id) }}"
-                            class="dropdown-item dropdown-item-unread got_new_message">
+                            class="dropdown-item dropdown-item-unread got_new_message fp_user_message_notification">
                             <div class="dropdown-item-avatar">
                                 <img style="width: 50px; height:50px; object-fit:cover;" alt="image"
                                     src="{{ asset($message->sender->avatar) }}" class="rounded-circle">

@@ -72,13 +72,12 @@
                                 message.sender
                                 .avatar);
                             let html = `
-                             <div class="fp__chating ${message.sender_id == userId ? "tf_chat_right" : ""}" ">
+                             <div class="fp__chating ${message.sender_id == userId ? "tf_chat_right" : ""}">
                                     <div class="fp__chating_img">
                                         <img style="width:30px; height:30px; object-fit:cover;" src="${avatar}" alt="person" class="img-fluid w-100 rounded-circle">
                                     </div>
                                     <div class="fp__chating_text">
                                         <p>${message.message}</p>
-                                        <small>${new Date(message.created_at).toLocaleString()}</small>
                                     </div>
                                 </div>
                             `;
@@ -95,7 +94,8 @@
 
             $('.chat_input').on('submit', function(e) {
                 e.preventDefault();
-                let msgId = Math.random();
+                let msgId = Math.floor(Math.random() * (1 - 1000 + 1)) +
+                    10000; //? Generate a random message ID
                 $('.msg_temp_id').val(msgId);
 
                 let formData = $(this).serialize();
@@ -112,7 +112,7 @@
                             </div>
                             <div class="fp__chating_text">
                                 <p>${message}</p>
-                                <small class="msg_sending" ${msgId}>sending...</small>
+                                <small class="msg_sending ${msgId}">sending...</small>
                             </div>
                         </div>`;
                         $('.fp__chat_body').append(html);
@@ -121,8 +121,10 @@
                         scrollToBottom();
                     },
                     success: function(response) {
-
-
+                        //? Remove the "sending..." message
+                        if ($('.msg_temp_id').val() == response.msgId) {
+                            $(`.${response.msgId}`).remove();
+                        }
                     },
                     error: function(xhr, status, error) {
                         let errors = xhr.responseJSON.errors;

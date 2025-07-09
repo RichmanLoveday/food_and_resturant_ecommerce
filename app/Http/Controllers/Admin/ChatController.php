@@ -88,6 +88,7 @@ class ChatController extends Controller
     public function sendMessage(Request $request)
     {
         try {
+            // dd($request->all());
             DB::beginTransaction();
 
             $request->validate([
@@ -123,6 +124,7 @@ class ChatController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            logger()->error('Chat message sending failed: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to send message.'], 500);
         }
     }
@@ -179,12 +181,34 @@ class ChatController extends Controller
             return view('admin.chat.index', compact(
                 'messages',
                 'senders',
-                'senderDetails'
+                'senderDetails',
+                'receiverId',
             ));
         } catch (\Exception $e) {
             return redirect()
                 ->back()
                 ->withErrors(['error' => 'Failed to fetch messages.']);
+        }
+    }
+
+
+    public function markAllAsRead(Request $request): RedirectResponse
+    {
+        try {
+            $userId = Auth::user()->id;
+
+            //? update unseen messages to seen for the user
+            Chat::where('receiver_id', $userId)
+                ->where('seen', false)
+                ->update(['seen' => true]);
+
+            toastr()->success('All messages marked as read successfully.');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            logger()->error('Failed to mark messages as read: ' . $e->getMessage());
+
+            toastr()->error('Failed to mark messages as read.');
+            return redirect()->back();
         }
     }
 }

@@ -24,20 +24,55 @@ window.Echo.private(`chat.${loggedInUserId}`)
         }
 
         //? if the senderId matches the current user, show a notification
+        let chatUserExists = false;
         $('.fp_chat_user').each(function () {
             let senderId = $(this).data('user');
 
             if (e.senderId == senderId) {
-                let html = `<i class="beep"></i> New Message`;
-                $(this).find('.got_new_message').html(html);
-                console.log(senderId, e.senderId);
+                chatUserExists = true;
+                $(this).remove();
+
+                $('.fp_chat_user_list').prepend(`
+                <li class="media fp_chat_user" data-name="${ucfirst(e.senderName)}"
+                data-user="${e.senderId}" style="cursor: pointer">
+                <img alt="image" class="mr-3 rounded-circle" width="50" height="50"
+                    src="${baseUrl}/${e.avatar}"
+                    style="object-fit: cover; height:50px; width:50px;">
+                <div class="media-body">
+                    <div class="mt-0 mb-1 font-weight-bold">
+                       ${ucfirst(e.senderName)}</div>
+                    <div class="text-warning text-small font-600-bold got_new_message">
+                        <i class="beep"></i> New Message
+                    </div>
+                </div>
+                </li>
+            `);
             }
         });
+
+        //? If no chat user exists for this sender, prepend a new one
+        if (!chatUserExists) {
+            $('.fp_chat_user_list').prepend(`
+            <li class="media fp_chat_user" data-name="${ucfirst(e.senderName)}"
+                data-user="${e.senderId}" style="cursor: pointer">
+                <img alt="image" class="mr-3 rounded-circle" width="50" height="50"
+                src="${baseUrl}/${e.avatar}"
+                style="object-fit: cover; height:50px; width:50px;">
+                <div class="media-body">
+                <div class="mt-0 mb-1 font-weight-bold">
+                   ${ucfirst(e.senderName)}</div>
+                <div class="text-warning text-small font-600-bold got_new_message">
+                    <i class="beep"></i> New Message
+                </div>
+                </div>
+            </li>
+            `);
+        }
 
         //? if the senderId matches the current user, add beep class to the message envelope
         $('.fp_message_envelope').addClass('beep');
 
-        console.log(baseUrl);
+        // console.log(baseUrl);
         // Format created_at as "1 min ago" or similar
         function timeAgo(dateString) {
             // Ensure the date string is in ISO 8601 format for reliable parsing
@@ -70,19 +105,46 @@ window.Echo.private(`chat.${loggedInUserId}`)
             return str.charAt(0).toUpperCase() + str.slice(1);
         }
 
-        $('.fp_messages_notification_list').prepend(`
+        //? check if message nottication of user id already exists, if exists remove and append a new one
+
+        let notificationExists = false;
+        $('.fp_user_message_notification').each(function () {
+            let senderId = $(this).data('user');
+            if (e.senderId == senderId) {
+                notificationExists = true;
+                $(this).remove();
+
+                //? prepend the new message notification
+                $('.fp_messages_notification_list').prepend(`
+                    <a data-user="${e.senderId}" href="${baseUrl}/admin/chat/conversation/${e.senderId}"
+                    class="dropdown-item dropdown-item-unread got_new_message fp_user_message_notification">
+                        <div class="dropdown-item-avatar">
+                            <img style="width: 50px; height:50px; object-fit:cover;" alt="image"
+                            src="${baseUrl}/${e.avatar}" class="rounded-circle">
+                        </div>
+                        <div class="dropdown-item-desc">
+                            <b>${ucfirst(e.senderName)}</b>
+                            <p>${e.message}</p>
+                        </div>
+                    </a>
+                `);
+            }
+        });
+
+        //? If no notification exists for this user, prepend a new one
+        if (!notificationExists) {
+            $('.fp_messages_notification_list').prepend(`
             <a data-user="${e.senderId}" href="${baseUrl}/admin/chat/conversation/${e.senderId}"
-            class="dropdown-item dropdown-item-unread got_new_message">
+            class="dropdown-item dropdown-item-unread got_new_message fp_user_message_notification">
                 <div class="dropdown-item-avatar">
-                    <img style="width: 50px; height:50px; object-fit:cover;" alt="image"
-                    src="${baseUrl}/${e.avatar}" class="rounded-circle">
-                    </div>
-                    <div class="dropdown-item-desc">
-                    <b>${ucfirst(e.senderName)}</b>
-                    <p>${e.message}</p>
-                    <div class="time">${timeAgo(e.created_at)}</div>
+                <img style="width: 50px; height:50px; object-fit:cover;" alt="image"
+                src="${baseUrl}/${e.avatar}" class="rounded-circle">
+                </div>
+                <div class="dropdown-item-desc">
+                <b>${ucfirst(e.senderName)}</b>
+                <p>${e.message}</p>
                 </div>
             </a>
-        `);
-
+            `);
+        }
     });

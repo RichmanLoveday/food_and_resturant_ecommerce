@@ -42,7 +42,10 @@ class ChatController extends Controller
         ))
             ->toOthers();
 
-        return response()->json(['status' => 'success']);
+        return response()->json([
+            'status' => 'success',
+            'msgId' => $request->msg_temp_id
+        ], 200);
     }
 
 
