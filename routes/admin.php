@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\DailyOfferController;
 use App\Http\Controllers\Admin\DeliveryAreaController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
@@ -119,5 +120,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::get('/chat/conversation/{senderId}', 'getUserConversations')->name('chat.conversation');
             Route::put('/chat/mart-as-read', 'markAllAsRead')->name('chat.mark-as-read');
         });
+
+        /** Daily Offer Routes */
+        Route::get('/daily-offer/search-product', [DailyOfferController::class, 'productSearch'])->name('daily-offer.search-product');
+        Route::resource('/daily-offer', DailyOfferController::class);
     });
 });

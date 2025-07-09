@@ -154,6 +154,9 @@
             <li><a href="{{ route('admin.why-choose-us.index') }}" class="nav-link"><i class="far fa-square"></i>
                     <span>Why choose us</span></a></li>
 
+            <li><a href="{{ route('admin.daily-offer.index') }}" class="nav-link"><i class="far fa-square"></i>
+                    <span>Daily Offer</span></a></li>
+
             <li class="dropdown">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
                         class="fas fa-columns"></i>
