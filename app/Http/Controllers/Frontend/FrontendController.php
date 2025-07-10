@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppDownloadSection;
 use App\Models\BannerSlider;
 use App\Models\Category;
+use App\Models\Chefs;
 use App\Models\Coupon;
 use App\Models\DailyOffer;
 use App\Models\Product;
@@ -17,7 +19,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-
 
 class FrontendController extends Controller
 {
@@ -47,6 +48,11 @@ class FrontendController extends Controller
             ->take(10)
             ->get();
 
+        $chefs = Chefs::where(['show_at_home' => true, 'status' => true])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $appSection = AppDownloadSection::first();
 
         //? get menu items
         $menuItems = $this->menuItems($categories);
@@ -61,6 +67,8 @@ class FrontendController extends Controller
             'menuItems',
             'dailyOffers',
             'bannerSlider',
+            'chefs',
+            'appSection',
         ));
     }
 
@@ -104,10 +112,25 @@ class FrontendController extends Controller
             'why_choose_us_sub_title',
             'daily_offer_top_title',
             'daily_offer_main_title',
-            'daily_offer_sub_title'
+            'daily_offer_sub_title',
+            'chefs_top_title',
+            'chefs_main_title',
+            'chefs_sub_title',
         ];
     }
 
+
+    public function chef(): View
+    {
+        $breadCrumb = ['title' => 'meet our expert chefs', 'link' => '#'];
+        $chefs = Chefs::where(['status' => true])
+            ->paginate(8);
+
+        return view('frontend.pages.chefs', compact(
+            'breadCrumb',
+            'chefs'
+        ));
+    }
 
     /**
      * Retrieve menu items grouped by category slug.

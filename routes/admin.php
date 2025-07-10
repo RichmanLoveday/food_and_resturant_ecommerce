@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AppDownloadSectionController;
 use App\Http\Controllers\Admin\BannerSliderController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ChatController;
+use App\Http\Controllers\Admin\ChefController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DailyOfferController;
 use App\Http\Controllers\Admin\DeliveryAreaController;
@@ -17,6 +19,7 @@ use App\Http\Controllers\Admin\ProductSizeController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\WhyChooseUsController;
 use Illuminate\Support\Facades\Route;
 
@@ -130,5 +133,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
         /** Banner Slider Routes */
         Route::resource('/banner-slider', BannerSliderController::class);
+
+        /** Chefs Routes */
+        Route::put('/chefs-title-update', [ChefController::class, 'updateTitle'])->name('chefs.title.update');
+        Route::resource('/chef', ChefController::class);
+
+        /** App Download Section Routes */
+        Route::controller(AppDownloadSectionController::class)->group(function () {
+            Route::get('/app-download', 'index')->name('app-download.index');
+            Route::post('/app-download/store', 'store')->name('app-download.store');
+        });
+
+        /** Testimonial Routes */
+        Route::resource('/testimonial', TestimonialController::class);
     });
 });

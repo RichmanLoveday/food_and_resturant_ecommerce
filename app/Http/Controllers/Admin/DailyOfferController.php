@@ -7,18 +7,24 @@ use App\Http\Controllers\Controller;
 use App\Models\DailyOffer;
 use App\Models\Product;
 use App\Models\SectionTitle;
+use App\Traits\SectionTitlesTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DailyOfferController extends Controller
 {
+    use SectionTitlesTrait;
+
     /**
      * Display a listing of the resource.
      */
     public function index(DailyOfferDataTable $datatable): View|JsonResponse
     {
-        return $datatable->render('admin.daily-offer.index');
+        $key = ['daily_offer_top_title', 'daily_offer_main_title', 'daily_offer_sub_title'];
+        $titles = $this->getSectionTitles($key);
+
+        return $datatable->render('admin.daily-offer.index', compact('titles'));
     }
 
 

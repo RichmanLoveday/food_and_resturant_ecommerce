@@ -50,6 +50,62 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string $image
+ * @property string $background
+ * @property string $title
+ * @property string $short_description
+ * @property string|null $play_store_link
+ * @property string|null $app_store_link
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereAppStoreLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereBackground($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection wherePlayStoreLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereShortDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereUpdatedAt($value)
+ */
+	class AppDownloadSection extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $title
+ * @property string $sub_title
+ * @property string $url
+ * @property string $image
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider whereSubTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider whereUrl($value)
+ */
+	class BannerSlider extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property string $name
  * @property string $slug
  * @property string $status
@@ -71,6 +127,68 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
  */
 	class Category extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $sender_id
+ * @property int $receiver_id
+ * @property string $message
+ * @property int $seen
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $receiver
+ * @property-read \App\Models\User|null $sender
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chat newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chat newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chat query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chat whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chat whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chat whereMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chat whereReceiverId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chat whereSeen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chat whereSenderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chat whereUpdatedAt($value)
+ */
+	class Chat extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $image
+ * @property string $name
+ * @property string $title
+ * @property string|null $fb
+ * @property string|null $x
+ * @property string|null $in
+ * @property string|null $web
+ * @property int $show_at_home
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereFb($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereShowAtHome($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereWeb($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereX($value)
+ */
+	class Chefs extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -112,6 +230,28 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int $product_id
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Product $product
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyOffer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyOffer newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyOffer query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyOffer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyOffer whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyOffer whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyOffer whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DailyOffer whereUpdatedAt($value)
+ */
+	class DailyOffer extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property string $area_name
  * @property string $min_delivery_time
  * @property string $max_delivery_time
@@ -144,6 +284,7 @@ namespace App\Models{
  * @property string $invoice_id
  * @property string|null $transaction_id
  * @property int $user_id
+ * @property int $address_id
  * @property string $address
  * @property float $discount
  * @property float $delivery_charge
@@ -158,10 +299,16 @@ namespace App\Models{
  * @property string $order_status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\DeliveryArea|null $deliveryArea
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderItem> $orderItems
+ * @property-read int|null $order_items_count
+ * @property-read \App\Models\User $user
+ * @property-read \App\Models\Address|null $userAddress
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereAddressId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCouponInfo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCurrencyName($value)
@@ -189,7 +336,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property int $order_id
- * @property int $prooduct_id
+ * @property int $product_id
  * @property string $product_name
  * @property float $unit_price
  * @property int $qty
@@ -203,15 +350,38 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereProductName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereProductOption($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereProductSize($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereProoductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereQty($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereUnitPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderItem whereUpdatedAt($value)
  */
 	class OrderItem extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $message
+ * @property string $order_id
+ * @property int $seen
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderPlacedNotification newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderPlacedNotification newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderPlacedNotification query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderPlacedNotification whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderPlacedNotification whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderPlacedNotification whereMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderPlacedNotification whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderPlacedNotification whereSeen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderPlacedNotification whereUpdatedAt($value)
+ */
+	class OrderPlacedNotification extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -444,6 +614,8 @@ namespace App\Models{
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Chat> $chats
+ * @property-read int|null $chats_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])

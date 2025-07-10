@@ -198,6 +198,9 @@
                     <li><a href="{{ route('admin.why-choose-us.index') }}" class="nav-link">Why choose us</a></li>
                     <li><a href="{{ route('admin.daily-offer.index') }}" class="nav-link">Daily Offer</a></li>
                     <li><a href="{{ route('admin.banner-slider.index') }}" class="nav-link">Banner Slidder</a></li>
+                    <li><a href="{{ route('admin.chef.index') }}" class="nav-link">Chefs</a></li>
+                    <li><a href="{{ route('admin.app-download.index') }}" class="nav-link">App Download</a></li>
+                    <li><a href="{{ route('admin.app-download.index') }}" class="nav-link">Testimonial</a></li>
                 </ul>
             </li>
 

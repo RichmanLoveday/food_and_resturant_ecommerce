@@ -27,6 +27,9 @@ Route::controller(FrontendController::class)->group(function () {
 
     /** Remove Coupon Route */
     Route::get('/destroy-coupon', 'destroyCoupon')->name('destroy-coupon');
+
+    /**  */
+    Route::get('/chef', 'chef')->name('chef');
 });
 
 
