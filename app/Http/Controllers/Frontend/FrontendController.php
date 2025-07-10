@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\BannerSlider;
 use App\Models\Category;
 use App\Models\Coupon;
+use App\Models\DailyOffer;
 use App\Models\Product;
 use App\Models\SectionTitle;
 use App\Models\Slider;
@@ -35,6 +37,17 @@ class FrontendController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
+        $dailyOffers = DailyOffer::with('product')
+            ->where('status', true)
+            ->take(10)
+            ->get();
+
+        $bannerSlider = BannerSlider::where('status', true)
+            ->latest()
+            ->take(10)
+            ->get();
+
+
         //? get menu items
         $menuItems = $this->menuItems($categories);
         // dd($menuItems);
@@ -46,7 +59,8 @@ class FrontendController extends Controller
             'whyChooseUs',
             'categories',
             'menuItems',
-
+            'dailyOffers',
+            'bannerSlider',
         ));
     }
 
@@ -87,7 +101,10 @@ class FrontendController extends Controller
         return [
             'why_choose_us_top_title',
             'why_choose_us_main_title',
-            'why_choose_us_sub_title'
+            'why_choose_us_sub_title',
+            'daily_offer_top_title',
+            'daily_offer_main_title',
+            'daily_offer_sub_title'
         ];
     }
 
