@@ -22,7 +22,18 @@ class TestimonialDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'testimonial.action')
+            ->addColumn('action', function ($query) {
+                $edit = "<a href='" . route('admin.testimonial.edit', $query->id) . "' class='btn btn-primary mx-1'><i class='fas fa-edit'></i></a>";
+                $delete = "<a href='" . route('admin.testimonial.destroy', $query->id) . "' class='btn btn-danger mx-1 delete-item'><i class='fas fa-trash'></i></a>";
+
+                return $edit . ' ' . $delete;
+            })->addColumn('image', function ($query) {
+                return "<img src='" . asset($query->image) . "' class='img-fluid rounded-circle' style='width: 60px; height: 60px;'>";
+            })->addColumn('status', function ($query) {
+                return $query->status ? "<span class='badge badge-primary'>Active</span>" : "<span class='badge badge-danger'>Inactive</span>";
+            })->addColumn('show_at_home', function ($query) {
+                return $query->show_at_home ? "<span class='badge badge-primary'>Yes</span>" : "<span class='badge badge-danger'>No</span>";
+            })->rawColumns(['image', 'action', 'status', 'show_at_home'])
             ->setRowId('id');
     }
 
@@ -40,20 +51,20 @@ class TestimonialDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('testimonial-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('testimonial-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            //->dom('Bfrtip')
+            ->orderBy(1)
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            ]);
     }
 
     /**
@@ -62,15 +73,19 @@ class TestimonialDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
+
             Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+            Column::make('image'),
+            Column::make('name'),
+            Column::make('rating'),
+            Column::make('review'),
+            Column::make('show_at_home'),
+            Column::make('status'),
+            Column::computed('action')
+                ->exportable(false)
+                ->printable(false)
+                ->width(180)
+                ->addClass('text-center'),
         ];
     }
 

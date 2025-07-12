@@ -16,114 +16,33 @@
         </div>
 
         <div class="row testi_slider">
-            <div class="col-xl-4 wow fadeInUp" data-wow-duration="1s">
-                <div class="fp__single_testimonial">
-                    <div class="fp__testimonial_header d-flex flex-wrap align-items-center">
-                        <div class="img">
-                            <img src="{{ asset('frontend/images/comment_img_1.png') }}" alt="clients"
-                                class="img-fluid w-100">
+            @foreach ($testimonials as $testimonial)
+                <div class="col-xl-4 wow fadeInUp" data-wow-duration="1s">
+                    <div class="fp__single_testimonial">
+                        <div class="fp__testimonial_header d-flex flex-wrap align-items-center">
+                            <div class="img">
+                                <img src="{{ asset($testimonial->image) }}" alt="clients" class="img-fluid w-100">
+                            </div>
+                            <div class="text">
+                                <h4>{{ $testimonial->name }}</h4>
+                                <p>{{ $testimonial->title }}</p>
+                            </div>
                         </div>
-                        <div class="text">
-                            <h4>isita islam</h4>
-                            <p>nyc usa</p>
+                        <div class="fp__single_testimonial_body">
+                            <p class="feedback">{{ $testimonial->review }}</p>
+                            <span class="rating">
+                                @for ($i = 1; $i <= $testimonial->rating; $i++)
+                                    <i class="fas fa-star"></i>
+                                @endfor
+                                {{-- <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <i class="far fa-star"></i> --}}
+                            </span>
                         </div>
-                    </div>
-                    <div class="fp__single_testimonial_body">
-                        <p class="feedback">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut
-                            accusamus
-                            praesentium quaerat
-                            nihil magnam a porro eaque numquam</p>
-                        <span class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <i class="far fa-star"></i>
-                        </span>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-4 wow fadeInUp" data-wow-duration="1s">
-                <div class="fp__single_testimonial">
-                    <div class="fp__testimonial_header d-flex flex-wrap align-items-center">
-                        <div class="img">
-                            <img src="{{ asset('frontend/images/comment_img_2.png') }}" alt="clients"
-                                class="img-fluid w-100">
-                        </div>
-                        <div class="text">
-                            <h4>sumon mahmud</h4>
-                            <p>nyc usa</p>
-                        </div>
-                    </div>
-                    <div class="fp__single_testimonial_body">
-                        <p class="feedback">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut
-                            accusamus
-                            praesentium quaerat
-                            nihil magnam a porro eaque numquam</p>
-                        <span class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <i class="far fa-star"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-4 wow fadeInUp" data-wow-duration="1s">
-                <div class="fp__single_testimonial">
-                    <div class="fp__testimonial_header d-flex flex-wrap align-items-center">
-                        <div class="img">
-                            <img src="{{ asset('frontend/images/client_img_1.jpg') }}" alt="clients"
-                                class="img-fluid w-100">
-                        </div>
-                        <div class="text">
-                            <h4>israt jahan</h4>
-                            <p>nyc usa</p>
-                        </div>
-                    </div>
-                    <div class="fp__single_testimonial_body">
-                        <p class="feedback">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut
-                            accusamus
-                            praesentium quaerat
-                            nihil magnam a porro eaque numquam</p>
-                        <span class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <i class="far fa-star"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-4 wow fadeInUp" data-wow-duration="1s">
-                <div class="fp__single_testimonial">
-                    <div class="fp__testimonial_header d-flex flex-wrap align-items-center">
-                        <div class="img">
-                            <img src="{{ asset('frontend/images/client_img_3.jpg') }}" alt="clients"
-                                class="img-fluid w-100">
-                        </div>
-                        <div class="text">
-                            <h4>payel sarkar</h4>
-                            <p>nyc usa</p>
-                        </div>
-                    </div>
-                    <div class="fp__single_testimonial_body">
-                        <p class="feedback">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut
-                            accusamus
-                            praesentium quaerat
-                            nihil magnam a porro eaque numquam</p>
-                        <span class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <i class="far fa-star"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>

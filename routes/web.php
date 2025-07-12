@@ -28,8 +28,11 @@ Route::controller(FrontendController::class)->group(function () {
     /** Remove Coupon Route */
     Route::get('/destroy-coupon', 'destroyCoupon')->name('destroy-coupon');
 
-    /**  */
+    /** Chef page */
     Route::get('/chef', 'chef')->name('chef');
+
+    /** Testimonial page */
+    Route::get('/testimonials', 'testimonial')->name('testimonial');
 });
 
 

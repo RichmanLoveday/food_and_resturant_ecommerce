@@ -12,6 +12,7 @@ use App\Models\DailyOffer;
 use App\Models\Product;
 use App\Models\SectionTitle;
 use App\Models\Slider;
+use App\Models\Testimonial;
 use App\Models\WhyChooseUs;
 use App\Traits\SectionTitlesTrait;
 use Illuminate\Contracts\View\View;
@@ -52,6 +53,10 @@ class FrontendController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
+        $testimonials = Testimonial::where(['show_at_home' => true, 'status' => true])
+            ->orderBy('id', 'desc')
+            ->get();
+
         $appSection = AppDownloadSection::first();
 
         //? get menu items
@@ -69,6 +74,7 @@ class FrontendController extends Controller
             'bannerSlider',
             'chefs',
             'appSection',
+            'testimonials',
         ));
     }
 
@@ -99,6 +105,16 @@ class FrontendController extends Controller
     }
 
 
+    public function testimonial(): View
+    {
+        $testimonials = Testimonial::where(['status' => 1])->paginate(1);
+        $breadCrumb = ['title' => 'our customers feedbacks', 'link' => '#'];
+
+
+        return view('frontend.pages.testimonial', compact('testimonials', 'breadCrumb'));
+    }
+
+
     /**
      * Retrieve the keys for the "Why Choose Us" section.
      *
@@ -116,6 +132,9 @@ class FrontendController extends Controller
             'chefs_top_title',
             'chefs_main_title',
             'chefs_sub_title',
+            'testimonial_top_title',
+            'testimonial_main_title',
+            'testimonial_sub_title',
         ];
     }
 
@@ -131,6 +150,7 @@ class FrontendController extends Controller
             'chefs'
         ));
     }
+
 
     /**
      * Retrieve menu items grouped by category slug.

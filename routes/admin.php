@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\BannerSliderController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ChefController;
+use App\Http\Controllers\Admin\CounterController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DailyOfferController;
 use App\Http\Controllers\Admin\DeliveryAreaController;
@@ -145,6 +146,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         });
 
         /** Testimonial Routes */
+        Route::put('/testimonial-title-update', [TestimonialController::class, 'updateTitle'])->name('testimonial.title.update');
         Route::resource('/testimonial', TestimonialController::class);
+
+        /** Counter Section Routes */
+        Route::controller(CounterController::class)->group(function () {
+            Route::get('/counter', 'index')->name('counter.index');
+            Route::put('/counter/update', 'update')->name('counter.update');
+        });
     });
 });

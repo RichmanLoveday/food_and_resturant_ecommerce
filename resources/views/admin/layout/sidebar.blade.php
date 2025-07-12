@@ -200,7 +200,8 @@
                     <li><a href="{{ route('admin.banner-slider.index') }}" class="nav-link">Banner Slidder</a></li>
                     <li><a href="{{ route('admin.chef.index') }}" class="nav-link">Chefs</a></li>
                     <li><a href="{{ route('admin.app-download.index') }}" class="nav-link">App Download</a></li>
-                    <li><a href="{{ route('admin.app-download.index') }}" class="nav-link">Testimonial</a></li>
+                    <li><a href="{{ route('admin.testimonial.index') }}" class="nav-link">Testimonial</a></li>
+                    <li><a href="{{ route('admin.counter.index') }}" class="nav-link">Counter</a></li>
                 </ul>
             </li>
 
