@@ -205,6 +205,18 @@
                 </ul>
             </li>
 
+            <li class="dropdown">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
+                        class="fas fa-columns"></i>
+                    <span>Blogs</span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="nav-link" href="{{ route('admin.blog-category.index') }}">Categories</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.blogs.index') }}">Blog</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.payment-setting.index') }}">Comment</a>
+                    </li>
+                </ul>
+            </li>
+
             <li><a href="{{ route('admin.settings.index') }}" class="nav-link"><i class="far fa-square"></i>
                     <span>Settings</span></a></li>
 
