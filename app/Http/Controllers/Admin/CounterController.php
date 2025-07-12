@@ -13,17 +13,23 @@ class CounterController extends Controller
     use FileUploadTrait;
     public function index()
     {
-        return view('admin.counter.index');
+        $counter = Counter::first();
+        return view('admin.counter.index', compact('counter'));
     }
 
     public function update(CounterUpdateRequest $request)
     {
-        $imagePath = $this->uploadImage($request, 'background', '/uploads/counter');
+        $imagePath = $this->uploadImage(
+            $request,
+            'background',
+            '/uploads/counter',
+            $request->old_background
+        );
 
         Counter::updateOrCreate(
             ['id' => 1],
             [
-                'background' => !empty($imagePath) ? $imagePath : '',
+                'background' => !empty($imagePath) ? $imagePath : $request->old_background,
                 'counter_icon_one' => $request->counter_icon_one,
                 'counter_count_one' => $request->counter_count_one,
                 'counter_name_one' => $request->counter_name_one,

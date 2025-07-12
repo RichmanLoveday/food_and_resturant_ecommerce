@@ -7,6 +7,7 @@ use App\Models\AppDownloadSection;
 use App\Models\BannerSlider;
 use App\Models\Category;
 use App\Models\Chefs;
+use App\Models\Counter;
 use App\Models\Coupon;
 use App\Models\DailyOffer;
 use App\Models\Product;
@@ -57,6 +58,8 @@ class FrontendController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
+        $counter = Counter::first();
+
         $appSection = AppDownloadSection::first();
 
         //? get menu items
@@ -75,6 +78,7 @@ class FrontendController extends Controller
             'chefs',
             'appSection',
             'testimonials',
+            'counter'
         ));
     }
 
