@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\AppDownloadSection;
 use App\Models\BannerSlider;
+use App\Models\Blog;
+use App\Models\BlogCategory;
 use App\Models\Category;
 use App\Models\Chefs;
 use App\Models\Counter;
@@ -155,6 +157,46 @@ class FrontendController extends Controller
         ));
     }
 
+
+    public function blog(): View
+    {
+        $breadCrumb = ['title' => 'our latest food blogs', 'link' => '#'];
+        $blogs = Blog::with(['category', 'user'])->where(['status' => true])
+            ->latest()
+            ->paginate(1);
+
+        return view('frontend.pages.blogs', compact('blogs', 'breadCrumb'));
+    }
+
+
+    public function blogDetails(Request $request, string $slug): View
+    {
+        $breadCrumb = ['title' => 'blog details', 'link' => '#'];
+        $categories = BlogCategory::withCount(['blogs' => function ($query) {
+            $query->where('status', true);
+        }])
+            ->where('status', true)
+            ->get();
+
+        // dd($categories->toArray());
+
+        $blog = Blog::with(['user', 'category'])
+            ->where(['slug' => $slug, 'status' => true])
+            ->firstOrFail();
+
+        $latestBlogs = Blog::select('id', 'title', 'slug', 'image', 'created_at')
+            ->where('status', true)
+            ->where('id', '!=', $blog->id)
+            ->take(5)
+            ->get();
+
+        return view('frontend.pages.blog-details', compact(
+            'blog',
+            'latestBlogs',
+            'categories',
+            'breadCrumb'
+        ));
+    }
 
     /**
      * Retrieve menu items grouped by category slug.

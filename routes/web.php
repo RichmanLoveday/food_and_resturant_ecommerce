@@ -33,6 +33,10 @@ Route::controller(FrontendController::class)->group(function () {
 
     /** Testimonial page */
     Route::get('/testimonials', 'testimonial')->name('testimonial');
+
+    /**Blogs page */
+    Route::get('/blogs', 'blog')->name('blogs');
+    Route::get('/blogs/{slug}', 'blogDetails')->name('blog-details');
 });
 
 

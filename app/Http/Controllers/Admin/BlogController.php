@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\DataTables\BlogDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BlogCreateRequet;
+use App\Http\Requests\Admin\BlogUpdateRequest;
 use App\Models\Blog;
 use App\Models\BlogCategory;
 use App\Traits\FileUploadTrait;
@@ -75,22 +76,59 @@ class BlogController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $blog = Blog::findOrFail($id);
+        $blogCategories = BlogCategory::all();
+        return view('admin.blog.edit', compact('blog', 'blogCategories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BlogUpdateRequest $request, string $id)
     {
-        //
+        $imagePath = $this->uploadImage(
+            $request,
+            'image',
+            '/uploads/blogs',
+            $request->old_image,
+        );
+
+        $blog = Blog::findOrFail($id);
+        $blog->user_id = Auth::user()->id;
+        $blog->title = $request->title;
+        $blog->image = !empty($imagePath) ? $imagePath : $request->old_image;
+        $blog->slug = Str::slug($request->title);
+        $blog->category_id = $request->category;
+        $blog->description = $request->description;
+        $blog->seo_title = $request->seo_title;
+        $blog->seo_description = $request->seo_description;
+        $blog->status = $request->status;
+        $blog->save();
+
+        toastr()->success('Updated Successfully');
+
+        return redirect()->route('admin.blogs.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
-        //
+        try {
+            $slider = Blog::findOrFail($id);
+            $slider->delete();
+            $this->removeImage($slider->image);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Deleted successfully!',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }

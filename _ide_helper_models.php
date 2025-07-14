@@ -55,13 +55,13 @@ namespace App\Models{
  * @property string $title
  * @property string $short_description
  * @property string|null $play_store_link
- * @property string|null $app_store_link
+ * @property string|null $apple_store_link
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereAppStoreLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereAppleStoreLink($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereBackground($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AppDownloadSection whereId($value)
@@ -99,6 +99,65 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BannerSlider whereUrl($value)
  */
 	class BannerSlider extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $category_id
+ * @property string $image
+ * @property string $title
+ * @property string $slug
+ * @property string $description
+ * @property string|null $seo_title
+ * @property string|null $seo_description
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\BlogCategory $category
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereSeoDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereSeoTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog whereUserId($value)
+ */
+	class Blog extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory whereUpdatedAt($value)
+ */
+	class BlogCategory extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -189,6 +248,49 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Chefs whereX($value)
  */
 	class Chefs extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $background
+ * @property string $counter_icon_one
+ * @property string $counter_count_one
+ * @property string $counter_name_one
+ * @property string $counter_icon_two
+ * @property string $counter_count_two
+ * @property string $counter_name_two
+ * @property string $counter_icon_three
+ * @property string $counter_count_three
+ * @property string $counter_name_three
+ * @property string $counter_icon_four
+ * @property string $counter_count_four
+ * @property string $counter_name_four
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereBackground($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterCountFour($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterCountOne($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterCountThree($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterCountTwo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterIconFour($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterIconOne($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterIconThree($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterIconTwo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterNameFour($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterNameOne($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterNameThree($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCounterNameTwo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Counter whereUpdatedAt($value)
+ */
+	class Counter extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -598,6 +700,37 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Slider whereUpdatedAt($value)
  */
 	class Slider extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $image
+ * @property string $name
+ * @property string $title
+ * @property string $review
+ * @property int $rating
+ * @property int $show_at_home
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial whereRating($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial whereReview($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial whereShowAtHome($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Testimonial whereUpdatedAt($value)
+ */
+	class Testimonial extends \Eloquent {}
 }
 
 namespace App\Models{
