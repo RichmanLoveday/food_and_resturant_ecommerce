@@ -3,19 +3,18 @@
     @include('frontend.common-component.breadcrumb')
     <section class="fp__blog_page fp__blog2 mt_120 xs_mt_65 mb_100 xs_mb_70">
         <div class="container">
-            <form class="fp__search_menu_form mb-4">
+            <form class="fp__search_menu_form mb-4" action="{{ route('blogs') }}" method="get">
                 <div class="row">
                     <div class="col-xl-6 col-md-5">
-                        <input type="text" placeholder="Search...">
+                        <input type="text" value="{{ request('search') }}" placeholder="Search..." name="search">
                     </div>
                     <div class="col-xl-4 col-md-4">
-                        <select class="nice-select">
-                            <option value="">select country</option>
-                            <option value="">bangladesh</option>
-                            <option value="">nepal</option>
-                            <option value="">japan</option>
-                            <option value="">korea</option>
-                            <option value="">thailand</option>
+                        <select class="nice-select" name="category">
+                            <option value="">select category</option>
+                            @foreach ($categories as $category)
+                                <option @selected(request('category') == $category->slug) value="{{ $category->slug }}">{{ $category->name }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="col-xl-2 col-md-3">
@@ -24,7 +23,7 @@
                 </div>
             </form>
             <div class="row">
-                @foreach ($blogs as $blog)
+                @forelse ($blogs as $blog)
                     <div class="col-xl-4 col-sm-6 col-lg-4 wow fadeInUp" data-wow-duration="1s">
                         <div class="fp__single_blog">
                             <a href="#" class="fp__single_blog_img">
@@ -36,14 +35,16 @@
                                     <li><i class="fas fa-user"></i>{{ $blog->user->name }}</li>
                                     <li><i class="fas fa-calendar-alt"></i>
                                         {{ date('d m Y', strtotime($blog->created_at)) }}</li>
-                                    <li><i class="fas fa-comments"></i> 25 comment</li>
+                                    <li><i class="fas fa-comments"></i> {{ $blog->comments_count }} comment</li>
                                 </ul>
                                 <a class="title"
                                     href="{{ route('blog-details', $blog->slug) }}">{!! truncate($blog->title, 20) !!}</a>
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <h5 class="text-center">No Blog Found!</h5>
+                @endforelse
             </div>
 
             {{ $blogs->links('frontend.common-component.pagination') }}

@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTables\BlogCommentDataTable;
 use App\DataTables\BlogDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BlogCreateRequet;
 use App\Http\Requests\Admin\BlogUpdateRequest;
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use App\Models\BlogComment;
 use App\Traits\FileUploadTrait;
 use Auth;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Str;
@@ -119,6 +122,44 @@ class BlogController extends Controller
             $slider = Blog::findOrFail($id);
             $slider->delete();
             $this->removeImage($slider->image);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Deleted successfully!',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+
+    public function blogComment(BlogCommentDataTable $dataTable): View|JsonResponse
+    {
+        return $dataTable->render('admin.blog.comment.index');
+    }
+
+
+    public function commentStatusUpdate(string $id): RedirectResponse
+    {
+        $comment = BlogComment::find($id);
+
+        //? change status of comment to active or inactive
+        $comment->status = !$comment->status;
+        $comment->save();
+
+        toastr()->success('Updated Successfully');
+        return redirect()->back();
+    }
+
+
+    public function commentDestroy(string $id): JsonResponse
+    {
+        try {
+            $comment = BlogComment::findOrFail($id);
+            $comment->delete();
 
             return response()->json([
                 'status' => 'success',

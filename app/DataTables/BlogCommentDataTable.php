@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\Blog;
+use App\Models\BlogComment;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -12,7 +12,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class BlogDataTable extends DataTable
+class BlogCommentDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -23,29 +23,33 @@ class BlogDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($query) {
-                $edit = "<a href='" . route('admin.blogs.edit', $query->id) . "' class='btn btn-primary mx-1'><i class='fas fa-edit'></i></a>";
-                $delete = "<a href='" . route('admin.blogs.destroy', $query->id) . "' class='btn btn-danger mx-1 delete-item'><i class='fas fa-trash'></i></a>";
+                if ($query->status === 1) {
+                    $edit = "<a href='" . route('admin.blogs.comment.update', $query->id) . "' class='btn btn-primary mx-1'><i class='fas fa-eye'></i></a>";
+                } else {
+                    $edit = "<a href='" . route('admin.blogs.comment.update', $query->id) . "' class='btn btn-warning mx-1'><i class='fas fa-eye-slash'></i></a>";
+                }
+
+                $delete = "<a href='" . route('admin.blogs.comment.destroy', $query->id) . "' class='btn btn-danger mx-1 delete-item'><i class='fas fa-trash'></i></a>";
 
                 return $edit . ' ' . $delete;
-            })->addColumn('image', function ($query) {
-                return "<img src='" . asset($query->image) . "' class='img-fluid' style='width: 80px; height: 80px;'>";
-            })->addColumn('category', function ($query) {
-                return $query->category->name;
-            })->addColumn('author', function ($query) {
-                return $query->user->name;
-            })
-            ->addColumn('status', function ($query) {
-                return $query->status ? "<span class='badge badge-primary'>Active</span>" : "<span class='badge badge-danger'>Inactive</span>";
-            })->rawColumns(['image', 'action', 'status', 'category', 'author'])
+            })->addColumn('blog', function ($query) {
+                return truncate($query->blog->title);
+            })->addColumn('user_name', function ($query) {
+                return \Str::ucfirst($query->user->name);
+            })->addColumn('date', function ($query) {
+                return date('d-m-Y | H:i', strtotime($query->created_at));
+            })->addColumn('status', function ($query) {
+                return $query->status ? "<span class='badge badge-primary'>Active</span>" : "<span class='badge badge-warning'>Pending</span>";
+            })->rawColumns(['blog', 'action', 'status', 'date', 'user_name'])
             ->setRowId('id');
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(Blog $model): QueryBuilder
+    public function query(BlogComment $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->with(['blog', 'user']);
     }
 
     /**
@@ -54,11 +58,11 @@ class BlogDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('blog-table')
+            ->setTableId('blogcomment-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             //->dom('Bfrtip')
-            ->orderBy(0)
+            ->orderBy(1)
             ->selectStyleSingle()
             ->buttons([
                 Button::make('excel'),
@@ -77,15 +81,15 @@ class BlogDataTable extends DataTable
     {
         return [
             Column::make('id'),
-            Column::make('image'),
-            Column::make('title'),
-            Column::make('category'),
-            Column::make('author'),
+            Column::make('blog'),
+            Column::make('user_name'),
+            Column::make('comment'),
+            Column::make('date'),
             Column::make('status'),
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
-                ->width(180)
+                ->width(150)
                 ->addClass('text-center'),
         ];
     }
@@ -95,6 +99,6 @@ class BlogDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Blog_' . date('YmdHis');
+        return 'BlogComment_' . date('YmdHis');
     }
 }

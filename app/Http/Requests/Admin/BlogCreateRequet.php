@@ -27,7 +27,7 @@ class BlogCreateRequet extends FormRequest
             'category' => ['required'],
             'description' => ['required'],
             'seo_title' => ['max:255'],
-            'seo_description' => ['max:255'],
+            'seo_description' => ['max:1000'],
             'status' => ['required', 'boolean'],
         ];
     }

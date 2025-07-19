@@ -192,7 +192,7 @@
                     },
                     error: function(xhr, status, error) {
                         let errorMsg = xhr.responseJSON.message;
-                        toastr.success(errorMsg);
+                        toastr.error(errorMsg);
                     },
                     complete: function() {
                         hideLoader();

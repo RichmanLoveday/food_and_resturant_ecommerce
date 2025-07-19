@@ -118,6 +118,9 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\BlogCategory $category
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BlogComment> $comments
+ * @property-read int|null $comments_count
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Blog query()
@@ -147,6 +150,8 @@ namespace App\Models{
  * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Blog> $blogs
+ * @property-read int|null $blogs_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory query()
@@ -158,6 +163,33 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogCategory whereUpdatedAt($value)
  */
 	class BlogCategory extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $blog_id
+ * @property int $user_id
+ * @property string $comment
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Blog $blog
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogComment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogComment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogComment query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogComment whereBlogId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogComment whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogComment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogComment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogComment whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogComment whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|BlogComment whereUserId($value)
+ */
+	class BlogComment extends \Eloquent {}
 }
 
 namespace App\Models{

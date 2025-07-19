@@ -161,6 +161,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::resource('/blog-category', BlogCategoryController::class);
 
         /** Blogs Routes */
+        Route::get('/blogs/comments', [BlogController::class, 'blogComment'])->name('blogs.comments.index');
+        Route::get('/blogs/comments/{id}', [BlogController::class, 'commentStatusUpdate'])->name('blogs.comment.update');
+        Route::delete('/blogs/comments/{id}', [BlogController::class, 'commentDestroy'])->name('blogs.comment.destroy');
         Route::resource('/blogs', BlogController::class);
     });
 });

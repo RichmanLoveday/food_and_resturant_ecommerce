@@ -212,7 +212,7 @@
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="{{ route('admin.blog-category.index') }}">Categories</a></li>
                     <li><a class="nav-link" href="{{ route('admin.blogs.index') }}">Blog</a></li>
-                    <li><a class="nav-link" href="{{ route('admin.payment-setting.index') }}">Comment</a>
+                    <li><a class="nav-link" href="{{ route('admin.blogs.comments.index') }}">Comment</a>
                     </li>
                 </ul>
             </li>

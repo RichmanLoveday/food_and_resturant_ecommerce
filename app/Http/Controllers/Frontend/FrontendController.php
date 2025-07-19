@@ -7,6 +7,7 @@ use App\Models\AppDownloadSection;
 use App\Models\BannerSlider;
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use App\Models\BlogComment;
 use App\Models\Category;
 use App\Models\Chefs;
 use App\Models\Counter;
@@ -18,8 +19,10 @@ use App\Models\Slider;
 use App\Models\Testimonial;
 use App\Models\WhyChooseUs;
 use App\Traits\SectionTitlesTrait;
+use Auth;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -60,6 +63,12 @@ class FrontendController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
+        $latestBlogs = Blog::withCount(['comments' => function ($query) {
+            $query->where('status', true);
+        }])
+            ->with(['category', 'user',])
+            ->where('status', 1)->latest()->take(3)->get();
+
         $counter = Counter::first();
 
         $appSection = AppDownloadSection::first();
@@ -80,7 +89,8 @@ class FrontendController extends Controller
             'chefs',
             'appSection',
             'testimonials',
-            'counter'
+            'counter',
+            'latestBlogs'
         ));
     }
 
@@ -158,14 +168,38 @@ class FrontendController extends Controller
     }
 
 
-    public function blog(): View
+    public function blog(Request $request): View
     {
         $breadCrumb = ['title' => 'our latest food blogs', 'link' => '#'];
-        $blogs = Blog::with(['category', 'user'])->where(['status' => true])
-            ->latest()
-            ->paginate(1);
+        $blogs = Blog::withCount(['comments' => function ($query) {
+            $query->where('status', true);
+        }])->with(['category', 'user'])->where(['status' => true]);
 
-        return view('frontend.pages.blogs', compact('blogs', 'breadCrumb'));
+        //? handle parameter based on search result
+        if ($request->has('search') && $request->filled('search')) {
+            $blogs->where(function ($query) use ($request) {
+                $query->where('title', 'like', "% {$request->search} %")
+                    ->orWhere('description', 'like', "% {$request->search} %");
+            });
+        }
+
+        //? handle parameter based on category
+        if ($request->has('category') && $request->filled('category')) {
+            $blogs->where(function ($query) use ($request) {
+                $query->where('title', 'like', "% {$request->search} %")
+                    ->orWhereHas('category', function ($query) use ($request) {
+                        $query->where('slug', $request->category);
+                    });
+            });
+        }
+
+        //? commplete query
+        $blogs = $blogs->latest()->paginate(1)->withQueryString();
+        // dd($blogs->toArray());
+
+        $categories = BlogCategory::where('status', true)->get();
+
+        return view('frontend.pages.blogs', compact('blogs', 'breadCrumb', 'categories'));
     }
 
 
@@ -184,18 +218,82 @@ class FrontendController extends Controller
             ->where(['slug' => $slug, 'status' => true])
             ->firstOrFail();
 
+        $comments = $blog->comments()->with(['user'])
+            ->where('status', true)
+            ->orderBy('id', 'DESC')
+            ->paginate(1);
+
+        // dd($comments);
+
         $latestBlogs = Blog::select('id', 'title', 'slug', 'image', 'created_at')
             ->where('status', true)
             ->where('id', '!=', $blog->id)
             ->take(5)
             ->get();
 
+        $nextBlog = Blog::select('slug', 'image', 'title')
+            ->where('id', '>', $blog->id)
+            ->where('status', true)
+            ->orderBy('id', 'ASC')
+            ->first();
+
+        $prevBlog = Blog::select('slug', 'image', 'title')
+            ->where('id', '<', $blog->id)
+            ->where('status', true)
+            ->orderBy('id', 'DESC')
+            ->first();
+
+
+
         return view('frontend.pages.blog-details', compact(
             'blog',
             'latestBlogs',
             'categories',
-            'breadCrumb'
+            'breadCrumb',
+            'nextBlog',
+            'prevBlog',
+            'comments',
         ));
+    }
+
+
+    public function loadMoreComments(string|int $blogId): View|JsonResponse
+    {
+        try {
+            // dd($blogId);
+            $comments = BlogComment::with(['user', 'blog'])
+                ->where('status', true)
+                ->orderBy('id', 'DESC')
+                ->paginate(1);
+
+            return view('frontend.layout.ajax-files.comments', compact('comments'));
+        } catch (\Exception $e) {
+            logger('Error loading more comments: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Unable to load comments at this time.',
+            ], 500);
+        }
+    }
+
+
+    public function blogCommentStore(Request $request, string|int $blogId): RedirectResponse
+    {
+        $request->validate([
+            'comment' => ['required', 'max:500'],
+        ]);
+
+        //? check if blog is exist
+        Blog::findOrFail($blogId);
+
+        $comment = new BlogComment();
+        $comment->blog_id = $blogId;
+        $comment->user_id = Auth::user()->id;
+        $comment->comment = $request->comment;
+        $comment->save();
+
+        toastr()->success('Comment submitted successfully and waiting to be approved.');
+
+        return redirect()->back();
     }
 
     /**
