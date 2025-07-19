@@ -1,6 +1,3 @@
-<!--=============================
-                        BREADCRUMB START
-                    ==============================-->
 <section class="fp__breadcrumb" style="background: url({{ asset('frontend/images/counter_bg.jpg') }});">
     <div class="fp__breadcrumb_overlay">
         <div class="container">
@@ -14,6 +11,3 @@
         </div>
     </div>
 </section>
-<!--=============================
-                        BREADCRUMB END
-                    ==============================-->

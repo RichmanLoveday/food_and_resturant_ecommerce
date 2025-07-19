@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\About;
 use App\Models\AppDownloadSection;
 use App\Models\BannerSlider;
 use App\Models\Blog;
@@ -130,6 +131,28 @@ class FrontendController extends Controller
         return view('frontend.pages.testimonial', compact('testimonials', 'breadCrumb'));
     }
 
+
+    public function about()
+    {
+        //? use this keys to search for sections in database
+        $whyChooseUsSectionKeys = [
+            'why_choose_us_top_title',
+            'why_choose_us_main_title',
+            'why_choose_us_sub_title'
+        ];
+
+        $sectionTitles = $this->getSectionTitles($whyChooseUsSectionKeys);
+        $breadCrumb = ['title' => 'about unifood', 'link' => '#'];
+        $about = About::first();
+        $whyChooseUs = WhyChooseUs::where('status', 1)->get();
+
+        return view('frontend.pages.about', compact(
+            'breadCrumb',
+            'sectionTitles',
+            'about',
+            'whyChooseUs'
+        ));
+    }
 
     /**
      * Retrieve the keys for the "Why Choose Us" section.

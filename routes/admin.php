@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AppDownloadSectionController;
@@ -165,5 +166,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/blogs/comments/{id}', [BlogController::class, 'commentStatusUpdate'])->name('blogs.comment.update');
         Route::delete('/blogs/comments/{id}', [BlogController::class, 'commentDestroy'])->name('blogs.comment.destroy');
         Route::resource('/blogs', BlogController::class);
+
+
+        /** About Routes */
+        Route::controller(AboutController::class)->group(function () {
+            Route::get('/about', 'index')->name('about.index');
+            Route::put('/about/update', 'update')->name('about.update');
+        });
     });
 });

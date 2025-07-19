@@ -39,6 +39,9 @@ Route::controller(FrontendController::class)->group(function () {
     Route::get('/blogs/{slug}', 'blogDetails')->name('blog-details');
     Route::post('/blogs/comment/{blogId}', 'blogCommentStore')->name('blogs.comment.store');
     Route::get('/blogs/comment/{blogId}', 'loadMoreComments')->name('blogs.comment.loadmore');
+
+    /** About Routes */
+    Route::get('/about', 'about')->name('about');
 });
 
 
