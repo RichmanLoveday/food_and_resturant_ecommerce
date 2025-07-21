@@ -23,13 +23,17 @@
                                     aria-controls="home" aria-selected="true">Pusher Settings</a>
                             </li>
 
-
+                            <li class="nav-item">
+                                <a class="nav-link" id="home-tab4" data-toggle="tab" href="#mail-setting" role="tab"
+                                    aria-controls="home" aria-selected="true">Mail Settings</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="col-12 col-sm-12 col-md-10">
                         <div class="tab-content no-padding" id="myTab2Content">
                             @include('admin.setting.section.general-setting')
                             @include('admin.setting.section.pusher-setting')
+                            @include('admin.setting.section.mail-setting')
                         </div>
                     </div>
                 </div>

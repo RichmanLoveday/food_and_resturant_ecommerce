@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\MailSettingsService;
 use App\services\SettingsService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -13,6 +14,7 @@ class SettingsController extends Controller
 {
     public function index(): View
     {
+        // dd(config('mail'));
         return view('admin.setting.index');
     }
 
@@ -69,6 +71,40 @@ class SettingsController extends Controller
         //? clear settings cache memory
         $settingsService = app(SettingsService::class);
         $settingsService->clearCacheSettings();
+
+        //? flash success message
+        toastr()->success('Updated Successfully');
+        return redirect()->back();
+    }
+
+
+    public function updateMailSettings(Request $request, MailSettingsService $mailSettingsService)
+    {
+        // dd($request->all());
+        $validatedData = $request->validate([
+            'mail_driver' => 'required',
+            'mail_host' => 'required',
+            'mail_port' => 'required',
+            'mail_username' => 'required',
+            'mail_password' => 'required',
+            'mail_encryption' => 'required',
+            'mail_form_address' => 'required',
+            'mail_receive_address' => 'required',
+        ]);
+
+        //? loop and update validated data for pusher settings
+        foreach ($validatedData as $key => $value) {
+            Setting::updateOrCreate(
+                ['key' => $key],
+                ['value' => $value],
+            );
+        }
+
+
+        //? clear settings cache memory
+        $settingsService = app(SettingsService::class);
+        $settingsService->clearCacheSettings();
+        $mailSettingsService->clearCacheSettings();
 
         //? flash success message
         toastr()->success('Updated Successfully');

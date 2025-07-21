@@ -172,3 +172,29 @@ if (!function_exists('truncate')) {
         return \Str::limit($string, $length, '...');
     }
 }
+
+
+/*** Get youtube thumbnail */
+if (!function_exists('getYtThumbnail')) {
+    function getYtThumbnail(string $link, string $size = 'medium')
+    {
+        //? Extract the video ID from the YouTube link
+        preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $link, $matches);
+        $videoId = $matches[1] ?? null;
+
+        if (!$videoId) {
+            return null;
+        }
+
+        //? Get file size matched based on resolution
+        $finalSize = match ($size) {
+            'low' => 'sddefault',
+            'medium' => 'mqdefault',
+            'high' => 'hqdefault',
+            'max' => 'maxresdefault',
+            default => 'mqdefault',
+        };
+
+        return "https://img.youtube.com/vi/{$videoId}/{$finalSize}.jpg";
+    }
+}

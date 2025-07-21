@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ContactMail;
 use App\Models\About;
 use App\Models\AppDownloadSection;
 use App\Models\BannerSlider;
@@ -11,12 +12,15 @@ use App\Models\BlogCategory;
 use App\Models\BlogComment;
 use App\Models\Category;
 use App\Models\Chefs;
+use App\Models\Contact;
 use App\Models\Counter;
 use App\Models\Coupon;
 use App\Models\DailyOffer;
+use App\Models\PrivacyPolicy;
 use App\Models\Product;
 use App\Models\SectionTitle;
 use App\Models\Slider;
+use App\Models\TermsAndCondition;
 use App\Models\Testimonial;
 use App\Models\WhyChooseUs;
 use App\Traits\SectionTitlesTrait;
@@ -27,6 +31,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Mail;
 
 class FrontendController extends Controller
 {
@@ -127,7 +132,6 @@ class FrontendController extends Controller
         $testimonials = Testimonial::where(['status' => 1])->paginate(1);
         $breadCrumb = ['title' => 'our customers feedbacks', 'link' => '#'];
 
-
         return view('frontend.pages.testimonial', compact('testimonials', 'breadCrumb'));
     }
 
@@ -135,23 +139,86 @@ class FrontendController extends Controller
     public function about()
     {
         //? use this keys to search for sections in database
-        $whyChooseUsSectionKeys = [
+        $aboutUsSectionTitles = [
             'why_choose_us_top_title',
             'why_choose_us_main_title',
-            'why_choose_us_sub_title'
+            'why_choose_us_sub_title',
+            'chefs_top_title',
+            'chefs_main_title',
+            'chefs_sub_title',
+            'testimonial_top_title',
+            'testimonial_main_title',
+            'testimonial_sub_title',
         ];
 
-        $sectionTitles = $this->getSectionTitles($whyChooseUsSectionKeys);
+        $sectionTitles = $this->getSectionTitles($aboutUsSectionTitles);
         $breadCrumb = ['title' => 'about unifood', 'link' => '#'];
         $about = About::first();
         $whyChooseUs = WhyChooseUs::where('status', 1)->get();
+        $chefs = Chefs::where(['show_at_home' => true, 'status' => true])->orderBy('id', 'desc')->get();
+        $testimonials = Testimonial::where(['show_at_home' => true, 'status' => true])
+            ->orderBy('id', 'desc')->get();
+        $counter = Counter::first();
 
         return view('frontend.pages.about', compact(
             'breadCrumb',
             'sectionTitles',
             'about',
-            'whyChooseUs'
+            'whyChooseUs',
+            'chefs',
+            'testimonials',
+            'counter'
         ));
+    }
+
+    public function privacyPolicy(): View
+    {
+        $breadCrumb = ['title' => 'privacy policy', 'link' => '#'];
+        $privacyPolicy = PrivacyPolicy::first();
+
+        return view('frontend.pages.privacy-policy', compact('breadCrumb', 'privacyPolicy'));
+    }
+
+
+    public function termsAndCondition(): View
+    {
+        $breadCrumb = ['title' => 'terms and condition', 'link' => '#'];
+        $termsAndCondition = TermsAndCondition::first();
+
+        return view('frontend.pages.terms-and-condition', compact('breadCrumb', 'termsAndCondition'));
+    }
+
+    public function contact(): View
+    {
+        $breadCrumb = ['title' => 'contact with us', 'link' => '#'];
+        $contact = Contact::first();
+
+        return view(
+            'frontend.pages.contact',
+            compact('breadCrumb', 'contact')
+        );
+    }
+
+    public function sendContactMessage(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'max:50'],
+            'email' => ['required', 'email'],
+            'subject' => ['required', 'max:255'],
+            'message' => ['required', 'max:1000'],
+        ]);
+
+        Mail::send(new ContactMail(
+            $request->name,
+            $request->subject,
+            $request->message,
+            $request->email,
+        ));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Email Sent Successfully!'
+        ]);
     }
 
     /**

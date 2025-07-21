@@ -10,12 +10,14 @@ use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\ChefController;
+use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\CounterController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DailyOfferController;
 use App\Http\Controllers\Admin\DeliveryAreaController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
+use App\Http\Controllers\Admin\PrivacyPolicyController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductGalleryController;
 use App\Http\Controllers\Admin\ProductOptionController;
@@ -23,6 +25,7 @@ use App\Http\Controllers\Admin\ProductSizeController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\TermsAndConditionController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\WhyChooseUsController;
 use Illuminate\Support\Facades\Route;
@@ -95,6 +98,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::get('/setting', 'index')->name('settings.index');
             Route::put('/general-setting', 'UpdateGeneralSetting')->name('general-setting.update');
             Route::put('/pusher-setting', 'UpdatePusherSetting')->name('pusher-setting.update');
+            Route::put('/mail-setting', 'updateMailSettings')->name('mail-setting.update');
         });
 
         /** Payment Gateway Routes */
@@ -172,6 +176,25 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::controller(AboutController::class)->group(function () {
             Route::get('/about', 'index')->name('about.index');
             Route::put('/about/update', 'update')->name('about.update');
+        });
+
+
+        /** Privacy Policy Routes */
+        Route::controller(PrivacyPolicyController::class)->group(function () {
+            Route::get('/privacy-policy', 'index')->name('privacy-policy.index');
+            Route::put('/privacy-policy/update', 'update')->name('privacy-policy.update');
+        });
+
+        /** Privacy Policy Routes */
+        Route::controller(TermsAndConditionController::class)->group(function () {
+            Route::get('/terms-and-condition', 'index')->name('terms-and-condition.index');
+            Route::put('/terms-and-condition/update', 'update')->name('terms-and-condition.update');
+        });
+
+        /** Contacts Routes */
+        Route::controller(ContactController::class)->group(function () {
+            Route::get('/contact', 'index')->name('contact.index');
+            Route::put('/contact/update', 'update')->name('contact.update');
         });
     });
 });

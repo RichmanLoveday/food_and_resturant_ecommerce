@@ -42,6 +42,16 @@ Route::controller(FrontendController::class)->group(function () {
 
     /** About Routes */
     Route::get('/about', 'about')->name('about');
+
+    /**Privacy Policy */
+    Route::get('/privacy-policy', 'privacyPolicy')->name('privacy-policy');
+
+    /**Terms and condition */
+    Route::get('/terms-and-condition', 'termsAndCondition')->name('terms-and-condition');
+
+    /**conatact route */
+    Route::get('/contact', 'contact')->name('contact');
+    Route::post('/contact', 'sendContactMessage')->name('contact.send-message');
 });
 
 
