@@ -52,6 +52,9 @@ Route::controller(FrontendController::class)->group(function () {
     /**conatact route */
     Route::get('/contact', 'contact')->name('contact');
     Route::post('/contact', 'sendContactMessage')->name('contact.send-message');
+
+    /**Reservation Route */
+    Route::post('/reservation/store', 'reservation')->name('reservation.store');
 });
 
 

@@ -18,6 +18,7 @@ use App\Models\Coupon;
 use App\Models\DailyOffer;
 use App\Models\PrivacyPolicy;
 use App\Models\Product;
+use App\Models\Reservation;
 use App\Models\SectionTitle;
 use App\Models\Slider;
 use App\Models\TermsAndCondition;
@@ -218,6 +219,36 @@ class FrontendController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Email Sent Successfully!'
+        ]);
+    }
+
+
+    public function reservation(Request $request)
+    {
+        // dd($request->all());
+
+        $request->validate([
+            'name' => ['required', 'max:255'],
+            'phone' => ['required', 'numeric'],
+            'date' => ['required', 'date'],
+            'time' => ['required'],
+            'persons' => ['required', 'numeric'],
+        ]);
+
+
+        $reservation = new Reservation();
+        $reservation->reservation_id = rand(0, 5000000);
+        $reservation->name = $request->name;
+        $reservation->phone = $request->name;
+        $reservation->date = $request->date;
+        $reservation->time = $request->time;
+        $reservation->persons = $request->persons;
+        $reservation->status = 'pending';
+        $reservation->save();
+
+        return response([
+            'status' => 'success',
+            'message' => 'Request sent successfully'
         ]);
     }
 

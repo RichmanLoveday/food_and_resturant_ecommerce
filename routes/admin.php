@@ -23,6 +23,8 @@ use App\Http\Controllers\Admin\ProductGalleryController;
 use App\Http\Controllers\Admin\ProductOptionController;
 use App\Http\Controllers\Admin\ProductSizeController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ReservationController;
+use App\Http\Controllers\Admin\ReservationTimeController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TermsAndConditionController;
@@ -195,6 +197,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::controller(ContactController::class)->group(function () {
             Route::get('/contact', 'index')->name('contact.index');
             Route::put('/contact/update', 'update')->name('contact.update');
+        });
+
+        /**Reservation Time Route */
+        Route::resource('/reservation-time', ReservationTimeController::class);
+
+        /**Reservation Controller */
+        Route::controller(ReservationController::class)->group(function () {
+            Route::get('/reservation', 'index')->name('reservation.index');
+            Route::post('/reservation', 'update')->name('reservation.update');
+            Route::delete('/reservation', 'destroy')->name('reservation.destroy');
         });
     });
 });
