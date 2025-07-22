@@ -21,6 +21,7 @@ use App\Models\Product;
 use App\Models\Reservation;
 use App\Models\SectionTitle;
 use App\Models\Slider;
+use App\Models\Subscriber;
 use App\Models\TermsAndCondition;
 use App\Models\Testimonial;
 use App\Models\WhyChooseUs;
@@ -32,6 +33,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use Mail;
 
 class FrontendController extends Controller
@@ -100,7 +102,6 @@ class FrontendController extends Controller
             'latestBlogs'
         ));
     }
-
 
 
     public function showProduct(string|int $slug): View
@@ -235,8 +236,13 @@ class FrontendController extends Controller
             'persons' => ['required', 'numeric'],
         ]);
 
+        //? check if user is logged in to access this method
+        if (!Auth::check()) {
+            throw ValidationException::withMessages(['Please Login to Request for Reservation']);
+        }
 
         $reservation = new Reservation();
+        $reservation->user_id = Auth::user()->id;
         $reservation->reservation_id = rand(0, 5000000);
         $reservation->name = $request->name;
         $reservation->phone = $request->name;
@@ -251,6 +257,24 @@ class FrontendController extends Controller
             'message' => 'Request sent successfully'
         ]);
     }
+
+
+    public function subscribeNewsLetter(Request $request): Response|JsonResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'max:255', 'unique:subscribers,email'],
+        ], ['email.unique' => "Email is already subscribed!"]);
+
+        $subscriber = new Subscriber();
+        $subscriber->email = $request->email;
+        $subscriber->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => "Subscribed Successfully!",
+        ]);
+    }
+
 
     /**
      * Retrieve the keys for the "Why Choose Us" section.

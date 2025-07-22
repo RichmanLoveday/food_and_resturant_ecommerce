@@ -55,6 +55,9 @@ Route::controller(FrontendController::class)->group(function () {
 
     /**Reservation Route */
     Route::post('/reservation/store', 'reservation')->name('reservation.store');
+
+    /** News Letter Routes */
+    Route::post('/subscribe-newsletter', 'subscribeNewsLetter')->name('subscribe-newsletter');
 });
 
 

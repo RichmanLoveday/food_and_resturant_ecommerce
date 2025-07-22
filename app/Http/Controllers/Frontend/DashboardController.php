@@ -8,6 +8,7 @@ use App\Http\Requests\Frontend\AddressUpdateRequest;
 use App\Models\Address;
 use App\Models\DeliveryArea;
 use App\Models\Order;
+use App\Models\Reservation;
 use Auth;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -22,13 +23,17 @@ class DashboardController extends Controller
         $orders = Order::with(['user', 'userAddress'])
             ->where('user_id', Auth::user()->id)
             ->get();
+        $reservations = Reservation::where('user_id', Auth::user()->id)
+            ->latest()
+            ->get();
 
         // dd($userAddresses->toArray());
 
         return view('frontend.dashboard.index', compact(
             'deliveryAreas',
             'userAddresses',
-            'orders'
+            'orders',
+            'reservations',
         ));
     }
 

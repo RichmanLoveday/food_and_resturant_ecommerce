@@ -1,8 +1,8 @@
 @extends('frontend.layout.master')
 @section('content')
     <!--=============================
-                                                                                                                                                                                                                                                                                        BREADCRUMB START
-                                                                                                                                                                                                                                                                                    ==============================-->
+                                                                                                                                                                                                                                                                                                        BREADCRUMB START
+                                                                                                                                                                                                                                                                                                    ==============================-->
     <section class="fp__breadcrumb" style="background: url({{ asset('frontend/images/counter_bg.jpg') }});">
         <div class="fp__breadcrumb_overlay">
             <div class="container">
@@ -17,13 +17,13 @@
         </div>
     </section>
     <!--=============================
-                                                                                                                                                                                                                                                                                        BREADCRUMB END
-                                                                                                                                                                                                                                                                                    ==============================-->
+                                                                                                                                                                                                                                                                                                        BREADCRUMB END
+                                                                                                                                                                                                                                                                                                    ==============================-->
 
 
     <!--=========================
-                                                                                                                                                                                                                                                                                        DASHBOARD START
-                                                                                                                                                                                                                                                                                    ==========================-->
+                                                                                                                                                                                                                                                                                                        DASHBOARD START
+                                                                                                                                                                                                                                                                                                    ==========================-->
     <section class="fp__dashboard mt_120 xs_mt_90 mb_100 xs_mb_70">
         <div class="container">
             <div class="fp__dashboard_area">
@@ -52,6 +52,11 @@
                                     data-bs-target="#v-pills-address" type="button" role="tab"
                                     aria-controls="v-pills-address" aria-selected="true"><span><i
                                             class="fas fa-user"></i></span>address</button>
+
+                                <button class="nav-link" id="v-pills-reservation-tab" data-bs-toggle="pill"
+                                    data-bs-target="#v-pills-reservation" type="button" role="tab"
+                                    aria-controls="v-pills-reservation" aria-selected="false"><span><i
+                                            class="fas fa-bags-shopping"></i></span> Reservations</button>
 
                                 <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-pills-profile" type="button" role="tab"
@@ -104,6 +109,8 @@
                                 @include('frontend.dashboard.sections.personal-info')
 
                                 @include('frontend.dashboard.sections.address')
+
+                                @include('frontend.dashboard.sections.reservation')
 
                                 @include('frontend.dashboard.sections.orders-list')
 
