@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\CounterController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DailyOfferController;
 use App\Http\Controllers\Admin\DeliveryAreaController;
+use App\Http\Controllers\Admin\NewsLetterController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\PrivacyPolicyController;
@@ -207,6 +208,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::get('/reservation', 'index')->name('reservation.index');
             Route::post('/reservation', 'update')->name('reservation.update');
             Route::delete('/reservation', 'destroy')->name('reservation.destroy');
+        });
+
+
+        Route::controller(NewsLetterController::class)->group(function () {
+            Route::get('/news-letter', 'index')->name('news-letter.index');
+            Route::post('/news-letter', 'sendNewsLetter')->name('news-letter.send');
         });
     });
 });
