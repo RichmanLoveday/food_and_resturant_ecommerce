@@ -233,6 +233,9 @@
             <li><a href="{{ route('admin.news-letter.index') }}" class="nav-link"><i class="far fa-square"></i>News
                     Leter</a></li>
 
+            <li><a href="{{ route('admin.social-link.index') }}" class="nav-link"><i
+                        class="far fa-square"></i>Social Links</a></li>
+
             <li class="dropdown">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
                         class="fas fa-columns"></i>

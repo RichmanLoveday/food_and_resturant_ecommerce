@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\ReservationTimeController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\TermsAndConditionController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\WhyChooseUsController;
@@ -211,9 +212,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         });
 
 
+        /**News letter controller */
         Route::controller(NewsLetterController::class)->group(function () {
             Route::get('/news-letter', 'index')->name('news-letter.index');
             Route::post('/news-letter', 'sendNewsLetter')->name('news-letter.send');
         });
+
+
+        /** Socila Links Controller */
+        Route::resource('/social-link', SocialLinkController::class);
     });
 });
