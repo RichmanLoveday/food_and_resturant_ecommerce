@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f263288e6dfffe2141cffaf21b984d2",
+    "content-hash": "145b2e2890aaada21e0ce0b0bced0b55",
     "packages": [
         {
             "name": "anayarojo/shoppingcart",
@@ -597,6 +597,72 @@
                 }
             ],
             "time": "2024-10-09T13:47:03+00:00"
+        },
+        {
+            "name": "efectn/laravel-menu-builder",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RichmanLoveday/laravel-menu-builder.git",
+                "reference": "be2a517d183ce5c0d4242240000aa5cdb0831d49"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RichmanLoveday/laravel-menu-builder/zipball/be2a517d183ce5c0d4242240000aa5cdb0831d49",
+                "reference": "be2a517d183ce5c0d4242240000aa5cdb0831d49",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/translation": "~9 || ~10 || ~11",
+                "php": ">=8.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Efectn\\Menu\\MenuServiceProvider"
+                    ],
+                    "aliases": {
+                        "Menu": "Efectn\\Menu\\Facades\\Menu"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Efectn\\Menu\\": "src/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Muhammed Efe Çetin",
+                    "email": "efectn@protonmail.com",
+                    "homepage": "https://6tel.net",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Rendy Harimayco",
+                    "email": "rendyharimayco@gmail.com",
+                    "role": "Original Developer"
+                },
+                {
+                    "name": "Cristian Garcia",
+                    "email": "informacion@cristiangarcia.co",
+                    "role": "Original Developer"
+                }
+            ],
+            "description": " Wordpress like drag & drop menu builder for Laravel 9.x, 10.x and 11.x",
+            "keywords": [
+                "Builder",
+                "Drag and Drop",
+                "Laravel",
+                "Menu",
+                "Wordpress"
+            ],
+            "support": {
+                "source": "https://github.com/RichmanLoveday/laravel-menu-builder/tree/master"
+            },
+            "time": "2024-06-30T15:17:53+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -10745,7 +10811,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "efectn/laravel-menu-builder": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -4,9 +4,16 @@
     "description": "The skeleton application for the Laravel framework.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/RichmanLoveday/laravel-menu-builder"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "anayarojo/shoppingcart": "^4.2",
+        "efectn/laravel-menu-builder": "dev-master",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "pusher/pusher-php-server": "^7.2",

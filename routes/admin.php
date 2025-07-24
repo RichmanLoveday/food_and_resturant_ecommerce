@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\CounterController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DailyOfferController;
 use App\Http\Controllers\Admin\DeliveryAreaController;
+use App\Http\Controllers\Admin\FooterInfoController;
+use App\Http\Controllers\Admin\MenuBuilderController;
 use App\Http\Controllers\Admin\NewsLetterController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
@@ -221,5 +223,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
         /** Socila Links Controller */
         Route::resource('/social-link', SocialLinkController::class);
+
+        /** Footer Info */
+        Route::controller(FooterInfoController::class)->group(function () {
+            Route::get('/footer-info', 'index')->name('footer-info.index');
+            Route::put('/footer-info', 'update')->name('footer-info.update');
+        });
+
+        /*** Menu Builder Route */
+        Route::controller(MenuBuilderController::class)->group(function () {
+            Route::get('/menu-builder', 'index')->name('menu-builder.index');
+        });
     });
 });

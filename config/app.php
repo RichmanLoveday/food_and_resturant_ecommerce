@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'Menu' => Efectn\Menu\Facades\Menu::class,
+
 ];

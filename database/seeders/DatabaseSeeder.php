@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             WhyChooseUsTitleSeeder::class,
             CategorySeeder::class,
+            MenuBuilderSeeder::class,
         ]);
 
         Slider::factory(4)->create();

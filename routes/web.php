@@ -29,7 +29,7 @@ Route::controller(FrontendController::class)->group(function () {
     Route::get('/destroy-coupon', 'destroyCoupon')->name('destroy-coupon');
 
     /** Chef page */
-    Route::get('/chef', 'chef')->name('chef');
+    Route::get('/chefs', 'chef')->name('chef');
 
     /** Testimonial page */
     Route::get('/testimonials', 'testimonial')->name('testimonial');
