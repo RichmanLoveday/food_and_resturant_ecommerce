@@ -210,6 +210,8 @@
                         class="fas fa-columns"></i>
                     <span>Pages</span></a>
                 <ul class="dropdown-menu">
+                    <li><a href="{{ route('admin.custom-page-builder.index') }}" class="nav-link">Custom Page</a>
+                    </li>
                     <li><a href="{{ route('admin.about.index') }}" class="nav-link">About</a></li>
                     <li><a href="{{ route('admin.privacy-policy.index') }}" class="nav-link">Privacy Policy</a></li>
                     <li><a href="{{ route('admin.terms-and-condition.index') }}" class="nav-link">Terms and

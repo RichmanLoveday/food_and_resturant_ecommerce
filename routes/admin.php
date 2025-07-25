@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ChefController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\CounterController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\CustomPageBuilderController;
 use App\Http\Controllers\Admin\DailyOfferController;
 use App\Http\Controllers\Admin\DeliveryAreaController;
 use App\Http\Controllers\Admin\FooterInfoController;
@@ -234,5 +235,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::controller(MenuBuilderController::class)->group(function () {
             Route::get('/menu-builder', 'index')->name('menu-builder.index');
         });
+
+        /**Custom Page Builder */
+        Route::resource('/custom-page-builder', CustomPageBuilderController::class);
     });
 });

@@ -4,6 +4,7 @@ use App\Events\RTOrderPlacedNotificationEvent;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\ChatController;
 use App\Http\Controllers\Frontend\CheckoutController;
+use App\Http\Controllers\Frontend\CustomPageController;
 use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\PaymentController;
@@ -59,6 +60,9 @@ Route::controller(FrontendController::class)->group(function () {
     /** News Letter Routes */
     Route::post('/subscribe-newsletter', 'subscribeNewsLetter')->name('subscribe-newsletter');
 });
+
+/** Custom Page Route */
+Route::get('/page/{slug}', CustomPageController::class);
 
 
 /**CART CONTROLLER */
