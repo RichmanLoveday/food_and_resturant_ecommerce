@@ -20,6 +20,9 @@ Route::controller(FrontendController::class)->group(function () {
     /** show product */
     Route::get('/product/{slug}', 'showProduct')->name('product.show');
 
+    /** Products Page Route */
+    Route::get('/products', 'products')->name('product.index');
+
     /**Product Modal Route */
     Route::get('/load-product-moadl/{productId}', 'loadProductModal')->name('load-product-modal');
 

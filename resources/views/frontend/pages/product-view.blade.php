@@ -31,12 +31,32 @@
                     <div class="fp__menu_details_text">
                         <h2>{!! $product->name !!}</h2>
                         <p class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <i class="far fa-star"></i>
-                            <span>(201)</span>
+                            @php
+                                $avgRating = min($product->reviews_avg_rating, 5);
+
+                                $fullStars = floor($avgRating); // full stars (integer part)
+                                $halfStar = $avgRating - $fullStars >= 0.5 ? 1 : 0; // half star if decimal >= 0.5
+                                $emptyStars = 5 - $fullStars - $halfStar; // rest are empty stars
+                            @endphp
+
+                            {{-- Full stars --}}
+                            @for ($i = 0; $i < $fullStars; $i++)
+                                <i class="fas fa-star"></i>
+                            @endfor
+
+                            {{-- Half star --}}
+                            @if ($halfStar)
+                                <i class="fas fa-star-half-alt"></i>
+                            @endif
+
+                            {{-- Empty stars --}}
+                            @for ($i = 0; $i < $emptyStars; $i++)
+                                <i class="fal fa-star"></i>
+                            @endfor
+
+                            @if ($product->reviews_count > 0)
+                                <span>({{ $product->reviews_count }})</span>
+                            @endif
                         </p>
                         <form action="" id="v_add_to_cart_form">
                             @csrf
@@ -140,7 +160,8 @@
                                 <div class="fp__review_area">
                                     <div class="row">
                                         <div class="col-lg-8">
-                                            <h4>{{ count($reviews) }} {{ \Str::plural('review', $reviews->count()) }}</h4>
+                                            <h4 class="fp_review_count">{{ count($reviews) }}
+                                                {{ \Str::plural('review', $reviews->count()) }}</h4>
                                             <div class="fp__comment pt-0 mt_20">
                                                 @forelse ($reviews as $review)
                                                     <div class="fp__single_comment m-0 border-0">
@@ -252,12 +273,32 @@
                                     </div>
                                     <div class="fp__menu_item_text">
                                         <p class="rating">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            <i class="far fa-star"></i>
-                                            <span>74</span>
+                                            @php
+                                                $avgRating = min($product->reviews_avg_rating, 5);
+
+                                                $fullStars = floor($avgRating); // full stars (integer part)
+                                                $halfStar = $avgRating - $fullStars >= 0.5 ? 1 : 0; // half star if decimal >= 0.5
+                                                $emptyStars = 5 - $fullStars - $halfStar; // rest are empty stars
+                                            @endphp
+
+                                            {{-- Full stars --}}
+                                            @for ($i = 0; $i < $fullStars; $i++)
+                                                <i class="fas fa-star"></i>
+                                            @endfor
+
+                                            {{-- Half star --}}
+                                            @if ($halfStar)
+                                                <i class="fas fa-star-half-alt"></i>
+                                            @endif
+
+                                            {{-- Empty stars --}}
+                                            @for ($i = 0; $i < $emptyStars; $i++)
+                                                <i class="fal fa-star"></i>
+                                            @endfor
+
+                                            @if ($product->reviews_count > 0)
+                                                <span>({{ $product->reviews_count }})</span>
+                                            @endif
                                         </p>
                                         <a class="title"
                                             href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a>
@@ -450,7 +491,7 @@
                         //? add data after the last single comment
                         $('.fp__single_comment').last().after(res);
                         let reviewCount = $('.fp__single_comment').length;
-                        $('.fp_comment_count').text(`${reviewCount} comments`)
+                        $('.fp_review_count').text(`${reviewCount} reviews`)
 
 
                         //? add next page to button

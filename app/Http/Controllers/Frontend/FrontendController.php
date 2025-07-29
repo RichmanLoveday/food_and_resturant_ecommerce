@@ -85,7 +85,7 @@ class FrontendController extends Controller
 
         //? get menu items
         $menuItems = $this->menuItems($categories);
-        // dd($menuItems);
+        // dd($menuItems->toArray());
 
 
         return view('frontend.home.index', compact(
@@ -105,10 +105,58 @@ class FrontendController extends Controller
     }
 
 
+    public function products(Request $request): View
+    {
+        $breadCrumb = ['title' => 'our latest products', 'link' => '#'];
+        $products = Product::with(['category'])
+            ->where(['status' => true,])
+            ->orderBy('id', 'desc');
+
+
+        //? handle parameter based on search result
+        if ($request->has('search') && $request->filled('search')) {
+            $products->where(function ($query) use ($request) {
+                $query->where('name', 'like', "% {$request->search} %")
+                    ->orWhere('short_description', 'like', "% {$request->search} %")
+                    ->orWhere('long_description', 'like', "% {$request->search} %");
+            });
+        }
+
+        //? handle parameter based on category
+        if ($request->has('category') && $request->filled('category')) {
+            $products->whereHas('category', function ($query) use ($request) {
+                $query->where('slug', $request->category);
+            });
+        }
+
+        //? continue query executions
+        $products = $products->take(8)
+            ->withAvg(['reviews' => function ($query) {
+                $query->where('status', true);
+            }], 'rating')
+            ->withCount(['reviews' => function ($query) {
+                $query->where('status', true);
+            }])->paginate(2)->withQueryString();
+
+        $categories = Category::where('status', true)->get();
+
+        return view('frontend.pages.product', compact(
+            'breadCrumb',
+            'products',
+            'categories'
+        ));
+    }
+
     public function showProduct(string|int $slug): View
     {
         $product = Product::with(['category', 'productImages', 'productSizes', 'productOptions'])
             ->where(['slug' => $slug, 'status' => true])
+            ->withAvg(['reviews' => function ($query) {
+                $query->where('status', true);
+            }], 'rating')
+            ->withCount(['reviews' => function ($query) {
+                $query->where('status', true);
+            }])
             ->firstOrFail();
 
         $reviews = ProductRating::where(['product_id' => $product->id, 'status' => 1])
@@ -120,6 +168,12 @@ class FrontendController extends Controller
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->take(8)
+            ->withAvg(['reviews' => function ($query) {
+                $query->where('status', true);
+            }], 'rating')
+            ->withCount(['reviews' => function ($query) {
+                $query->where('status', true);
+            }])
             ->latest()
             ->get();
 
@@ -487,6 +541,12 @@ class FrontendController extends Controller
                     'show_at_home' => true
                 ])->orderBy('id', 'desc')
                 ->take(8)
+                ->withAvg(['reviews' => function ($query) {
+                    $query->where('status', true);
+                }], 'rating')
+                ->withCount(['reviews' => function ($query) {
+                    $query->where('status', true);
+                }])
                 ->get();
 
             //? store in array or collection for menu items

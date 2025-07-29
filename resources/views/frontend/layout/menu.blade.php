@@ -57,7 +57,7 @@
                 @endphp
 
                 <li>
-                    <a class="cart_icon message_icon">
+                    <a href="javascrit:void();" class="message_icon">
                         <i class="fas fa-comment-alt-dots"></i>
                         <span class="unseen-messages-count">{{ $unseenMessages > 0 ? $unseenMessages : 0 }}</span>
                     </a>

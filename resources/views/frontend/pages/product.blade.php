@@ -1,37 +1,29 @@
-<section class="fp__menu mt_95 xs_mt_65">
-    <div class="container">
-        <div class="row wow fadeInUp" data-wow-duration="1s">
-            <div class="col-md-8 col-lg-7 col-xl-6 m-auto text-center">
-                <div class="fp__section_heading mb_45">
-                    <h4>food Menu</h4>
-                    <h2>Our Popular Delicious Foods</h2>
-                    <span>
-                        <img src="{{ asset('frontend/images/heading_shapes.png') }}" alt="shapes"
-                            class="img-fluid w-100">
-                    </span>
-                    <p>Objectively pontificate quality models before intuitive information. Dramatically
-                        recaptiualize multifunctional materials.</p>
+@extends('frontend.layout.master')
+@section('content')
+    @include('frontend.common-component.breadcrumb')
+    <section class="fp__blog_page fp__blog2 mt_120 xs_mt_65 mb_100 xs_mb_70">
+        <div class="container">
+            <form class="fp__search_menu_form mb-4" action="{{ route('product.index') }}" method="get">
+                <div class="row">
+                    <div class="col-xl-6 col-md-5">
+                        <input type="text" value="{{ request('search') }}" placeholder="Search..." name="search">
+                    </div>
+                    <div class="col-xl-4 col-md-4">
+                        <select class="nice-select" name="category">
+                            <option value="">select category</option>
+                            @foreach ($categories as $category)
+                                <option @selected(request('category') == $category->slug) value="{{ $category->slug }}">{{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-xl-2 col-md-3">
+                        <button type="submit" class="common_btn">search</button>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="row wow fadeInUp" data-wow-duration="1s">
-            <div class="col-12">
-                <div class="menu_filter d-flex flex-wrap justify-content-center">
-                    <button class=" active" data-filter="*">all menu</button>
-                    @foreach ($categories as $category)
-                        <button data-filter=".{{ $category->slug }}">{{ $category->name }}</button>
-                    @endforeach
-                    {{-- <button data-filter=".chicken">chicken</button>
-                    <button data-filter=".pizza">pizza</button>
-                    <button data-filter=".dresserts">dresserts</button> --}}
-                </div>
-            </div>
-        </div>
-
-        <div class="row grid">
-            @foreach ($menuItems as $item)
-                @foreach ($item as $product)
+            </form>
+            <div class="row">
+                @forelse ($products as $product)
                     <div class="col-xl-3 col-sm-6 col-lg-4 {{ $product->category->slug }} pizza wow fadeInUp"
                         data-wow-duration="1s">
                         <div class="fp__menu_item">
@@ -81,8 +73,7 @@
                                     @endif
                                 </h5>
                                 <ul class="d-flex flex-wrap justify-content-center">
-                                    <li><a href="javascript:;"
-                                            onclick="loadProductModal(this, '{{ $product->id }}')"><i
+                                    <li><a href="javascript:;" onclick="loadProductModal(this, '{{ $product->id }}')"><i
                                                 class="fas fa-shopping-basket"></i></a></li>
                                     <li><a href="#"><i class="fal fa-heart"></i></a></li>
                                     <li><a href="#"><i class="far fa-eye"></i></a></li>
@@ -90,8 +81,12 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
-            @endforeach
+                @empty
+                    <h5 class="text-center">No Product Found!</h5>
+                @endforelse
+            </div>
+
+            {{ $products->links('frontend.common-component.pagination') }}
         </div>
-    </div>
-</section>
+    </section>
+@endsection
