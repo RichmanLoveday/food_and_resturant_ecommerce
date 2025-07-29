@@ -694,6 +694,8 @@ namespace App\Models{
  * @property-read int|null $product_options_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductSize> $productSizes
  * @property-read int|null $product_sizes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductRating> $reviews
+ * @property-read int|null $reviews_count
  * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
@@ -1102,5 +1104,27 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WhyChooseUs whereUpdatedAt($value)
  */
 	class WhyChooseUs extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $product_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Product $product
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Wishlist newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Wishlist newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Wishlist query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Wishlist whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Wishlist whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Wishlist whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Wishlist whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Wishlist whereUserId($value)
+ */
+	class Wishlist extends \Eloquent {}
 }
 

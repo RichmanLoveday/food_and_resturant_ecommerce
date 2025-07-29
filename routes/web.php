@@ -9,6 +9,7 @@ use App\Http\Controllers\Frontend\DashboardController;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\PaymentController;
 use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController;
+use App\Http\Controllers\Frontend\WishlistController;
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
@@ -71,6 +72,10 @@ Route::controller(FrontendController::class)->group(function () {
 /** Custom Page Route */
 Route::get('/page/{slug}', CustomPageController::class);
 
+/** Wishlist Controller */
+Route::controller(WishlistController::class)->group(function () {
+    Route::post('/wishlist', 'store')->name('wishlist.store');
+});
 
 /** CART CONTROLLER */
 Route::controller(CartController::class)->group(function () {

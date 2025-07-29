@@ -69,6 +69,35 @@
         });
     }
 
+
+    /** Add product to wishlist **/
+    function addToWishList(e, productId) {
+        // e.preventDefault(); // Uncomment if needed
+
+        $.ajax({
+            url: "{{ route('wishlist.store') }}",
+            method: "POST",
+            data: {
+                productId: productId
+            },
+            beforeSend: function() {
+                $('.overlay').toggleClass('active');
+            },
+            success: function(res) {
+                toastr.success(res.message);
+            },
+            error: function(xhr, status, error) {
+                let errors = xhr.responseJSON.errors;
+                $.each(errors, function(index, value) {
+                    toastr.error(value);
+                });
+            },
+            complete: function() {
+                $('.overlay').toggleClass('active');
+            }
+        });
+    }
+
     /** Update side bar cart **/
     function updateSideBarCart(callBack = null) {
         $.ajax({

@@ -6898,3 +6898,14 @@ CHECKOUT PAGE START
     border-radius: 16px;
     font-weight: 300;
 }
+
+.fp__fade_image {
+    opacity: 0.4;
+    filter: grayscale(100%);
+    transition: opacity 0.3s ease;
+}
+
+.fp__wishlist_image {
+    width: 50px !important;
+    height: 50px !important;
+}
