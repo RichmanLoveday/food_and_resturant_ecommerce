@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\Admin\AppDownloadSectionController;
 use App\Http\Controllers\Admin\BannerSliderController;
 use App\Http\Controllers\Admin\BlogCategoryController;
@@ -246,5 +247,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
         /**Custom Page Builder */
         Route::resource('/custom-page-builder', CustomPageBuilderController::class);
+
+        /** Admin Management Routes */
+        Route::resource('/admin-management', AdminManagementController::class);
     });
 });

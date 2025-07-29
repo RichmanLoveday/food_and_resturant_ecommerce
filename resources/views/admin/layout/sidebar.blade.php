@@ -26,45 +26,50 @@
                 ->take(10)
                 ->get();
         @endphp
-        <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
-                class="nav-link nav-link-lg fp_message_envelope message-toggle {{ count($messages) > 0 ? 'beep' : '' }}"><i
-                    class="far fa-envelope"></i></a>
+
+        @if (\Auth::user()->id == 1)
+            <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+                    class="nav-link nav-link-lg fp_message_envelope message-toggle {{ count($messages) > 0 ? 'beep' : '' }}"><i
+                        class="far fa-envelope"></i></a>
 
 
-            <div class="dropdown-menu dropdown-list dropdown-menu-right">
-                <div class="dropdown-header">Messages
-                    <form action="{{ route('admin.chat.mark-as-read') }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="d-flex justify-content-end align-items-center">
-                            <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">Mark All
-                                As Read</a>
-                        </div>
-                    </form>
-                </div>
-                <div class="dropdown-list-content dropdown-list-message fp_messages_notification_list">
-                    @foreach ($messages as $message)
-                        <a data-user="{{ $message->sender_id }}"
-                            href="{{ route('admin.chat.conversation', $message->sender_id) }}"
-                            class="dropdown-item dropdown-item-unread got_new_message fp_user_message_notification">
-                            <div class="dropdown-item-avatar">
-                                <img style="width: 50px; height:50px; object-fit:cover;" alt="image"
-                                    src="{{ asset($message->sender->avatar) }}" class="rounded-circle">
-                                {{-- <div class="is-online"></div> --}}
+                <div class="dropdown-menu dropdown-list dropdown-menu-right">
+                    <div class="dropdown-header">Messages
+                        <form action="{{ route('admin.chat.mark-as-read') }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="d-flex justify-content-end align-items-center">
+                                <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">Mark
+                                    All
+                                    As Read</a>
                             </div>
-                            <div class="dropdown-item-desc">
-                                <b>{{ Str::ucfirst($message->sender->name) }}</b>
-                                <p>{{ $message->message }}</p>
-                                <div class="time">{{ $message->created_at->diffForHumans() }}</div>
-                            </div>
-                        </a>
-                    @endforeach
+                        </form>
+                    </div>
+                    <div class="dropdown-list-content dropdown-list-message fp_messages_notification_list">
+                        @foreach ($messages as $message)
+                            <a data-user="{{ $message->sender_id }}"
+                                href="{{ route('admin.chat.conversation', $message->sender_id) }}"
+                                class="dropdown-item dropdown-item-unread got_new_message fp_user_message_notification">
+                                <div class="dropdown-item-avatar">
+                                    <img style="width: 50px; height:50px; object-fit:cover;" alt="image"
+                                        src="{{ asset($message->sender->avatar) }}" class="rounded-circle">
+                                    {{-- <div class="is-online"></div> --}}
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    <b>{{ Str::ucfirst($message->sender->name) }}</b>
+                                    <p>{{ $message->message }}</p>
+                                    <div class="time">{{ $message->created_at->diffForHumans() }}</div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                    <div class="dropdown-footer text-center">
+                        <a href="{{ route('admin.chat.index') }}">View All <i class="fas fa-chevron-right"></i></a>
+                    </div>
                 </div>
-                <div class="dropdown-footer text-center">
-                    <a href="{{ route('admin.chat.index') }}">View All <i class="fas fa-chevron-right"></i></a>
-                </div>
-            </div>
-        </li>
+            </li>
+        @endif
+
         @php
             $notifications = \App\Models\OrderPlacedNotification::where('seen', 0)->latest()->take(10)->get();
         @endphp
@@ -151,6 +156,9 @@
             <li><a href="{{ route('admin.slider.index') }}" class="nav-link"><i class="far fa-square"></i>
                     <span>Slider</span></a></li>
 
+            <li><a href="{{ route('admin.admin-management.index') }}" class="nav-link"><i class="far fa-square"></i>
+                    <span>Admin Management</span></a></li>
+
             <li class="dropdown">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
                         class="fas fa-columns"></i>
@@ -187,9 +195,10 @@
                 </ul>
             </li>
 
-
-            <li><a href="{{ route('admin.chat.index') }}" class="nav-link"><i class="far fa-square"></i>
-                    <span>Messages</span></a></li>
+            @if (\Auth::user()->id === 1)
+                <li><a href="{{ route('admin.chat.index') }}" class="nav-link"><i class="far fa-square"></i>
+                        <span>Messages</span></a></li>
+            @endif
 
             <li class="dropdown">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
