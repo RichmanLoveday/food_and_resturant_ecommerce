@@ -8,6 +8,7 @@ use App\Http\Requests\Frontend\AddressUpdateRequest;
 use App\Models\Address;
 use App\Models\DeliveryArea;
 use App\Models\Order;
+use App\Models\ProductRating;
 use App\Models\Reservation;
 use Auth;
 use Illuminate\Contracts\View\View;
@@ -26,6 +27,9 @@ class DashboardController extends Controller
         $reservations = Reservation::where('user_id', Auth::user()->id)
             ->latest()
             ->get();
+        $reviews = ProductRating::where('user_id', Auth::user()->id)
+            ->latest()
+            ->paginate(1);
 
         // dd($userAddresses->toArray());
 
@@ -34,7 +38,27 @@ class DashboardController extends Controller
             'userAddresses',
             'orders',
             'reservations',
+            'reviews',
         ));
+    }
+
+
+    public function loadMoreUserReviews()
+    {
+        try {
+            // dd($productId);
+            $reviews = ProductRating::where('user_id', Auth::user()->id)
+                ->latest()
+                ->paginate(1);
+
+            // dd($reviews);
+            return view('frontend.layout.ajax-files.user-reviews', compact('reviews'));
+        } catch (\Exception $e) {
+            logger('Error loading more reviews: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Unable to load reviews at this time.',
+            ], 500);
+        }
     }
 
 

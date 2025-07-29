@@ -140,114 +140,97 @@
                                 <div class="fp__review_area">
                                     <div class="row">
                                         <div class="col-lg-8">
-                                            <h4>04 reviews</h4>
+                                            <h4>{{ count($reviews) }} {{ \Str::plural('review', $reviews->count()) }}</h4>
                                             <div class="fp__comment pt-0 mt_20">
-                                                <div class="fp__single_comment m-0 border-0">
-                                                    <img src="{{ asset('frontend/images/comment_img_1.png') }}"
-                                                        alt="review" class="img-fluid">
-                                                    <div class="fp__single_comm_text">
-                                                        <h3>Michel Holder <span>29 oct 2022 </span></h3>
-                                                        <span class="rating">
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fad fa-star-half-alt"></i>
-                                                            <i class="fal fa-star"></i>
-                                                            <b>(120)</b>
-                                                        </span>
-                                                        <p>Sure there isn't anything embarrassing hiidden in the
-                                                            middles of text. All erators on the Internet
-                                                            tend to repeat predefined chunks</p>
+                                                @forelse ($reviews as $review)
+                                                    <div class="fp__single_comment m-0 border-0">
+                                                        <img src="{{ asset($review->user->avatar) }}" alt="review"
+                                                            class="img-fluid">
+                                                        <div class="fp__single_comm_text">
+                                                            <h3>{{ $review->user->name }}
+                                                                <span>{{ date('d m Y', strtotime($review->created_at)) }}
+                                                                </span>
+                                                            </h3>
+                                                            <span class="rating">
+                                                                @php
+                                                                    $fullStars = min($review->rating, 5);
+                                                                    $emptyStars = max(5 - $fullStars, 0);
+                                                                @endphp
+
+                                                                {{-- Full stars --}}
+                                                                @for ($i = 0; $i < $fullStars; $i++)
+                                                                    <i class="fas fa-star"></i>
+                                                                @endfor
+
+                                                                {{-- Empty stars --}}
+                                                                @for ($i = 0; $i < $emptyStars; $i++)
+                                                                    <i class="fal fa-star"></i>
+                                                                @endfor
+
+                                                                {{-- <b>(120)</b> --}}
+                                                            </span>
+                                                            <p>{{ $review->review }}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="fp__single_comment">
-                                                    <img src="{{ asset('frontend/images/chef_1.jpg') }}" alt="review"
-                                                        class="img-fluid">
-                                                    <div class="fp__single_comm_text">
-                                                        <h3>salina khan <span>29 oct 2022 </span></h3>
-                                                        <span class="rating">
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fad fa-star-half-alt"></i>
-                                                            <i class="fal fa-star"></i>
-                                                            <b>(120)</b>
-                                                        </span>
-                                                        <p>Sure there isn't anything embarrassing hiidden in the
-                                                            middles of text. All erators on the Internet
-                                                            tend to repeat predefined chunks</p>
-                                                    </div>
-                                                </div>
-                                                <div class="fp__single_comment">
-                                                    <img src="{{ asset('frontend/images/comment_img_2.png') }}"
-                                                        alt="review" class="img-fluid">
-                                                    <div class="fp__single_comm_text">
-                                                        <h3>Mouna Sthesia <span>29 oct 2022 </span></h3>
-                                                        <span class="rating">
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fad fa-star-half-alt"></i>
-                                                            <i class="fal fa-star"></i>
-                                                            <b>(120)</b>
-                                                        </span>
-                                                        <p>Sure there isn't anything embarrassing hiidden in the
-                                                            middles of text. All erators on the Internet
-                                                            tend to repeat predefined chunks</p>
-                                                    </div>
-                                                </div>
-                                                <div class="fp__single_comment">
-                                                    <img src="{{ asset('frontend/images/chef_3.jpg') }}" alt="review"
-                                                        class="img-fluid">
-                                                    <div class="fp__single_comm_text">
-                                                        <h3>marjan janifar <span>29 oct 2022 </span></h3>
-                                                        <span class="rating">
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fad fa-star-half-alt"></i>
-                                                            <i class="fal fa-star"></i>
-                                                            <b>(120)</b>
-                                                        </span>
-                                                        <p>Sure there isn't anything embarrassing hiidden in the
-                                                            middles of text. All erators on the Internet
-                                                            tend to repeat predefined chunks</p>
-                                                    </div>
-                                                </div>
-                                                <a href="#" class="load_more">load More</a>
+                                                @empty
+                                                    <div class="alert alert-warning mt-4">No review found!</div>
+                                                @endforelse
+
+                                                @if ($reviews->currentPage() < $reviews->lastPage())
+                                                    <a href="javascript:void(0);" class="load_more load-more-btn"
+                                                        data-next-page="{{ $reviews->currentPage() + 1 }}"
+                                                        data-product-id="{{ $review->product_id }}">
+                                                        Load More
+                                                    </a>
+                                                @endif
                                             </div>
 
                                         </div>
-                                        <div class="col-lg-4">
-                                            <div class="fp__post_review">
-                                                <h4>write a Review</h4>
-                                                <form>
-                                                    <p class="rating">
+                                        @auth
+                                            <div class="col-lg-4">
+                                                <div class="fp__post_review">
+                                                    <h4>write a Review</h4>
+                                                    <form method="POST" action="{{ route('product-review.store') }}">
+                                                        @csrf
+                                                        {{-- <p class="rating">
                                                         <span>select your rating : </span>
                                                         <i class="fas fa-star"></i>
                                                         <i class="fas fa-star"></i>
                                                         <i class="fas fa-star"></i>
                                                         <i class="fas fa-star"></i>
                                                         <i class="fas fa-star"></i>
-                                                    </p>
-                                                    <div class="row">
-                                                        <div class="col-xl-12">
-                                                            <input type="text" placeholder="Name">
+                                                    </p> --}}
+                                                        <div class="row">
+                                                            <div class="col-xl-12">
+                                                                <label>Choose a rating</label>
+                                                                <select class="form-control my-3" name="rating"
+                                                                    id="rating_input">
+                                                                    <option value="5">5</option>
+                                                                    <option value="4">4</option>
+                                                                    <option value="3">3</option>
+                                                                    <option value="2">2</option>
+                                                                    <option value="1">1</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-xl-12">
+                                                                <label>Review</label>
+                                                                <textarea style="margin-top: 2px" name="review" rows="3" placeholder="Write your review"></textarea>
+                                                            </div>
+                                                            <input type="hidden" name="product_id"
+                                                                value="{{ $product->id }}">
+                                                            <div class="col-12">
+                                                                <button class="common_btn" type="submit">submit
+                                                                    review</button>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-xl-12">
-                                                            <input type="email" placeholder="Email">
-                                                        </div>
-                                                        <div class="col-xl-12">
-                                                            <textarea rows="3" placeholder="Write your review"></textarea>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <button class="common_btn" type="submit">submit
-                                                                review</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
+                                                    </form>
+                                                </div>
                                             </div>
-                                        </div>
+                                        @else
+                                            <div class="col-lg-4">
+                                                <div class=" alert alert-danger">Please login first to add a review</div>
+                                            </div>
+                                        @endauth
                                     </div>
                                 </div>
                             </div>
@@ -309,136 +292,200 @@
 
 @push('scripts')
     <script>
-        $('.v_product_option').prop('checked', false);
-        $('.v_product_size').prop('checked', false);
-        $('#v_quantity').val(1);
+        $(document).ready(function() {
+            $('.v_product_option').prop('checked', false);
+            $('.v_product_size').prop('checked', false);
+            $('#v_quantity').val(1);
 
-        //? when a product size is seleted
-        $('.v_product_size').on('change', function() {
-            v_updateTotalPrice()
-        });
-
-
-        //? when an option is changed
-        $('.v_product_option').on('change', function() {
-            v_updateTotalPrice()
-        });
-
-
-        //? when increment button is clicked
-        $('.v_increment').on('click', function(e) {
-            e.preventDefault();
-
-            let quantity = $('#v_quantity');
-            let currentQty = parseFloat(quantity.val());
-            quantity.val(currentQty + 1);
-            v_updateTotalPrice()
-        });
-
-
-        //? when decrement button is clicked
-        $('.v_decrement').on('click', function(e) {
-            e.preventDefault();
-
-            let quantity = $('#v_quantity');
-            let currentQty = parseFloat(quantity.val());
-
-            if (currentQty > 1) {
-                quantity.val(currentQty - 1);
+            //? when a product size is seleted
+            $('.v_product_size').on('change', function() {
                 v_updateTotalPrice()
-            }
-        });
-
-
-
-        // Function to update the total price based on seleted options
-        function v_updateTotalPrice() {
-            let basePrice = parseFloat($('.v_base_price').val()).toFixed(2) * 1;
-            let seletedSizePrice = 0;
-            let selectedOptionsPrice = 0;
-            let quantity = parseFloat($('#v_quantity').val());
-
-            // calculate the selected size price
-            let seletedSize = $('.v_product_size:checked');
-            //  console.log(seletedSize);
-            if (seletedSize.length > 0) {
-                seletedSizePrice = parseFloat(seletedSize.data("price")).toFixed(2) * 1;
-            }
-
-
-            // calculate seleted options price
-            let selectedOptions = $('.v_product_option:checked');
-            //  console.log(selectedOptions);
-            $(selectedOptions).each(function() {
-                selectedOptionsPrice += parseFloat($(this).data('price')).toFixed(2) * 1;
             });
 
-            // console.log(selectedOptionsPrice, seletedSizePrice);
 
-            // calculate the total price
-            let totalPrice = basePrice + seletedSizePrice + selectedOptionsPrice;
-            $('#v_total_price').text("{{ config('settings.site_currency_icon') }}" + (totalPrice * quantity)
-                .toFixed(2) *
-                1);
-        }
+            //? when an option is changed
+            $('.v_product_option').on('change', function() {
+                v_updateTotalPrice()
+            });
 
 
-        //? prevent default behaviour of button, and submit form
-        $('.v_submit_button').on('click', function(e) {
-            e.preventDefault();
-            $('#v_add_to_cart_form').submit();
-        });
+            //? when increment button is clicked
+            $('.v_increment').on('click', function(e) {
+                e.preventDefault();
 
-        //? Add to cart function
-        $("#v_add_to_cart_form").on('submit', function(e) {
-            e.preventDefault();
+                let quantity = $('#v_quantity');
+                let currentQty = parseFloat(quantity.val());
+                quantity.val(currentQty + 1);
+                v_updateTotalPrice()
+            });
 
-            //? validation
-            let selectedSize = $(".v_product_size");
 
-            if (selectedSize.length > 0) {
-                if ($(".v_product_size:checked").val() === undefined) {
-                    toastr.error("Please select a size");
-                    console.error('Please select a size');
-                    return;
+            //? when decrement button is clicked
+            $('.v_decrement').on('click', function(e) {
+                e.preventDefault();
+
+                let quantity = $('#v_quantity');
+                let currentQty = parseFloat(quantity.val());
+
+                if (currentQty > 1) {
+                    quantity.val(currentQty - 1);
+                    v_updateTotalPrice()
                 }
+            });
+
+
+
+            // Function to update the total price based on seleted options
+            function v_updateTotalPrice() {
+                let basePrice = parseFloat($('.v_base_price').val()).toFixed(2) * 1;
+                let seletedSizePrice = 0;
+                let selectedOptionsPrice = 0;
+                let quantity = parseFloat($('#v_quantity').val());
+
+                // calculate the selected size price
+                let seletedSize = $('.v_product_size:checked');
+                //  console.log(seletedSize);
+                if (seletedSize.length > 0) {
+                    seletedSizePrice = parseFloat(seletedSize.data("price")).toFixed(2) * 1;
+                }
+
+
+                // calculate seleted options price
+                let selectedOptions = $('.v_product_option:checked');
+                //  console.log(selectedOptions);
+                $(selectedOptions).each(function() {
+                    selectedOptionsPrice += parseFloat($(this).data('price')).toFixed(2) * 1;
+                });
+
+                // console.log(selectedOptionsPrice, seletedSizePrice);
+
+                // calculate the total price
+                let totalPrice = basePrice + seletedSizePrice + selectedOptionsPrice;
+                $('#v_total_price').text("{{ config('settings.site_currency_icon') }}" + (totalPrice *
+                        quantity)
+                    .toFixed(2) *
+                    1);
             }
 
-            let formData = $(this).serialize();
 
-            $.ajax({
-                method: 'POST',
-                url: '{{ route('add-to-cart') }}',
-                data: formData,
-                beforeSend: function() {
-                    $('.v_submit_button').prop('disabled', true).html(
-                        '<span class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span>Loading...'
-                    );
-                },
-                success: function(response) {
-                    console.log(response);
-                    if (response.status === 'success') {
-                        updateSideBarCart();
-                        toastr.success(response.message);
-                        $('#v_add_to_cart_form')[0].reset();
-                        $('.v_product_option').prop('checked', false);
-                        $('.v_product_size').prop('checked', false);
-                        $('#v_quantity').val(1);
+            //? prevent default behaviour of button, and submit form
+            $('.v_submit_button').on('click', function(e) {
+                e.preventDefault();
+                $('#v_add_to_cart_form').submit();
+            });
 
-                        //? update total price
-                        v_updateTotalPrice();
+            //? Add to cart function
+            $("#v_add_to_cart_form").on('submit', function(e) {
+                e.preventDefault();
+
+                //? validation
+                let selectedSize = $(".v_product_size");
+
+                if (selectedSize.length > 0) {
+                    if ($(".v_product_size:checked").val() === undefined) {
+                        toastr.error("Please select a size");
+                        // console.error('Please select a size');
+                        return;
                     }
-                },
-                error: function(xhr, status, error) {
-                    let errorMessage = xhr.responseJSON.message;
-                    toastr.error(errorMessage);
-                },
-                complete: function() {
-                    $('.v_submit_button').prop('disabled', false).html('add to cart');
-                    $('#cartModal').modal('hide');
                 }
-            })
 
+                let formData = $(this).serialize();
+
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route('add-to-cart') }}',
+                    data: formData,
+                    beforeSend: function() {
+                        $('.v_submit_button').prop('disabled', true).html(
+                            '<span class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span>Loading...'
+                        );
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        if (response.status === 'success') {
+                            updateSideBarCart();
+                            toastr.success(response.message);
+                            $('#v_add_to_cart_form')[0].reset();
+                            $('.v_product_option').prop('checked', false);
+                            $('.v_product_size').prop('checked', false);
+                            $('#v_quantity').val(1);
+
+                            //? update total price
+                            v_updateTotalPrice();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        let errorMessage = xhr.responseJSON.message;
+                        toastr.error(errorMessage);
+                    },
+                    complete: function() {
+                        $('.v_submit_button').prop('disabled', false).html('add to cart');
+                        $('#cartModal').modal('hide');
+                    }
+                });
+            });
+
+            $(document).on('click', '.load-more-btn', function(e) {
+                e.preventDefault();
+                // alert('working');
+
+                let button = $(this);
+                let nextPage = button.data('next-page');
+                let productId = button.data('product-id');
+
+                $.ajax({
+                    url: `{{ route('product-review.loadmore', ':id') }}?page=${nextPage}`
+                        .replace(
+                            ":id",
+                            productId),
+                    method: 'GET',
+                    beforeSend: function() {
+                        button.text('Loading...')
+                            .css({
+                                'pointer-events': 'none',
+                                'opacity': 0.6,
+                            });
+                    },
+                    success: function(res) {
+                        //? add data after the last single comment
+                        $('.fp__single_comment').last().after(res);
+                        let reviewCount = $('.fp__single_comment').length;
+                        $('.fp_comment_count').text(`${reviewCount} comments`)
+
+
+                        //? add next page to button
+                        let newPage = nextPage + 1;
+                        button.data('next-page', newPage);
+
+                        //? Check if more pages exist
+                        $.get(`{{ route('product-review.loadmore', ':id') }}?page=${newPage}`
+                            .replace(":id", productId),
+                            function(res) {
+                                if ($(res).length === 0) {
+                                    button.remove();
+                                } else {
+                                    button.text('Load More')
+                                        .css({
+                                            'pointer-events': 'auto',
+                                            'opacity': 1,
+                                        })
+                                }
+                            });
+
+                    },
+                    error: function(xhr, status, error) {
+                        let errorMsg = xhr.responseJSON.message;
+                        toastr.error(errorMsg);
+
+                        //? enable button
+                        button.text('Load More')
+                            .css({
+                                'pointer-events': 'auto',
+                                'opacity': 1,
+                            })
+                    }
+                });
+            });
         });
     </script>
 @endpush

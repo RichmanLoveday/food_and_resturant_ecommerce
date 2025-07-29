@@ -6888,3 +6888,13 @@ CHECKOUT PAGE START
 /*============================
     MESSAGE END
 ============================*/
+
+#rating_input {
+    width: 100%;
+    padding: 12px 20px;
+    outline: none;
+    resize: none;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    font-weight: 300;
+}

@@ -18,6 +18,7 @@ use App\Models\Coupon;
 use App\Models\DailyOffer;
 use App\Models\PrivacyPolicy;
 use App\Models\Product;
+use App\Models\ProductRating;
 use App\Models\Reservation;
 use App\Models\SectionTitle;
 use App\Models\Slider;
@@ -110,6 +111,11 @@ class FrontendController extends Controller
             ->where(['slug' => $slug, 'status' => true])
             ->firstOrFail();
 
+        $reviews = ProductRating::where(['product_id' => $product->id, 'status' => 1])
+            ->paginate(1);
+
+        // dd($reviews);
+
         $relatedProducts = Product::with(['category', 'productImages', 'productSizes', 'productOptions'])
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
@@ -124,8 +130,26 @@ class FrontendController extends Controller
         return view('frontend.pages.product-view', compact(
             'breadCrumb',
             'product',
-            'relatedProducts'
+            'relatedProducts',
+            'reviews',
         ));
+    }
+
+    public function loadMoreReviews(string|int $productId): View|JsonResponse
+    {
+        try {
+            // dd($productId);
+            $reviews = ProductRating::where(['product_id' => $productId, 'status' => 1])
+                ->paginate(1);
+
+            // dd($reviews);
+            return view('frontend.layout.ajax-files.reviews', compact('reviews'));
+        } catch (\Exception $e) {
+            logger('Error loading more comments: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Unable to load comments at this time.',
+            ], 500);
+        }
     }
 
 
@@ -407,7 +431,7 @@ class FrontendController extends Controller
         try {
             // dd($blogId);
             $comments = BlogComment::with(['user', 'blog'])
-                ->where('status', true)
+                ->where(['blog_id' => $blogId, 'status' => true])
                 ->orderBy('id', 'DESC')
                 ->paginate(1);
 
@@ -487,6 +511,69 @@ class FrontendController extends Controller
             ->findOrFail($productId);
 
         return view('frontend.layout.ajax-files.product-popup-modal', compact('product'));
+    }
+
+
+    public function productReviewStore(Request $request)
+    {
+        $request->validate([
+            'rating' => ['required', 'min:1', 'max:5', 'integer'],
+            'review' => ['required', 'max:500'],
+            'product_id' => ['required', 'integer'],
+        ]);
+
+
+        //? check if user is logedin
+        if (!Auth::check()) {
+            throw ValidationException::withMessages([
+                'Please login first to add a review'
+            ]);
+        }
+
+        //? check if user has purchased product
+        $user = Auth::user();
+        $hasPurchased = $user->orders()
+            ->where('order_status', 'delivered')
+            ->whereHas(
+                "orderItems",
+                function ($query) use ($request) {
+                    $query->where('product_id', $request->product_id);
+                }
+            )
+            ->exists();
+
+        //? throw validation exception if purched of product is not found
+        if (!$hasPurchased) {
+            throw ValidationException::withMessages([
+                'Please buy the product before submitting a review'
+            ]);
+        }
+
+        //? check if product is already reviewed
+        $alreadyReviewed = ProductRating::where([
+            'user_id' => $user->id,
+            'product_id' => $request->product_id
+        ])
+            ->exists();
+
+        if ($alreadyReviewed) {
+            throw ValidationException::withMessages([
+                'You already reviewed this product'
+            ]);
+        }
+
+        //? add a new review
+        $review = new ProductRating();
+        $review->user_id = $user->id;
+        $review->product_id = $request->product_id;
+        $review->rating = $request->rating;
+        $review->review = $request->review;
+        $review->status = 0;
+        $review->save();
+
+        toastr()->success('Review added successfully and waiting to be approved');
+
+        return redirect()->back();
     }
 
 

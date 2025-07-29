@@ -81,7 +81,8 @@
                     </ul>
 
                     <div class="fp__comment mt_100 xs_mt_70 wow fadeInUp" data-wow-duration="1s">
-                        <h4 class="fp_comment_count">{{ count($comments) }} Comments</h4>
+                        <h4 class="fp_comment_count">{{ count($comments) }}
+                            {{ \Str::plural('Comment', $comments->count()) }}</h4>
                         @if (count($comments) > 0)
                             @foreach ($comments as $comment)
                                 <div class="fp__single_comment m-0 border-0">
@@ -96,9 +97,11 @@
                                 </div>
                             @endforeach
 
-                            <a href="javascript:void(0);" class="load_more" id="load-more-btn"
-                                data-next-page="{{ $comments->currentPage() + 1 }}" data-blog-id="{{ $blog->id }}"
-                                tabindex="-1" aria-disabled="true">Load More</a>
+                            @if ($comments->currentPage() < $comments->lastPage())
+                                <a href="javascript:void(0);" class="load_more" id="load-more-btn"
+                                    data-next-page="{{ $comments->currentPage() + 1 }}" data-blog-id="{{ $blog->id }}"
+                                    tabindex="-1" aria-disabled="true">Load More</a>
+                            @endif
                         @endif
                     </div>
 

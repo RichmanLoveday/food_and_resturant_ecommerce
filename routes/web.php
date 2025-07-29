@@ -12,7 +12,7 @@ use App\Http\Controllers\Frontend\ProfileController as FrontendProfileController
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
-/**FRONTEND CONTROLLER */
+/** FRONTEND CONTROLLER */
 Route::controller(FrontendController::class)->group(function () {
     /** show home page */
     Route::get('/', 'index')->name('home');
@@ -22,6 +22,10 @@ Route::controller(FrontendController::class)->group(function () {
 
     /**Product Modal Route */
     Route::get('/load-product-moadl/{productId}', 'loadProductModal')->name('load-product-modal');
+
+    /** Product Review */
+    Route::post('/product-review', 'productReviewStore')->name('product-review.store');
+    Route::get('/product-review/{productId}', 'loadMoreReviews')->name('product-review.loadmore');
 
     /** Coupon Routes */
     Route::post('/apply-coupon', 'applyCoupon')->name('apply-coupon');
@@ -65,12 +69,11 @@ Route::controller(FrontendController::class)->group(function () {
 Route::get('/page/{slug}', CustomPageController::class);
 
 
-/**CART CONTROLLER */
+/** CART CONTROLLER */
 Route::controller(CartController::class)->group(function () {
     Route::post('/add-to-cart', 'addToCart')->name('add-to-cart');
     Route::get('/get-cart-products', 'getCartProducts')->name('get-cart-products');
     Route::get('/cart-product-remove/{rowId}', 'cartProductRemove')->name('cart-product-remove');
-
 
     /** Cart Page Route */
     Route::get('/cart', 'index')->name('cart.index');
@@ -86,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/address', 'createAddress')->name('address.store');
         Route::put('/address/{id}/edit', 'updateAddress')->name('address.update');
         Route::delete('/address/{id}', 'destroyAddress')->name('address.destroy');
+        Route::get('/user-reviews', 'loadMoreUserReviews')->name('user-reviews.loadMore');
     });
 
     /** Profile controller Routes */
@@ -95,7 +99,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/profile/avatar', 'updateAvatar')->name('profile.avatar.update');
     });
 
-    /*** Checkout Controller Routes */
+    /** Checkout Controller Routes */
     Route::controller(CheckoutController::class)->group(function () {
         Route::get('/checkout', 'index')->name('checkout.index');
         Route::get('/checkout/{id}/delivery-cal', 'calculateDeliveryCharge')->name('checkout.delivery.cal');
@@ -103,7 +107,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-    /*** Payment Controller Routes */
+    /** Payment Controller Routes */
     Route::controller(PaymentController::class)->group(function () {
         Route::get('/payment', 'index')->name('payment.index');
         Route::post('/make-payment', 'makePayment')->name('make-payement');

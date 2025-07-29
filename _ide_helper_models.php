@@ -314,6 +314,35 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string|null $phone_one
+ * @property string|null $phone_two
+ * @property string|null $mail_one
+ * @property string|null $mail_two
+ * @property string|null $address
+ * @property string|null $map_link
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereMailOne($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereMailTwo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereMapLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact wherePhoneOne($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact wherePhoneTwo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereUpdatedAt($value)
+ */
+	class Contact extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property string $background
  * @property string $counter_icon_one
  * @property string $counter_count_one
@@ -391,6 +420,31 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property string $content
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPageBuilder newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPageBuilder newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPageBuilder query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPageBuilder whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPageBuilder whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPageBuilder whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPageBuilder whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPageBuilder whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPageBuilder whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomPageBuilder whereUpdatedAt($value)
+ */
+	class CustomPageBuilder extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property int $product_id
  * @property int $status
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -435,6 +489,33 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DeliveryArea whereUpdatedAt($value)
  */
 	class DeliveryArea extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string|null $short_info
+ * @property string|null $email
+ * @property string|null $address
+ * @property string|null $copyright
+ * @property string|null $phone
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo whereCopyright($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo whereShortInfo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FooterInfo whereUpdatedAt($value)
+ */
+	class FooterInfo extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -688,6 +769,35 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int $user_id
+ * @property int $product_id
+ * @property int $rating
+ * @property string $review
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Product $product
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating whereRating($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating whereReview($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductRating whereUserId($value)
+ */
+	class ProductRating extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property int $product_id
  * @property string $name
  * @property float $price
@@ -704,6 +814,62 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSize whereUpdatedAt($value)
  */
 	class ProductSize extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $reservation_id
+ * @property string $name
+ * @property string $phone
+ * @property string $persons
+ * @property string $date
+ * @property string $time
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation wherePersons($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereReservationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereUserId($value)
+ */
+	class Reservation extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $start_time
+ * @property string $end_time
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservationTime newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservationTime newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservationTime query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservationTime whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservationTime whereEndTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservationTime whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservationTime whereStartTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservationTime whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservationTime whereUpdatedAt($value)
+ */
+	class ReservationTime extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -785,6 +951,69 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string $icon
+ * @property string $name
+ * @property string $link
+ * @property int $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLink newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLink newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLink query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLink whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLink whereIcon($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLink whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLink whereLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLink whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLink whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLink whereUpdatedAt($value)
+ */
+	class SocialLink extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $email
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscriber newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscriber newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscriber query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscriber whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscriber whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscriber whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subscriber whereUpdatedAt($value)
+ */
+	class Subscriber extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $content
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TermsAndCondition newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TermsAndCondition newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TermsAndCondition query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TermsAndCondition whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TermsAndCondition whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TermsAndCondition whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TermsAndCondition whereUpdatedAt($value)
+ */
+	class TermsAndCondition extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property string $image
  * @property string $name
  * @property string $title
@@ -829,6 +1058,8 @@ namespace App\Models{
  * @property-read int|null $chats_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read int|null $orders_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
