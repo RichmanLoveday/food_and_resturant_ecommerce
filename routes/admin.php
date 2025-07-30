@@ -115,6 +115,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::put('/general-setting', 'UpdateGeneralSetting')->name('general-setting.update');
             Route::put('/pusher-setting', 'UpdatePusherSetting')->name('pusher-setting.update');
             Route::put('/mail-setting', 'updateMailSettings')->name('mail-setting.update');
+            Route::put('/logo-setting', 'updateLogoSettings')->name('logo-setting.update');
         });
 
         /** Payment Gateway Routes */
@@ -231,7 +232,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         });
 
 
-        /** Socila Links Controller */
+        /** Social Links Controller */
         Route::resource('/social-link', SocialLinkController::class);
 
         /** Footer Info */
@@ -248,7 +249,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         /**Custom Page Builder */
         Route::resource('/custom-page-builder', CustomPageBuilderController::class);
 
+
         /** Admin Management Routes */
+        // Apply the custom middleware only to sensitive routes
+        Route::middleware('prevent.supperadmin.edit.delete')->group(function () {
+            Route::get('/admin-management/{id}/edit', [AdminManagementController::class, 'edit'])->name('admin-management.edit');
+            Route::put('/admin-management/{id}', [AdminManagementController::class, 'update'])->name('admin-management.update');
+            Route::delete('/admin-management/{id}', [AdminManagementController::class, 'destroy'])->name('admin-management.destroy');
+        });
+
         Route::resource('/admin-management', AdminManagementController::class);
     });
 });

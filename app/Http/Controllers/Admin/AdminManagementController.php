@@ -12,6 +12,7 @@ use Illuminate\View\View;
 
 class AdminManagementController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -58,10 +59,6 @@ class AdminManagementController extends Controller
      */
     public function edit(string $id)
     {
-        if ($id == 1) {
-            throw ValidationException::withMessages(['you can not delete supper admin']);
-        }
-
         $admin = User::findOrFail($id);
         return view('admin.admin-management.edit', compact('admin'));
     }
@@ -71,10 +68,6 @@ class AdminManagementController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if ($id == 1) {
-            throw ValidationException::withMessages(['you can not delete supper admin']);
-        }
-
         $user = User::findOrFail($id);
 
         $request->validate([
@@ -110,10 +103,6 @@ class AdminManagementController extends Controller
     {
 
         try {
-            if ($id == 1) {
-                throw ValidationException::withMessages(['you can not delete supper admin']);
-            }
-
             $user = User::findOrFail($id);
             $user->delete();
 

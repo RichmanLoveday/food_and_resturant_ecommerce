@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('og_metatag_section')
     <title>FoodPark || Restaurant Template</title>
-    <link rel="icon" type="image/png" href="{{ asset('frontend/images/favicon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset(config('settings.favicon')) }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/spacing.css') }}">

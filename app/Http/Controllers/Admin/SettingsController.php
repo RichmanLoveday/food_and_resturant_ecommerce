@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Services\MailSettingsService;
 use App\services\SettingsService;
+use App\Traits\FileUploadTrait;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
+    use FileUploadTrait;
+
     public function index(): View
     {
         // dd(config('mail'));
@@ -102,9 +105,45 @@ class SettingsController extends Controller
 
 
         //? clear settings cache memory
+        $mailSettingsService->clearCacheSettings();
+
+        //? flash success message
+        toastr()->success('Updated Successfully');
+        return redirect()->back();
+    }
+
+
+    public function updateLogoSettings(Request $request)
+    {
+        $validatedData = $request->validate([
+            'logo' => ['nullable', 'image', 'max:1000'],
+            'footer_logo' => ['nullable', 'image', 'max:1000'],
+            'favicon' => ['nullable', 'image', 'max:1000'],
+            'breadcrumb' => ['nullable', 'image', 'max:1000'],
+        ]);
+
+        //? loop and update validated data for pusher settings
+        foreach ($validatedData as $key => $value) {
+            $imagePath = $this->uploadImage($request, $key, '/uploads/logo-settings');
+
+            //? check if imagePath is empty
+            if (!empty($imagePath)) {
+                //? remove old image path on upload
+                $oldPath = config('settings.' . $key);
+                $this->removeImage($oldPath);
+
+                //? update logo settings
+                Setting::updateOrCreate(
+                    ['key' => $key],
+                    ['value' => $imagePath],
+                );
+            }
+        }
+
+
+        //? clear settings cache memory
         $settingsService = app(SettingsService::class);
         $settingsService->clearCacheSettings();
-        $mailSettingsService->clearCacheSettings();
 
         //? flash success message
         toastr()->success('Updated Successfully');

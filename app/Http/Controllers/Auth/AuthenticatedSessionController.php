@@ -16,7 +16,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        return view('auth.login');
+        $breadCrumb = ['title' => 'sign in', 'link' => '#'];
+        return view('auth.login', compact('breadCrumb'));
     }
 
     /**

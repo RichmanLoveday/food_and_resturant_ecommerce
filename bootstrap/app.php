@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\PreventAdminDeleteEditMiddleware;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'role' => RoleMiddleware::class,
+            'prevent.supperadmin.edit.delete' => PreventAdminDeleteEditMiddleware::class,
         ]);
 
         //? redirect authenticated users to their dashboard based on their role
