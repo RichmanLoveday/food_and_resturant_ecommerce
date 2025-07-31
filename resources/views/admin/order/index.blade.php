@@ -39,6 +39,8 @@
                                         <option name="" id="" value="pending">Pending</option>
                                         <option name="" id="" value="completed">Completed
                                         </option>
+                                        <option name="" id="" value="failed">Failed
+                                        </option>
                                     </select>
                                 </div>
 
@@ -96,7 +98,7 @@
                                 if ($(this).val() === response.order.payment_status) {
                                     $(this).attr('selected', 'selected');
                                 } else {
-                                    $(this).attr('selected', 'selected');
+                                    $(this).removeAttr('selected');
                                 }
                             });
 
@@ -104,7 +106,7 @@
                                 if ($(this).val() === response.order.order_status) {
                                     $(this).attr('selected', 'selected');
                                 } else {
-                                    $(this).attr('selected', 'selected');
+                                    $(this).removeAttr('selected');
                                 }
                             });
                         } else {

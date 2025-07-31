@@ -57,10 +57,10 @@ class OrderController extends Controller
      */
     public function orderStatusUpdate(Request $request, string|int $id): RedirectResponse|JsonResponse
     {
-        //dd($request->all());
+        // dd($request->all());
         //? validate input fields given for update
         $request->validate([
-            'payment_status' => ['required', 'in:pending,completed'],
+            'payment_status' => ['required', 'in:pending,completed,failed'],
             'order_status' => ['required', 'in:pending,in_process,delivered,declined'],
         ]);
 
