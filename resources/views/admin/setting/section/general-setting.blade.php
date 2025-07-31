@@ -10,6 +10,23 @@
                      value="{{ config('settings.site_name') }}">
              </div>
 
+             <div class="row">
+                 <div class="col-md-6">
+                     <div class="form-group">
+                         <label for="stie-email">Site Email</label>
+                         <input type="text" class="form-control" name="site_email" id="site-name"
+                             value="{{ config('settings.site_email') }}">
+                     </div>
+                 </div>
+                 <div class="col-md-6">
+                     <div class="form-group">
+                         <label for="stie-phone">Site Phone</label>
+                         <input type="phone" class="form-control" name="site_phone" id="site-name"
+                             value="{{ config('settings.site_phone') }}">
+                     </div>
+                 </div>
+             </div>
+
              <div class="form-group">
                  <label for="default-currency">Default Currency</label>
                  <select name="site_default_currency" class=" select2 form-control" id="default-currency">

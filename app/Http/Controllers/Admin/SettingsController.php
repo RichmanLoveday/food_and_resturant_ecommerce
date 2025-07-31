@@ -26,6 +26,8 @@ class SettingsController extends Controller
         //dd($request->all());
         $validatedData = $request->validate([
             'site_name' => 'required|max:255',
+            'site_email' => 'nullable|max:255',
+            'site_phone' => 'nullable|max:255',
             'site_default_currency' => 'required|max:5',
             'site_currency_icon' => 'required|max:4',
             'site_currency_icon_position' => 'required|max:20',
@@ -138,6 +140,58 @@ class SettingsController extends Controller
                     ['value' => $imagePath],
                 );
             }
+        }
+
+
+        //? clear settings cache memory
+        $settingsService = app(SettingsService::class);
+        $settingsService->clearCacheSettings();
+
+        //? flash success message
+        toastr()->success('Updated Successfully');
+        return redirect()->back();
+    }
+
+
+    public function updateAppearanceSetting(Request $request): RedirectResponse
+    {
+        $validatedData = $request->validate([
+            'site_color' => ['required'],
+        ]);
+
+
+        foreach ($validatedData as $key => $value) {
+            Setting::updateOrCreate(
+                ['key' => $key],
+                ['value' => $value],
+            );
+        }
+
+
+        //? clear settings cache memory
+        $settingsService = app(SettingsService::class);
+        $settingsService->clearCacheSettings();
+
+        //? flash success message
+        toastr()->success('Updated Successfully');
+        return redirect()->back();
+    }
+
+
+    public function updateSeoSetting(Request $request)
+    {
+        $validatedData = $request->validate([
+            'seo_title' => ['required', 'max:255'],
+            'seo_description' => ['nullable', 'max:600'],
+            'seo_keywords' => ['nullable'],
+        ]);
+
+
+        foreach ($validatedData as $key => $value) {
+            Setting::updateOrCreate(
+                ['key' => $key],
+                ['value' => $value],
+            );
         }
 
 

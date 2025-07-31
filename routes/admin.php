@@ -116,6 +116,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::put('/pusher-setting', 'UpdatePusherSetting')->name('pusher-setting.update');
             Route::put('/mail-setting', 'updateMailSettings')->name('mail-setting.update');
             Route::put('/logo-setting', 'updateLogoSettings')->name('logo-setting.update');
+            Route::put('/appearance-setting', 'updateAppearanceSetting')->name('appearance-setting.update');
+            Route::put('/seo-setting', 'updateSeoSetting')->name('seo-setting.update');
         });
 
         /** Payment Gateway Routes */
