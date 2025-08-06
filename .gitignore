@@ -23,3 +23,4 @@ yarn-error.log
 /resources/frontent-template
 _ide_helper.php
 _ide_helper_models.php
+database/seeders/PaymentGatewaySettingsSeeder.php
