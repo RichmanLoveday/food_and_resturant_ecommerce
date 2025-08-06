@@ -11,11 +11,15 @@ chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 echo "📦 Running Composer..."
 composer install --no-dev --optimize-autoloader --working-dir=/var/www/html
 
+
 # Laravel key
 echo "🔑 Generating application key..."
 php artisan key:generate --force
 
 # Laravel caches
+echo "🧼 Dumping autoload..."
+composer dump-autoload --optimize
+
 echo "📦 Caching config, routes, and views..."
 php artisan config:cache
 php artisan route:cache
