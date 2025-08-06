@@ -22,7 +22,7 @@ class SliderUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif', 'max:3000'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif', 'max:5000'],
             'offer' => ['nullable', 'string', 'max:50'],
             'title' => ['required', 'max:255'],
             'sub_title' =>  ['required', 'max:255'],

@@ -19,6 +19,7 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
+        $breadCrumb = ['title' => 'User Dashboard', 'link' => '#'];
         $deliveryAreas = DeliveryArea::where('status', true)->get();
         $userAddresses = Address::with(['deliveryArea'])
             ->where('user_id', Auth::user()->id)->get();
@@ -33,16 +34,29 @@ class DashboardController extends Controller
             ->paginate(1);
 
         $wishlist = Wishlist::where(['user_id' =>  Auth::user()->id])->latest()->get();
+        $totalOrders = Order::where('user_id', Auth::user()->id)->count();
+        $totalCompleteOrders = Order::where([
+            'user_id' => Auth::user()->id,
+            'order_status' => 'delivered'
+        ])->count();
+        $totalCancelledOrders = Order::where([
+            'user_id' => Auth::user()->id,
+            'order_status' => 'declined'
+        ])->count();
 
         // dd($userAddresses->toArray());
 
         return view('frontend.dashboard.index', compact(
+            'breadCrumb',
             'deliveryAreas',
             'userAddresses',
             'orders',
             'reservations',
             'reviews',
             'wishlist',
+            'totalOrders',
+            'totalCompleteOrders',
+            'totalCancelledOrders',
         ));
     }
 

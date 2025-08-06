@@ -9,8 +9,8 @@
                         <span><i class="fal fa-phone-alt"></i></span>
                         <div class="text">
                             <h3>call</h3>
-                            <p>{{ $contact->phone_one }}</p>
-                            <p>{{ $contact->phone_two }}</p>
+                            <p>{{ @$contact->phone_one }}</p>
+                            <p>{{ @$contact->phone_two }}</p>
                         </div>
                     </div>
                 </div>
@@ -19,8 +19,8 @@
                         <span><i class="fal fa-envelope"></i></span>
                         <div class="text">
                             <h3>mail</h3>
-                            <p>{{ $contact->mail_one }}</p>
-                            <p>{{ $contact->mail_two }}</p>
+                            <p>{{ @$contact->mail_one }}</p>
+                            <p>{{ @$contact->mail_two }}</p>
                         </div>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                         <span><i class="fas fa-street-view"></i></span>
                         <div class="text">
                             <h3>location</h3>
-                            <p>{{ $contact->address }}</p>
+                            <p>{{ @$contact->address }}</p>
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                 <div class="row mt_100 xs_mt_70">
                     <div class="col-xl-12 wow fadeInUp" data-wow-duration="1s">
                         <div class="fp__contact_map">
-                            <iframe src="{{ $contact->map_link }}" style="border:0;" allowfullscreen="" loading="lazy"
+                            <iframe src="{{ @$contact->map_link }}" style="border:0;" allowfullscreen="" loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>

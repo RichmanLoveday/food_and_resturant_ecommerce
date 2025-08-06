@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\CounterController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CustomPageBuilderController;
+use App\Http\Controllers\Admin\ClearDatabaseController;
 use App\Http\Controllers\Admin\DailyOfferController;
 use App\Http\Controllers\Admin\DeliveryAreaController;
 use App\Http\Controllers\Admin\FooterInfoController;
@@ -261,5 +262,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         });
 
         Route::resource('/admin-management', AdminManagementController::class);
+
+        Route::controller(ClearDatabaseController::class)->group(function () {
+            Route::get('/clear-database', 'index')->name('clear-database.index');
+            Route::post('/clear-database', 'clearDB')->name('clear-database.destroy');
+        });
     });
 });

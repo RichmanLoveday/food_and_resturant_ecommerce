@@ -102,13 +102,13 @@
 
 
             $('.image-preview-1').css({
-                'background-image': 'url({{ asset($appDownloadSection->image) }})',
+                'background-image': 'url({{ asset(@$appDownloadSection->image) }})',
                 'background-size': 'cover',
                 'background-position': 'center center'
             });
 
             $('.image-preview-2').css({
-                'background-image': 'url({{ asset($appDownloadSection->background) }})',
+                'background-image': 'url({{ asset(@$appDownloadSection->background) }})',
                 'background-size': 'cover',
                 'background-position': 'center center'
             });

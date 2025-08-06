@@ -19,7 +19,7 @@
                             <div id="image-preview" class="image-preview">
                                 <label for="image-upload" id="image-label">Choose File</label>
                                 <input type="file" name="background" id="image-upload" />
-                                <input type="hidden" name="old_background" value="{{ $counter->background }}">
+                                <input type="hidden" name="old_background" value="{{ @$counter->background }}">
                             </div>
                         </div>
                     </div>
@@ -27,38 +27,38 @@
                     <div class="form-group">
                         <label>Counter icon one</label>
                         <br>
-                        <button class="btn btn-primary" name="counter_icon_one" data-icon="{{ $counter->counter_icon_one }}"
-                            role="iconpicker"></button>
+                        <button class="btn btn-primary" name="counter_icon_one"
+                            data-icon="{{ @$counter->counter_icon_one }}" role="iconpicker"></button>
                     </div>
 
                     <div class="form-group">
                         <label for="">Counter count one</label>
-                        <input type="text" class="form-control" value="{{ $counter->counter_count_one }}"
+                        <input type="text" class="form-control" value="{{ @$counter->counter_count_one }}"
                             name="counter_count_one" id="">
                     </div>
 
                     <div class="form-group">
                         <label for="">Counter one name</label>
-                        <input type="text" class="form-control" value="{{ $counter->counter_name_one }}"
+                        <input type="text" class="form-control" value="{{ @$counter->counter_name_one }}"
                             name="counter_name_one" id="">
                     </div>
 
                     <div class="form-group">
                         <label>Counter icon two</label>
                         <br>
-                        <button class="btn btn-primary" name="counter_icon_two" data-icon="{{ $counter->counter_icon_two }}"
-                            role="iconpicker"></button>
+                        <button class="btn btn-primary" name="counter_icon_two"
+                            data-icon="{{ @$counter->counter_icon_two }}" role="iconpicker"></button>
                     </div>
 
                     <div class="form-group">
                         <label for="">Counter count two</label>
-                        <input type="text" class="form-control" value="{{ $counter->counter_count_two }}"
+                        <input type="text" class="form-control" value="{{ @$counter->counter_count_two }}"
                             name="counter_count_two" id="">
                     </div>
 
                     <div class="form-group">
                         <label for="">Counter name two</label>
-                        <input type="text" class="form-control" value="{{ $counter->counter_name_two }}"
+                        <input type="text" class="form-control" value="{{ @$counter->counter_name_two }}"
                             name="counter_name_two" id="">
                     </div>
 
@@ -66,18 +66,18 @@
                         <label>Counter icon three</label>
                         <br>
                         <button class="btn btn-primary" name="counter_icon_three"
-                            data-icon="{{ $counter->counter_icon_three }}" role="iconpicker"></button>
+                            data-icon="{{ @$counter->counter_icon_three }}" role="iconpicker"></button>
                     </div>
 
                     <div class="form-group">
                         <label for="">Counter count three</label>
-                        <input type="text" class="form-control" value="{{ $counter->counter_count_three }}"
+                        <input type="text" class="form-control" value="{{ @$counter->counter_count_three }}"
                             name="counter_count_three" id="">
                     </div>
 
                     <div class="form-group">
                         <label for="">Counter name three</label>
-                        <input type="text" class="form-control" value="{{ $counter->counter_name_three }}"
+                        <input type="text" class="form-control" value="{{ @$counter->counter_name_three }}"
                             name="counter_name_three" id="">
                     </div>
 
@@ -85,18 +85,18 @@
                         <label>Counter icon four</label>
                         <br>
                         <button class="btn btn-primary" name="counter_icon_four"
-                            data-icon="{{ $counter->counter_icon_four }}" role="iconpicker"></button>
+                            data-icon="{{ @$counter->counter_icon_four }}" role="iconpicker"></button>
                     </div>
 
                     <div class="form-group">
                         <label for="">Counter count four</label>
-                        <input type="text" class="form-control" value="{{ $counter->counter_count_four }}"
+                        <input type="text" class="form-control" value="{{ @$counter->counter_count_four }}"
                             name="counter_count_four" id="">
                     </div>
 
                     <div class="form-group">
                         <label for="">Counter name four</label>
-                        <input type="text" class="form-control" value="{{ $counter->counter_name_four }}"
+                        <input type="text" class="form-control" value="{{ @$counter->counter_name_four }}"
                             name="counter_name_four" id="">
                     </div>
 
@@ -112,7 +112,7 @@
     <script>
         $(document).ready(function() {
             $('.image-preview').css({
-                'background-image': 'url({{ asset($counter->background) }})',
+                'background-image': 'url({{ asset(@$counter->background) }})',
                 'background-size': 'cover',
                 'background-position': 'center center'
             });

@@ -30,11 +30,12 @@ class DatabaseSeeder extends Seeder
             WhyChooseUsTitleSeeder::class,
             CategorySeeder::class,
             MenuBuilderSeeder::class,
+            SettingSeeder::class,
         ]);
 
-        Slider::factory(4)->create();
-        WhyChooseUs::factory(3)->create();
-        Product::factory(10)->create();
-        Coupon::factory(3)->create();
+        // Slider::factory(4)->create();
+        // WhyChooseUs::factory(3)->create();
+        // Product::factory(10)->create();
+        // Coupon::factory(3)->create();
     }
 }

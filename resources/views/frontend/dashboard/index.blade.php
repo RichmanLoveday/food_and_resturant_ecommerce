@@ -1,29 +1,7 @@
 @extends('frontend.layout.master')
 @section('content')
-    <!--=============================
-                                                                                                                                                                                                                                                                                                                BREADCRUMB START
-                                                                                                                                                                                                                                                                                                            ==============================-->
-    <section class="fp__breadcrumb" style="background: url({{ asset('frontend/images/counter_bg.jpg') }});">
-        <div class="fp__breadcrumb_overlay">
-            <div class="container">
-                <div class="fp__breadcrumb_text">
-                    <h1>user dashboard</h1>
-                    <ul>
-                        <li><a href="index.html">home</a></li>
-                        <li><a href="#">dashboard</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!--=============================
-                                                                                                                                                                                                                                                                                                                BREADCRUMB END
-                                                                                                                                                                                                                                                                                                            ==============================-->
+    @include('frontend.common-component.breadcrumb')
 
-
-    <!--=========================
-                                                                                                                                                                                                                                                                                                                DASHBOARD START
-                                                                                                                                                                                                                                                                                                            ==========================-->
     <section class="fp__dashboard mt_120 xs_mt_90 mb_100 xs_mb_70">
         <div class="container">
             <div class="fp__dashboard_area">
@@ -89,15 +67,17 @@
                                 <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-pills-settings" type="button" role="tab"
                                     aria-controls="v-pills-settings" aria-selected="false"><span><i
-                                            class="fas fa-user-lock"></i></span> Change Password </button>
+                                            class="fas fa-user-lock"></i></span> Change Password
+                                </button>
 
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit"
+                                    <button style="width: 100%" type="submit"
                                         onclick="event.preventDefault();
                                                 this.closest('form').submit();"
                                         class="nav-link" type="button"><span> <i class="fas fa-sign-out-alt"></i>
-                                        </span> Logout</button>
+                                        </span> Logout
+                                    </button>
                                 </form>
                             </div>
                         </div>

@@ -38,9 +38,9 @@
                 <li>
                     <a href="#" class="menu_search"><i class="far fa-search"></i></a>
                     <div class="fp__search_form">
-                        <form>
+                        <form action="{{ route('product.index') }}">
                             <span class="close_search"><i class="far fa-times"></i></span>
-                            <input type="text" placeholder="Search . . .">
+                            <input name="search" type="text" placeholder="Search . . .">
                             <button type="submit">search</button>
                         </form>
                     </div>
@@ -57,7 +57,7 @@
                 @endphp
 
                 <li>
-                    <a href="javascrit:void();" class="message_icon">
+                    <a href="{{ route('dashboard') }}" class="message_icon">
                         <i class="fas fa-comment-alt-dots"></i>
                         <span class="unseen-messages-count">{{ $unseenMessages > 0 ? $unseenMessages : 0 }}</span>
                     </a>
