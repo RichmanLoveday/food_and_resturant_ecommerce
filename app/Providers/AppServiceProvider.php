@@ -22,9 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (app()->runningInConsole()) {
-            // Prevent broadcast route loading during seeding
-            Broadcast::routes(); // <-- Optional depending on error source
+        if (env('APP_ENV') == 'production') {
+            $this->app['request']->server->set('HTTPS', true);
         }
 
         Paginator::useBootstrapFive();
