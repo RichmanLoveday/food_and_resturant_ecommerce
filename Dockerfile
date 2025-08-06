@@ -23,5 +23,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 COPY scripts/start.sh /etc/startup.d/00-laravel-deploy.sh
 RUN chmod +x /etc/startup.d/00-laravel-deploy.sh
 
+RUN chmod -R ugo+rw storage
+
 # ✅ Let the base image handle startup via its entrypoint
 CMD ["/start.sh"]
