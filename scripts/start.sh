@@ -28,6 +28,3 @@ php artisan migrate --force
 # Seed DB
 echo "🌱 Seeding database..."
 php artisan db:seed --force
-
-echo "✅ Laravel is ready. Handing over to Nginx and PHP-FPM..."
-exec /start.sh
