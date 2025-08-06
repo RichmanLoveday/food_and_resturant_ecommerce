@@ -15,10 +15,9 @@ ENV LOG_CHANNEL stderr
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
 # Add custom Laravel setup script
-COPY start.sh /etc/startup.d/laravel-setup.sh
-RUN chmod +x /etc/startup.d/laravel-setup.sh
 
-# Use base image start scrip
+COPY scripts/start.sh /etc/startup.d/start.sh
+RUN chmod +x /etc/startup.d/start.sh
+
+# Use base image start script
 CMD ["/start.sh"]
-
-
