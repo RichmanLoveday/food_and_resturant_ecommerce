@@ -14,9 +14,9 @@ ENV APP_DEBUG false
 ENV LOG_CHANNEL stderr
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
-# Add custom Laravel setup script
-COPY start.sh /etc/startup.d/laravel-setup.sh
-RUN chmod +x /etc/startup.d/laravel-setup.sh
+# ✅ Copy the Laravel deploy script to startup.d so it's executed automatically
+COPY scripts/00-laravel-deploy.sh /etc/startup.d/00-laravel-deploy.sh
+RUN chmod +x /etc/startup.d/00-laravel-deploy.sh
 
-# Use base image start script
+# Base image already uses /start.sh, no need to override CMD
 CMD ["/start.sh"]
