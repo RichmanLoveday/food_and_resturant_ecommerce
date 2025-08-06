@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::controller(FrontendController::class)->group(function () {
     /** show home page */
     Route::get('/', 'index')->name('home');
-
     /** show product */
     Route::get('/product/{slug}', 'showProduct')->name('product.show');
 

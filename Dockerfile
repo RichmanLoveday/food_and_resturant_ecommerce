@@ -18,7 +18,7 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 COPY start.sh /etc/startup.d/laravel-setup.sh
 RUN chmod +x /etc/startup.d/laravel-setup.sh
 
-# Use base image start script
+# Use base image start scrip
 CMD ["/start.sh"]
 
 
