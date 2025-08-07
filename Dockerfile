@@ -1,34 +1,20 @@
-FROM php:8.2-fpm
+FROM richarvey/nginx-php-fpm:3.1.6
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    unzip \
-    libzip-dev \
-    zip \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libpq-dev \
-    && docker-php-ext-install pdo pdo_mysql zip
-
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy project files
 COPY . .
 
-# Set PHP memory limit
-RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/99-custom.ini
+# Image config
+ENV SKIP_COMPOSER 1
+ENV WEBROOT /var/www/html/public
+ENV PHP_ERRORS_STDERR 1
+ENV RUN_SCRIPTS 1
+ENV REAL_IP_HEADER 1
 
-# Ensure start.sh is copied
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
+# Laravel config
+ENV APP_ENV production
+ENV APP_DEBUG false
+ENV LOG_CHANNEL stderr
 
-# Run Laravel permissions or composer install (optional)
-# RUN composer install
-# RUN php artisan config:cache
+# Allow composer to run as root
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
-# Start container
 CMD ["/start.sh"]
