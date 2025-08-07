@@ -2,33 +2,33 @@
 
 echo "🚀 Starting Laravel Deployment..."
 
-# Fix permissions
+# Ensure permissions are correct at runtime
+# This is a critical step to prevent permission errors
 echo "🔧 Setting permissions..."
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Run Composer
-echo "📦 Running Composer..."
-composer install --no-dev --optimize-autoloader --working-dir=/var/www/html
+# Generate application key if it doesn't exist
+if [ ! -f .env ] || ! grep -q "APP_KEY=" .env; then
+  echo "🔑 Generating application key..."
+  php artisan key:generate --force
+fi
 
-
-# Laravel key
-echo "🔑 Generating application key..."
-php artisan key:generate --force
-
-# Laravel caches
-echo "🧼 Dumping autoload..."
-composer dump-autoload --optimize
-
+# Run caching commands
 echo "📦 Caching config, routes, and views..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Migrate DB
+# Run migrations
 echo "🛠️ Running migrations..."
 php artisan migrate --force
 
-# Seed DB
+# Seed the database
 echo "🌱 Seeding database..."
 php artisan db:seed --force
+
+echo "✅ Deployment finished."
+
+# The base image's entrypoint will continue the process
+# We don't need `exec` here because the parent script takes over
