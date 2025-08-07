@@ -1,37 +1,59 @@
-# Base PHP image with required extensions
-FROM php:8.2-fpm
+# Use PHP 8.2 with FPM and Alpine for smaller image size
+FROM php:8.2-fpm-alpine
 
 # Set working directory
 WORKDIR /var/www/html
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
+RUN apk add --no-cache \
+    bash \
+    nginx \
     curl \
+    libpng \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    libwebp-dev \
+    libxpm-dev \
+    freetype-dev \
+    oniguruma-dev \
+    libxml2-dev \
     zip \
     unzip \
-    libzip-dev \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    nginx \
-    && docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath
+    git \
+    shadow \
+    icu-dev \
+    g++ \
+    make \
+    autoconf
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+ && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl xml
 
-# Increase PHP memory limit
-RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/99-memory-limit.ini
+# Set memory limit (fix for Render build issue)
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/99-custom.ini
 
-# Copy Laravel app
+# Install Composer globally
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Add nginx configuration
+COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Copy Laravel project files
 COPY . .
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
+# Ensure correct permissions
+RUN addgroup -g 1000 www && adduser -u 1000 -G www -s /bin/sh -D www \
+ && chown -R www:www /var/www/html \
  && chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port
-EXPOSE 9000
+USER www
 
+# Expose ports
+EXPOSE 80
 
-CMD ["php-fpm","/start.sh"]
+# Entrypoint script to run both PHP-FPM and NGINX
+COPY ./docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
