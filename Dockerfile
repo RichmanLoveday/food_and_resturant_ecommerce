@@ -2,32 +2,32 @@
 
 # Stage 1: Build the application with Composer
 # Use the official PHP 8.3 CLI image as the base.
-# This guarantees that your build environment is running PHP 8.3.
 FROM php:8.3-cli AS composer_builder
 
 # Install Composer on top of the PHP image
 COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
+# Install the necessary PHP extensions
+# The `openspout` package requires the `zip` extension.
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    && docker-php-ext-install zip
+
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy only composer.json to leverage Docker's caching
-# We intentionally omit composer.lock to force a fresh install.
 COPY composer.json ./
 
 # Run composer update to generate a new composer.lock file from scratch.
-# We are adding the `-v` flag here to get a detailed error message in the logs.
-# This is the most critical step to debug the "exit code 2" error.
+# We're keeping the `-v` flag here for one last check.
 RUN composer update --no-dev --optimize-autoloader -v
 
 # Now, copy the rest of the application source code
 COPY . .
 
 # Stage 2: Final production image
-# We use a known-to-exist, stable tag for the richarvey image.
-# NOTE: The `3.1.6` tag is based on PHP 8.2. If your application code is not
-# compatible with PHP 8.2, you will get runtime errors.
-# If this happens, you will need to find a different base image that supports PHP 8.3.
+# The richarvey image is based on PHP 8.2.
 FROM richarvey/nginx-php-fpm:3.1.6
 
 # Set working directory inside the container
@@ -51,7 +51,6 @@ ENV LOG_CHANNEL=stderr
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Ensure the storage directory exists and has the correct permissions
-# This is a critical step to prevent "Permission denied" errors
 RUN mkdir -p storage/logs \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
