@@ -22,6 +22,7 @@ class PaymentGatewaySettingServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Log::info('Boot started PaymentGatewaySettingService, memory: ' . memory_get_usage(true));
         $settingsService = $this->app->make(PaymentGatewaySettingService::class);
         $settingsService->setGlobalSettings();
     }
