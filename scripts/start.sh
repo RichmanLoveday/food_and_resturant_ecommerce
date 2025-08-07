@@ -1,33 +1,65 @@
-#!/usr/bin/env bash
+# Multi-stage build for a smaller, more secure final image
 
-echo "🚀 Starting Laravel Deployment..."
+# Stage 1: Build the application with Composer
+# Use the official PHP 8.3 CLI image as the base.
+FROM php:8.3-cli AS composer_builder
 
-# Ensure permissions are correct at runtime as a final safeguard
-echo "🔧 Setting permissions..."
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Check if .env exists and APP_KEY is set. If not, generate a new key.
-# This prevents key generation on every restart.
-if [ ! -f .env ] || ! grep -q "APP_KEY=" .env; then
-  echo "🔑 Generating application key..."
-  php artisan key:generate --force
-fi
+# Install the necessary PHP extensions
+# The `openspout` package requires the `zip` extension.
+# The GD extension (`libpng-dev` and `gd`) is also installed to meet all project dependencies.
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    libpng-dev \
+    && docker-php-ext-install zip gd
 
-# Clear and cache Laravel configuration, routes, and views
-echo "📦 Caching config, routes, and views..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# Set the working directory inside the container
+WORKDIR /app
 
-# Run database migrations
-echo "🛠️ Running migrations..."
-php artisan migrate --force
+# Copy only composer.json and composer.lock to leverage Docker's layer caching
+COPY composer.json composer.lock ./
 
-# Seed the database
-echo "🌱 Seeding database..."
-php artisan db:seed --force
+# Run composer update to install dependencies from scratch.
+# This is the final, clean command after resolving all dependency issues.
+RUN composer update --no-dev --optimize-autoloader
 
-echo "✅ Deployment finished."
+# Stage 2: Final production image
+# The richarvey image is based on PHP 8.2.
+FROM richarvey/nginx-php-fpm:3.1.6
 
-# The base image's entrypoint will now take over and start Nginx/PHP-FPM.
+# Set working directory inside the container
+WORKDIR /var/www/html
+
+# Copy all application files from the local directory
+COPY . .
+
+# Copy the vendor directory with all dependencies from the builder stage
+COPY --from=composer_builder /app/vendor /var/www/html/vendor
+
+# Correct the path for the Nginx configuration file
+COPY conf/nginx/nginx-site.conf /etc/nginx/sites-available/default.conf
+
+# Set environment variables for Laravel and Nginx
+ENV SKIP_COMPOSER=1
+ENV WEBROOT=/var/www/html/public
+ENV PHP_ERRORS_STDERR=1
+ENV RUN_SCRIPTS=1
+ENV REAL_IP_HEADER=1
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+ENV LOG_CHANNEL=stderr
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# Ensure the storage directory exists and has the correct permissions
+RUN mkdir -p storage/logs \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Copy the start script
+COPY scripts/start.sh /etc/startup.d/00-laravel-deploy.sh
+RUN chmod +x /etc/startup.d/00-laravel-deploy.sh
+
+# Let the base image handle startup via its entrypoint
+CMD ["/start.sh"]
