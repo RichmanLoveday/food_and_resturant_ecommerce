@@ -16,9 +16,9 @@ WORKDIR /app
 COPY composer.json ./
 
 # Run composer update to generate a new composer.lock file from scratch.
-# This ensures all dependencies are compatible with the container's environment.
-# We also use --no-dev and --optimize-autoloader for a production-ready build.
-RUN composer update --no-dev --optimize-autoloader
+# We are adding the `-v` flag here to get a detailed error message in the logs.
+# This is the most critical step to debug the "exit code 2" error.
+RUN composer update --no-dev --optimize-autoloader -v
 
 # Now, copy the rest of the application source code
 COPY . .
