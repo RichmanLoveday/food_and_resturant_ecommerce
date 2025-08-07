@@ -4,6 +4,9 @@
 # Use the official PHP 8.3 CLI image as the base.
 FROM php:8.3-cli AS composer_builder
 
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 # Install the necessary PHP extensions
 # The `openspout` package requires the `zip` extension.
 # The GD extension (`libpng-dev` and `gd`) is also installed to meet all project dependencies.
