@@ -1,32 +1,37 @@
-FROM richarvey/nginx-php-fpm:3.1.6
-
-# Copy app files into container
-COPY . /var/www/html
+# Base PHP image with required extensions
+FROM php:8.2-fpm
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Set environment variables
-ENV SKIP_COMPOSER=1
-ENV WEBROOT=/var/www/html/public
-ENV PHP_ERRORS_STDERR=1
-ENV RUN_SCRIPTS=1
-ENV REAL_IP_HEADER=1
-ENV APP_ENV=production
-ENV APP_DEBUG=false
-ENV LOG_CHANNEL=stderr
-ENV COMPOSER_ALLOW_SUPERUSER=1
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    zip \
+    unzip \
+    libzip-dev \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    nginx \
+    && docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath
 
-# Increase PHP memory limit to 512M
-RUN echo "php_admin_value[memory_limit] = 512M" >> /etc/php/8.2/fpm/php-fpm.conf \
- && echo "memory_limit=512M" > /etc/php/8.2/fpm/conf.d/99-memory-limit.ini \
- && echo "memory_limit=512M" > /etc/php/8.2/cli/conf.d/99-memory-limit.ini
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install Composer dependencies if needed
-RUN composer install --no-dev --optimize-autoloader
+# Increase PHP memory limit
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/99-memory-limit.ini
 
-# Give proper permissions
+# Copy Laravel app
+COPY . .
+
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html \
  && chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
 
-CMD ["/start.sh"]
+# Expose port
+EXPOSE 9000
+
+
+CMD ["php-fpm","/start.sh"]
