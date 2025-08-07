@@ -17,7 +17,7 @@ ENV LOG_CHANNEL stderr
 # Allow composer to run as root
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
-# 🛠️ Set PHP memory limit to 512MB
-RUN echo "memory_limit = 512M" > /etc/php7/php.ini
+# ✅ Fix memory limit
+RUN echo "memory_limit = 512M" > /etc/php7/conf.d/99-custom.ini
 
 CMD ["/start.sh"]
