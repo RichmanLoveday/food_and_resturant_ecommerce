@@ -1,7 +1,7 @@
 # Multi-stage build for a smaller, more secure final image
 
 # Stage 1: Build the application with Composer
-# We use a composer image with PHP 8.3 to ensure platform requirements are met.
+# We use a standard Composer image with PHP 8.3 to ensure platform requirements are met.
 FROM composer:2.7 AS composer_builder
 
 # Set the working directory inside the container
@@ -18,8 +18,12 @@ RUN composer install --no-dev --optimize-autoloader
 COPY . .
 
 # Stage 2: Final production image
-# We use a base image with a compatible PHP version (e.g., PHP 8.3)
-FROM richarvey/nginx-php-fpm:3.1.6-php8.3
+# We use a base image with a compatible PHP version.
+# The richarvey/nginx-php-fpm:3.1.6 tag is associated with a specific PHP version.
+# If you need PHP 8.3, you might need to use a different image or a more specific tag.
+# A safer alternative is to use a specific, known-to-exist tag.
+# Let's revert to a more stable, widely available base image that is known to work.
+FROM richarvey/nginx-php-fpm:3.1.6
 
 # Set working directory inside the container
 WORKDIR /var/www/html
