@@ -1,26 +1,29 @@
 # Multi-stage build for a smaller, more secure final image
 
 # Stage 1: Build the application with Composer
-# We use a composer image with PHP 8.3 to ensure platform requirements are met.
-# The `composer:2.7` tag is currently based on PHP 8.3.
-FROM composer:2.7 AS composer_builder
+# We use a composer image with PHP 8.3, as it's the standard for Laravel 11.
+FROM composer:2.7-php8.3 AS composer_builder
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy only composer files to leverage Docker's caching
-COPY composer.json composer.lock ./
+# Copy only composer.json to leverage Docker's caching
+# We intentionally omit composer.lock to force a fresh install.
+COPY composer.json ./
 
-# Install Composer dependencies, skipping dev dependencies
-# Use --no-dev to keep the production image small.
-RUN composer install --no-dev --optimize-autoloader
+# Run composer update to generate a new composer.lock file from scratch
+# This ensures all dependencies are compatible with the container's environment.
+# We also use --no-dev and --optimize-autoloader for a production-ready build.
+RUN composer update --no-dev --optimize-autoloader
 
-# Copy the rest of the application source code
+# Now, copy the rest of the application source code
 COPY . .
 
 # Stage 2: Final production image
-# We use a known-to-exist, stable tag for the base image.
-# The `3.1.6` tag is the most reliable option from this repository.
+# We use the most recent stable tag for the richarvey image.
+# NOTE: This image is based on PHP 8.2. If your application code is not
+# compatible with PHP 8.2, you will get runtime errors.
+# If this happens, you will need to find a different base image that supports PHP 8.3.
 FROM richarvey/nginx-php-fpm:3.1.6
 
 # Set working directory inside the container
