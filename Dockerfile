@@ -24,7 +24,7 @@ WORKDIR /var/www/html
 COPY --from=composer_builder /app .
 
 # Nginx configuration
-COPY config/nginx/nginx-site.conf /etc/nginx/sites-available/default.conf
+COPY conf/nginx/nginx-site.conf /etc/nginx/sites-available/default.conf
 
 # Set environment variables for Laravel and Nginx
 ENV SKIP_COMPOSER=1
