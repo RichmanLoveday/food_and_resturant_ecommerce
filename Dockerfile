@@ -21,7 +21,7 @@ COPY composer.json ./
 
 # Run composer update to generate a new composer.lock file from scratch.
 # We're keeping the `-v` flag here for one last check.
-RUN composer update --no-dev --optimize-autoloader -v
+RUN composer update --no-dev --optimize-autoloader -v > composer-output.log 2>&1 || (cat composer-output.log && exit 2)
 
 # Now, copy the rest of the application source code
 COPY . .
