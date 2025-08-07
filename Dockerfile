@@ -1,21 +1,25 @@
 # Multi-stage build for a smaller, more secure final image
 
-# Stage 1: Build the application
+# Stage 1: Build the application with Composer
+# We use a composer image with PHP 8.3 to ensure platform requirements are met.
 FROM composer:2.7 AS composer_builder
 
+# Set the working directory inside the container
 WORKDIR /app
 
 # Copy only composer files to leverage Docker's caching
 COPY composer.json composer.lock ./
 
-# Install composer dependencies
+# Install Composer dependencies, skipping dev dependencies
+# Use --no-dev to keep the production image small
 RUN composer install --no-dev --optimize-autoloader
 
 # Copy the rest of the application source code
 COPY . .
 
 # Stage 2: Final production image
-FROM richarvey/nginx-php-fpm:3.1.6
+# We use a base image with a compatible PHP version (e.g., PHP 8.3)
+FROM richarvey/nginx-php-fpm:3.1.6-php8.3
 
 # Set working directory inside the container
 WORKDIR /var/www/html
@@ -23,7 +27,7 @@ WORKDIR /var/www/html
 # Copy application files from the builder stage
 COPY --from=composer_builder /app .
 
-# Nginx configuration
+# Correct the path for the Nginx configuration file
 COPY conf/nginx/nginx-site.conf /etc/nginx/sites-available/default.conf
 
 # Set environment variables for Laravel and Nginx
@@ -38,6 +42,7 @@ ENV LOG_CHANNEL=stderr
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Ensure the storage directory exists and has the correct permissions
+# This is a critical step to prevent "Permission denied" errors
 RUN mkdir -p storage/logs \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
