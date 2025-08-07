@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\services\PaymentGatewaySettingService;
+use App\Services\PaymentGatewaySettingService;
 use Illuminate\Support\ServiceProvider;
 
 class PaymentGatewaySettingServiceProvider extends ServiceProvider

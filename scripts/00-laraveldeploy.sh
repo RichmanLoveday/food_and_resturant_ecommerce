@@ -3,9 +3,6 @@
 echo "🔧 Installing dependencies..."
 composer install --no-dev --prefer-dist --working-dir=/var/www/html
 
-echo "🔑 Generating app key..."
-php artisan key:generate --force
-
 echo "📦 Caching config..."
 php artisan config:cache
 
