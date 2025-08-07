@@ -4,27 +4,23 @@
 # Use the official PHP 8.3 CLI image as the base.
 FROM php:8.3-cli AS composer_builder
 
-# Install Composer on top of the PHP image
-COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
-
 # Install the necessary PHP extensions
 # The `openspout` package requires the `zip` extension.
+# The GD extension (`libpng-dev` and `gd`) is also installed to meet all project dependencies.
 RUN apt-get update && apt-get install -y \
     libzip-dev \
-    && docker-php-ext-install zip
+    libpng-dev \
+    && docker-php-ext-install zip gd
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy only composer.json to leverage Docker's caching
-COPY composer.json ./
+# Copy only composer.json and composer.lock to leverage Docker's layer caching
+COPY composer.json composer.lock ./
 
-# Run composer update to generate a new composer.lock file from scratch.
-# We're keeping the `-v` flag here for one last check.
-RUN composer update --no-dev --optimize-autoloader -v > composer-output.log 2>&1 || (cat composer-output.log && exit 2)
-
-# Now, copy the rest of the application source code
-COPY . .
+# Run composer update to install dependencies from scratch.
+# This is the final, clean command after resolving all dependency issues.
+RUN composer update --no-dev --optimize-autoloader
 
 # Stage 2: Final production image
 # The richarvey image is based on PHP 8.2.
@@ -33,8 +29,11 @@ FROM richarvey/nginx-php-fpm:3.1.6
 # Set working directory inside the container
 WORKDIR /var/www/html
 
-# Copy application files from the builder stage
-COPY --from=composer_builder /app .
+# Copy all application files from the local directory
+COPY . .
+
+# Copy the vendor directory with all dependencies from the builder stage
+COPY --from=composer_builder /app/vendor /var/www/html/vendor
 
 # Correct the path for the Nginx configuration file
 COPY conf/nginx/nginx-site.conf /etc/nginx/sites-available/default.conf
