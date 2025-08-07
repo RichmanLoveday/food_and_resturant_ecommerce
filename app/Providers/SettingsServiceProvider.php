@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\services\SettingsService;
+use App\Services\SettingsService;
 use Illuminate\Support\ServiceProvider;
 
 class SettingsServiceProvider extends ServiceProvider
