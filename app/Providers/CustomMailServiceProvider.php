@@ -25,7 +25,7 @@ class CustomMailServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \Log::info('Boot started CustomMailServiceProvider, memory: ' . memory_get_usage(true));
+        // \Log::info('Boot started CustomMailServiceProvider, memory: ' . memory_get_usage(true));
 
         $settingsService = $this->app->make(MailSettingsService::class);
         $settingsService->setGlobalSettings();
