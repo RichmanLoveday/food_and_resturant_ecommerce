@@ -1,18 +1,6 @@
 @extends('frontend.layout.master')
 @section('content')
-    <section class="fp__breadcrumb" style="background: url({{ asset('frontend/images/counter_bg.jpg') }});">
-        <div class="fp__breadcrumb_overlay">
-            <div class="container">
-                <div class="fp__breadcrumb_text">
-                    <h1>restet password</h1>
-                    <ul>
-                        <li><a href="index.html">home</a></li>
-                        <li><a href="#">reset password</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
+    @include('frontend.common-component.breadcrumb')
 
     <section class="fp__signin" style="background: url({{ asset('frontend/images/login_bg.jpg') }});">
         <div class="fp__signin_overlay pt_125 xs_pt_95 pb_100 xs_pb_70">

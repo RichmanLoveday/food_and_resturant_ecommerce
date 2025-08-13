@@ -53,7 +53,10 @@ class ProductDataTable extends DataTable
             ->addColumn('thumb_image', function ($query) {
                 return "<img width='60px' src='$query->thumb_image' alt='$query->name'/>";
             })
-            ->rawColumns(['offer_price', 'price', 'status', 'show_at_home', 'action', 'thumb_image'])
+            ->addColumn('category', function ($query) {
+                return $query->category->name;
+            })
+            ->rawColumns(['offer_price', 'price', 'status', 'show_at_home', 'action', 'thumb_image', 'category'])
             ->setRowId('id');
     }
 
@@ -96,8 +99,10 @@ class ProductDataTable extends DataTable
             Column::computed('id')->width(80)->addClass('text-left'),
             Column::make('thumb_image')->addClass('text-left'),
             Column::make('name')->addClass('text-left'),
+            Column::make('category')->addClass('text-left'),
             Column::make('price')->addClass('text-left'),
             Column::make('offer_price')->addClass('text-left'),
+            Column::make('quantity')->addClass('text-left'),
             Column::make('show_at_home')->addClass('text-left'),
             Column::make('status'),
             Column::computed('action')

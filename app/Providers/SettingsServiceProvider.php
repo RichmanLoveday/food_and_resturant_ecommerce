@@ -23,7 +23,7 @@ class SettingsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //    \Log::info('Boot started SettingsServiceProvider, memory: ' . memory_get_usage(true));
-           
+
         $settingsService = $this->app->make(SettingsService::class);
         $settingsService->setGlobalSettings();
     }

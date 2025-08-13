@@ -2,7 +2,7 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h1>Why Choose Us</h1>
+            <h1>Daily Offer</h1>
         </div>
 
         <div class="card">
@@ -54,9 +54,6 @@
         </div>
     </section>
     <section class="section">
-        <div class="section-header">
-            <h1>Daily Offer</h1>
-        </div>
 
         <div class="card card-primary">
             <div class="card-header">

@@ -15,7 +15,13 @@ class PasswordResetLinkController extends Controller
      */
     public function create(): View
     {
-        return view('auth.forgot-password');
+        $breadCrumb = [
+            'title' => 'forgot password',
+            'link' => 'javacript:;'
+        ];
+
+
+        return view('auth.forgot-password', compact('breadCrumb'));
     }
 
     /**
