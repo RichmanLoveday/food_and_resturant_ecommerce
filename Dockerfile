@@ -17,6 +17,9 @@ COPY . /var/www/html
 # Copy custom Nginx config
 COPY conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 
+RUN git config --global --add safe.directory /var/www/html
+
+
 # Set correct permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
@@ -31,6 +34,7 @@ RUN curl -sS https://getcomposer.org/installer | php && \
 # ✅ Copy your start script (entrypoint)
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
+
 
 # Start container (Nginx + PHP-FPM + your start.sh)
 CMD ["/start.sh"]

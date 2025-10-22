@@ -29,4 +29,6 @@ else
 fi
 
 echo "✅ Ready — launching Nginx + PHP-FPM"
-exec /start.sh
+
+# Start the original base image process
+exec /start.sh.default
