@@ -1,9 +1,7 @@
+# Use PHP + Nginx base image
 FROM richarvey/nginx-php-fpm:3.1.6
 
-# Copy all project files
-COPY . .
-
-# Laravel environment variables
+# Set environment variables
 ENV WEBROOT=/var/www/html/public
 ENV PHP_ERRORS_STDERR=1
 ENV RUN_SCRIPTS=1
@@ -13,20 +11,22 @@ ENV APP_DEBUG=false
 ENV LOG_CHANNEL=stderr
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Set custom Nginx config
+# Copy Laravel project files
+COPY . /var/www/html
+
+# Copy custom Nginx config
 COPY conf/nginx/nginx-site.conf /etc/nginx/sites-available/default
 
-# Permissions (important for storage/logs and cache)
+# Set correct permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Production optimizations (Laravel cache)
-# RUN php artisan config:cache \
-#     && php artisan route:cache \
-#     && php artisan view:cache
+# ✅ Install Composer dependencies (without running artisan commands)
+RUN composer install --no-dev --no-scripts --working-dir=/var/www/html --prefer-dist --no-interaction
 
-# Expose the dynamic port (Sevalla assigns PORT automatically)
-EXPOSE ${PORT}
+# ✅ Copy your start script (entrypoint)
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-# Start script
+# Start container (Nginx + PHP-FPM + your start.sh)
 CMD ["/start.sh"]
