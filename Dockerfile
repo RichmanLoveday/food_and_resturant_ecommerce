@@ -22,7 +22,10 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # ✅ Install Composer dependencies (without running artisan commands)
-RUN composer install --no-dev --no-scripts --working-dir=/var/www/html --prefer-dist --no-interaction
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer && \
+    composer install --no-dev --optimize-autoloader --no-interaction --working-dir=/var/www/html
+
 
 # ✅ Copy your start script (entrypoint)
 COPY start.sh /start.sh
