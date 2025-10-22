@@ -21,9 +21,9 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Production optimizations (Laravel cache)
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# RUN php artisan config:cache \
+#     && php artisan route:cache \
+#     && php artisan view:cache
 
 # Expose the dynamic port (Sevalla assigns PORT automatically)
 EXPOSE ${PORT}
