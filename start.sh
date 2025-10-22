@@ -1,38 +1,32 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Starting deployment setup..."
+echo "Starting Laravel + Nginx..."
 
-# Install composer dependencies
+# Install Composer deps if missing
 if [ -f /usr/local/bin/composer ]; then
     echo "Installing Composer dependencies..."
     composer install --no-dev --optimize-autoloader --no-interaction --working-dir=/var/www/html
 else
-    echo "Composer not found!"
+    echo "Composer not found, skipping..."
 fi
 
-# Ensure Laravel key exists
-if [ ! -f /var/www/html/.env ]; then
-    echo ".env file not found! Please add environment variables via Sevalla dashboard."
-else
+# Only generate key if .env exists
+if [ -f /var/www/html/.env ]; then
+    echo "Generating app key..."
     php artisan key:generate --force || true
-fi
-
-echo "Caching Laravel config and routes..."
-php artisan config:cache || true
-php artisan route:cache || true
-
-# Run migrations if DB is available
-if php artisan migrate:status &>/dev/null; then
-    echo "Running migrations..."
-    php artisan migrate --force || true
 else
-    echo "Skipping migrations — DB not reachable yet."
+    echo ".env not found — using Sevalla environment variables."
 fi
 
-echo "Building assets..."
-npm ci --silent --prefix /var/www/html || true
-npm run build --prefix /var/www/html || true
+# Skip config and route caching if .env is missing
+if [ -f /var/www/html/.env ]; then
+    echo "Caching Laravel config and routes..."
+    php artisan config:cache || true
+    php artisan route:cache || true
+else
+    echo "Skipping caching due to missing .env"
+fi
 
-echo "✅ Setup complete — starting Nginx and PHP-FPM..."
+echo "✅ Ready — launching Nginx + PHP-FPM"
 exec /start.sh
