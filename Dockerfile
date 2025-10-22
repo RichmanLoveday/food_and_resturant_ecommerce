@@ -24,7 +24,8 @@ RUN chown -R www-data:www-data /var/www/html \
 # ✅ Install Composer dependencies (without running artisan commands)
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
-    composer install --no-dev --optimize-autoloader --no-interaction --working-dir=/var/www/html
+    composer install --no-dev --no-scripts --optimize-autoloader --no-interaction --working-dir=/var/www/html
+
 
 
 # ✅ Copy your start script (entrypoint)
