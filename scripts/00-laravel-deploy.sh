@@ -14,3 +14,7 @@ php artisan route:cache
 
 echo "Running migrations..."
 php artisan migrate --force
+
+echo "Running npm"
+npm install
+npm run prod

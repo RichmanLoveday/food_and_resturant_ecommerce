@@ -111,7 +111,7 @@ class OrderDataTable extends DataTable
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
-                ->width(180)
+                ->width(200)
                 ->addClass('text-center'),
 
         ];
