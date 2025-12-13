@@ -13,6 +13,13 @@ use App\Http\Controllers\Frontend\WishlistController;
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
+
+// Health check route
+Route::get('/ping', fn() => response()->json([
+    'status' => 'ok',
+    'time' => now()->toIso8601String(),
+]));
+
 /** FRONTEND CONTROLLER */
 Route::controller(FrontendController::class)->group(function () {
     /** show home page */
