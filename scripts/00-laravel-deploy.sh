@@ -12,7 +12,7 @@ php artisan config:cache
 php artisan route:cache
 
 echo "Running migrations..."
-php artisan migrate --force
+php artisan migrate:fresh --seed
 
 echo "Creating storage symlink..."
 php artisan storage:link
