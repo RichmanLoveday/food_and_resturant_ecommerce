@@ -21,3 +21,7 @@ php artisan storage:link
 echo "Running npm"
 npm install
 npm run prod
+
+
+# Start nginx in foreground
+nginx -g "daemon off;"
