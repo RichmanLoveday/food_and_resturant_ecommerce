@@ -48,10 +48,15 @@ class ProfileController extends Controller
     {
         // dd($request->avatar);
 
-        /** handle image file */
-        $imagePath = $this->uploadImage($request, 'avatar', 'uploads/profile_photo');
-
         $user = Auth::user();
+        /** handle image file */
+        $imagePath = $this->uploadImage(
+            $request,
+            'avatar',
+            $user,
+            'profile_photo'
+        );
+
         $user->avatar = $imagePath;
         $user->save();
 

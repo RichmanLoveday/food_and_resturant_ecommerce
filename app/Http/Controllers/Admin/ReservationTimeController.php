@@ -96,7 +96,11 @@ class ReservationTimeController extends Controller
         try {
             $time = ReservationTime::findOrFail($id);
             $time->delete();
-            $this->removeImage($time->image);
+            // $this->removeImage(
+            //     $time,
+            //     "reservation-time",
+            //     // $time->image
+            // );
 
             return response()->json([
                 'status' => 'success',

@@ -11,7 +11,9 @@ use App\Models\Testimonial;
 use App\Traits\FileUploadTrait;
 use App\Traits\SectionTitlesTrait;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class TestimonialController extends Controller
@@ -44,24 +46,51 @@ class TestimonialController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(TestimonialCreateRequest $request)
+
+    public function store(TestimonialCreateRequest $request): RedirectResponse
     {
-        $imagePath = $this->uploadImage($request, 'image', '/uploads/testimonials');
+        DB::beginTransaction();
 
-        $testimonial = new Testimonial();
-        $testimonial->image = $imagePath;
-        $testimonial->name = $request->name;
-        $testimonial->title = $request->title;
-        $testimonial->rating = $request->rating;
-        $testimonial->review = $request->review;
-        $testimonial->show_at_home = $request->show_at_home;
-        $testimonial->status = $request->status;
-        $testimonial->save();
+        try {
+            // 1️⃣ Create testimonial first
+            $testimonial = new Testimonial();
+            $testimonial->name = $request->name;
+            $testimonial->title = $request->title;
+            $testimonial->rating = $request->rating;
+            $testimonial->review = $request->review;
+            $testimonial->show_at_home = $request->show_at_home;
+            $testimonial->status = $request->status;
+            $testimonial->save(); // save first for uploadImage
 
-        toastr()->success("Created Successfully");
+            // 2️⃣ Upload image after saving
+            $imagePath = $this->uploadImage(
+                $request,
+                'image',
+                $testimonial,
+                'testimonials'
+            );
 
-        return redirect()->route('admin.testimonial.index');
+            if (!is_null($imagePath)) {
+                $testimonial->image = $imagePath;
+                $testimonial->save();
+            }
+
+            DB::commit();
+
+            toastr()->success("Created Successfully");
+            return redirect()->route('admin.testimonial.index');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            logger()->error('Testimonial creation failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            toastr()->error('Something went wrong while creating testimonial');
+            return redirect()->back()->withInput();
+        }
     }
+
 
     /**
      * Display the specified resource.
@@ -83,28 +112,52 @@ class TestimonialController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(TestimonialUpdateRequest $request, string $id)
+    public function update(TestimonialUpdateRequest $request, string $id): RedirectResponse
     {
-        $imagePath = $this->uploadImage(
-            $request,
-            'image',
-            '/uploads/testimonials',
-            $request->old_path
-        );
+        DB::beginTransaction();
 
-        $testimonial = Testimonial::findOrFail($id);
-        $testimonial->image = !empty($imagePath) ? $imagePath : $request->old_path;
-        $testimonial->name = $request->name;
-        $testimonial->title = $request->title;
-        $testimonial->rating = $request->rating;
-        $testimonial->review = $request->review;
-        $testimonial->show_at_home = $request->show_at_home;
-        $testimonial->status = $request->status;
-        $testimonial->save();
+        try {
+            // 1️⃣ Fetch testimonial
+            $testimonial = Testimonial::findOrFail($id);
 
-        toastr()->success("Updated Successfully");
-        return redirect()->route('admin.testimonial.index');
+            // 2️⃣ Upload image if provided
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $imagePath = $this->uploadImage(
+                    $request,
+                    'image',
+                    $testimonial,
+                    'testimonials'
+                );
+            }
+
+            // 3️⃣ Update fields
+            $testimonial->image = $imagePath ?? $testimonial->image;
+            $testimonial->name = $request->name;
+            $testimonial->title = $request->title;
+            $testimonial->rating = $request->rating;
+            $testimonial->review = $request->review;
+            $testimonial->show_at_home = $request->show_at_home;
+            $testimonial->status = $request->status;
+            $testimonial->save();
+
+            DB::commit();
+
+            toastr()->success("Updated Successfully");
+            return redirect()->route('admin.testimonial.index');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            logger()->error('Testimonial update failed', [
+                'error' => $e->getMessage(),
+                'testimonial_id' => $id,
+            ]);
+
+            toastr()->error('Something went wrong while updating testimonial');
+            return redirect()->back()->withInput();
+        }
     }
+
 
 
     /**
@@ -144,6 +197,9 @@ class TestimonialController extends Controller
         try {
             $testimonial = Testimonial::findOrFail($id);
             $testimonial->delete($id);
+
+            // delet image attached
+            $this->removeImage($testimonial, 'testimonials');
 
             return response()->json(['status' => 'success', 'message' => 'Deleted Successfully'], 200);
         } catch (\Exception $e) {

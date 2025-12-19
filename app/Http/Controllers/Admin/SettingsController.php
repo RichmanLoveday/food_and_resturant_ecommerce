@@ -10,6 +10,8 @@ use App\Traits\FileUploadTrait;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Ramsey\Collection\Set;
 
 class SettingsController extends Controller
 {
@@ -115,42 +117,70 @@ class SettingsController extends Controller
     }
 
 
-    public function updateLogoSettings(Request $request)
+
+    public function updateLogoSettings(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
-            'logo' => ['nullable', 'image', 'max:1000'],
+            'logo'        => ['nullable', 'image', 'max:1000'],
             'footer_logo' => ['nullable', 'image', 'max:1000'],
-            'favicon' => ['nullable', 'image', 'max:1000'],
-            'breadcrumb' => ['nullable', 'image', 'max:1000'],
+            'favicon'     => ['nullable', 'image', 'max:1000'],
+            'breadcrumb'  => ['nullable', 'image', 'max:1000'],
         ]);
 
-        //? loop and update validated data for pusher settings
-        foreach ($validatedData as $key => $value) {
-            $imagePath = $this->uploadImage($request, $key, '/uploads/logo-settings');
+        DB::beginTransaction();
 
-            //? check if imagePath is empty
-            if (!empty($imagePath)) {
-                //? remove old image path on upload
-                $oldPath = config('settings.' . $key);
-                $this->removeImage($oldPath);
-
-                //? update logo settings
-                Setting::updateOrCreate(
+        try {
+            foreach ($validatedData as $key => $value) {
+                // 4️⃣ Update setting in DB
+                $setting = Setting::updateOrCreate(
                     ['key' => $key],
-                    ['value' => $imagePath],
+                    // ['value' => $imagePath]
                 );
+
+
+                //? check if file exist
+                if ($request->file($key)) {
+                    // 3️⃣ Remove old image
+                    // $oldPath = config('settings.' . $key);
+                    $this->removeImage($setting, 'logo-settings');
+
+                    // 2️⃣ Upload image if present
+                    $imagePath = $this->uploadImage(
+                        $request,
+                        $key,
+                        $setting,
+                        'logo-settings'
+                    );
+
+                    if (!empty($imagePath)) {
+                        //? update setting logo image
+                        $setting->value = $imagePath;
+                        $setting->save();
+                    }
+                }
             }
+
+            DB::commit();
+
+            // 5️⃣ Clear cache
+            $settingsService = app(SettingsService::class);
+            $settingsService->clearCacheSettings();
+
+            toastr()->success('Updated Successfully');
+            return redirect()->back();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            logger()->error('Logo settings update failed', [
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id() ?? null,
+            ]);
+
+            toastr()->error('Something went wrong while updating logo settings');
+            return redirect()->back()->withInput();
         }
-
-
-        //? clear settings cache memory
-        $settingsService = app(SettingsService::class);
-        $settingsService->clearCacheSettings();
-
-        //? flash success message
-        toastr()->success('Updated Successfully');
-        return redirect()->back();
     }
+
 
 
     public function updateAppearanceSetting(Request $request): RedirectResponse

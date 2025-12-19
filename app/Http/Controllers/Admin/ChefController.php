@@ -11,7 +11,9 @@ use App\Models\SectionTitle;
 use App\Traits\FileUploadTrait;
 use App\Traits\SectionTitlesTrait;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class ChefController extends Controller
@@ -45,24 +47,57 @@ class ChefController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ChefCreateRequest $request)
+    public function store(ChefCreateRequest $request): RedirectResponse
     {
-        $imagePath = $this->uploadImage($request, 'image', '/uploads/chefs');
+        DB::beginTransaction();
 
-        $chef = new Chefs();
-        $chef->name = $request->name;
-        $chef->image = $imagePath;
-        $chef->title = $request->title;
-        $chef->fb = $request->fb;
-        $chef->in = $request->in;
-        $chef->x = $request->x;
-        $chef->web = $request->web;
-        $chef->show_at_home = $request->show_at_home ? 1 : 0;
-        $chef->status = $request->status ? 1 : 0;
-        $chef->save();
+        try {
+            // 1️⃣ Create chef
+            $chef = new Chefs();
+            $chef->name = $request->name;
+            $chef->title = $request->title;
+            $chef->fb = $request->fb;
+            $chef->in = $request->in;
+            $chef->x = $request->x;
+            $chef->web = $request->web;
+            $chef->show_at_home = $request->show_at_home ? 1 : 0;
+            $chef->status = $request->status ? 1 : 0;
 
-        toastr()->success('Created Successfully');
-        return redirect()->route('admin.chef.index');
+            // 2️⃣ Save first (required for media handling)
+            $chef->save();
+
+            // 3️⃣ Upload image if provided
+            if ($request->hasFile('image')) {
+                $imagePath = $this->uploadImage(
+                    $request,
+                    'image',
+                    $chef,
+                    'chefs'
+                );
+
+                if (!is_null($imagePath)) {
+                    $chef->image = $imagePath;
+                    $chef->save();
+                }
+            }
+
+            DB::commit();
+
+            toastr()->success('Created Successfully');
+            return redirect()->route('admin.chef.index');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            // Optional: remove newly uploaded media if needed
+            if (isset($chef) && method_exists($chef, 'clearMediaCollection')) {
+                $chef->clearMediaCollection('chefs');
+            }
+
+            \Log::error('Chef creation failed', ['error' => $e->getMessage()]);
+
+            toastr()->error('Failed to create Chef');
+            return redirect()->back()->withInput();
+        }
     }
 
     /**
@@ -85,29 +120,56 @@ class ChefController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ChefUpdateRequest $request, string $id)
+    public function update(ChefUpdateRequest $request, string $id): RedirectResponse
     {
-        $imagePath = $this->uploadImage(
-            $request,
-            'image',
-            '/uploads/chefs',
-            $request->old_image
-        );
+        DB::beginTransaction();
 
-        $chef = Chefs::findOrFail($id);
-        $chef->name = $request->name;
-        $chef->image = !empty($imagePath) ? $imagePath : $request->old_image;
-        $chef->title = $request->title;
-        $chef->fb = $request->fb;
-        $chef->in = $request->in;
-        $chef->x = $request->x;
-        $chef->web = $request->web;
-        $chef->show_at_home = $request->show_at_home ? 1 : 0;
-        $chef->status = $request->status ? 1 : 0;
-        $chef->save();
+        try {
+            // 1️⃣ Find chef
+            $chef = Chefs::findOrFail($id);
+            $chef->name = $request->name;
+            $chef->title = $request->title;
+            $chef->fb = $request->fb;
+            $chef->in = $request->in;
+            $chef->x = $request->x;
+            $chef->web = $request->web;
+            $chef->show_at_home = $request->show_at_home ? 1 : 0;
+            $chef->status = $request->status ? 1 : 0;
 
-        toastr()->success('Updated Successfully!');
-        return redirect()->route('admin.chef.index');
+            // 2️⃣ Upload new image if provided
+            if ($request->hasFile('image')) {
+                $imagePath = $this->uploadImage(
+                    $request,
+                    'image',
+                    $chef,
+                    'chefs'
+                );
+
+                if (!is_null($imagePath)) {
+                    $chef->image = $imagePath;
+                }
+            }
+
+            // 3️⃣ Save updates
+            $chef->save();
+
+            DB::commit();
+
+            toastr()->success('Updated Successfully!');
+            return redirect()->route('admin.chef.index');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            // Optional: remove newly uploaded media if needed
+            if (isset($chef) && method_exists($chef, 'clearMediaCollection')) {
+                $chef->clearMediaCollection('chefs');
+            }
+
+            \Log::error('Chef update failed', ['error' => $e->getMessage()]);
+
+            toastr()->error('Failed to update Chef');
+            return redirect()->back()->withInput();
+        }
     }
 
 
@@ -146,14 +208,20 @@ class ChefController extends Controller
     {
         try {
             $chef = Chefs::findOrFail($id);
+
+            // Optional: remove associated image first
+            $this->removeImage($chef, 'chefs');
+
+            // Delete chef
             $chef->delete();
-            $this->removeImage($chef->image);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Deleted successfully!',
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            \Log::error('Chef deletion failed', ['error' => $e->getMessage()]);
+
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),

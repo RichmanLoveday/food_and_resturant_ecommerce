@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('payment_gateway_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('key');
-            $table->text('value');
+            $table->string('key')->nullable();
+            $table->text('value')->nullable();
             $table->timestamps();
         });
     }

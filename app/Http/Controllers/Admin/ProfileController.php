@@ -11,6 +11,7 @@ use Hash;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
@@ -21,27 +22,49 @@ class ProfileController extends Controller
         return view('admin.profile.index');
     }
 
-
     public function updateProfile(ProfileUpdateRequest $request): RedirectResponse
     {
+        DB::beginTransaction();
 
-        // dd($request->all());
-        $user = Auth::user();
+        try {
+            // 1️⃣ Get the authenticated user
+            $user = Auth::user();
 
-        //? get uploaded image path
-        $imagePath = $this->uploadImage($request, 'avatar', '/uploads/profile_photo');
+            // 2️⃣ Upload avatar if provided
+            $imagePath = null;
+            if ($request->hasFile('avatar')) {
+                $imagePath = $this->uploadImage(
+                    $request,
+                    'avatar',
+                    $user,
+                    'profile_photo'
+                );
+            }
 
-        //? update user model
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->avatar = isset($imagePath) ? $imagePath : $user->avatar;
-        $user->save();
+            // 3️⃣ Update user fields
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->avatar = $imagePath ?? $user->avatar;
 
-        //? flash a toastr message
-        toastr('Updated successfully', 'success');
+            $user->save();
 
-        return redirect()->back();
+            DB::commit();
+
+            toastr()->success('Updated successfully');
+            return redirect()->back();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            logger()->error('Profile update failed', [
+                'error' => $e->getMessage(),
+                'user_id' => Auth::id(),
+            ]);
+
+            toastr()->error('Something went wrong while updating profile');
+            return redirect()->back()->withInput();
+        }
     }
+
 
     public function updatePassword(ProfilePasswordUpdate $request): RedirectResponse
     {

@@ -15,6 +15,7 @@ use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Str;
 
@@ -43,27 +44,48 @@ class BlogController extends Controller
      */
     public function store(BlogCreateRequet $request)
     {
-        $imagePath = $this->uploadImage(
-            $request,
-            'image',
-            '/uploads/blogs'
-        );
+        DB::beginTransaction();
 
-        $blog = new Blog();
-        $blog->user_id = Auth::user()->id;
-        $blog->title = $request->title;
-        $blog->image = $imagePath;
-        $blog->slug = Str::slug($request->title);
-        $blog->category_id = $request->category;
-        $blog->description = $request->description;
-        $blog->seo_title = $request->seo_title;
-        $blog->seo_description = $request->seo_description;
-        $blog->status = $request->status;
-        $blog->save();
+        try {
+            // 1️⃣ Create & save blog first
+            $blog = new Blog();
+            $blog->user_id = Auth::id();
+            $blog->title = $request->title;
+            $blog->slug = Str::slug($request->title);
+            $blog->category_id = $request->category;
+            $blog->description = $request->description;
+            $blog->seo_title = $request->seo_title;
+            $blog->seo_description = $request->seo_description;
+            $blog->status = $request->status;
+            $blog->save();
 
-        toastr()->success('Created Successfully');
+            $imagePath = $this->uploadImage(
+                $request,
+                'image',
+                $blog,
+                'blogs'
+            );
 
-        return redirect()->route('admin.blogs.index');
+            $blog->image = $imagePath;
+            $blog->save();
+
+            DB::commit();
+
+            toastr()->success('Created Successfully');
+            return redirect()->route('admin.blogs.index');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            // Optional: remove uploaded media if needed
+            if (isset($blog) && $blog->hasMedia('blogs')) {
+                $this->removeImage($blog);
+            }
+
+            \Log::error('Blog creation failed', ['error' => $e->getMessage()]);
+
+            toastr()->error('Failed to create blog');
+            return back()->withInput();
+        }
     }
 
     /**
@@ -89,28 +111,49 @@ class BlogController extends Controller
      */
     public function update(BlogUpdateRequest $request, string $id)
     {
-        $imagePath = $this->uploadImage(
-            $request,
-            'image',
-            '/uploads/blogs',
-            $request->old_image,
-        );
+        DB::beginTransaction();
 
-        $blog = Blog::findOrFail($id);
-        $blog->user_id = Auth::user()->id;
-        $blog->title = $request->title;
-        $blog->image = !empty($imagePath) ? $imagePath : $request->old_image;
-        $blog->slug = Str::slug($request->title);
-        $blog->category_id = $request->category;
-        $blog->description = $request->description;
-        $blog->seo_title = $request->seo_title;
-        $blog->seo_description = $request->seo_description;
-        $blog->status = $request->status;
-        $blog->save();
+        try {
+            // 1️⃣ Find the blog
+            $blog = Blog::findOrFail($id);
 
-        toastr()->success('Updated Successfully');
+            // 2️⃣ Update blog fields
+            $blog->user_id = Auth::id();
+            $blog->title = $request->title;
+            $blog->slug = Str::slug($request->title);
+            $blog->category_id = $request->category;
+            $blog->description = $request->description;
+            $blog->seo_title = $request->seo_title;
+            $blog->seo_description = $request->seo_description;
+            $blog->status = $request->status;
 
-        return redirect()->route('admin.blogs.index');
+            $imagePath = $this->uploadImage(
+                $request,
+                'image',
+                $blog,
+            );
+
+            $blog->image = !empty($imagePath) ? $imagePath : $request->old_image;
+
+            $blog->save();
+
+            DB::commit();
+
+            toastr()->success('Updated Successfully');
+            return redirect()->route('admin.blogs.index');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            // Optional: remove newly uploaded media if needed
+            if (isset($blog) && $blog->hasMedia('blogs')) {
+                $this->removeImage($blog);
+            }
+
+            \Log::error('Blog update failed', ['error' => $e->getMessage()]);
+
+            toastr()->error('Failed to update blog');
+            return back()->withInput();
+        }
     }
 
     /**
@@ -121,7 +164,11 @@ class BlogController extends Controller
         try {
             $slider = Blog::findOrFail($id);
             $slider->delete();
-            $this->removeImage($slider->image);
+            $this->removeImage(
+                $slider,
+                "blogs",
+                // $slider->image
+            );
 
             return response()->json([
                 'status' => 'success',

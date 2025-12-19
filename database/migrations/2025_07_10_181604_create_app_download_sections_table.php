@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('app_download_sections', function (Blueprint $table) {
             $table->id();
-            $table->string('image');
-            $table->string('background');
+            $table->string('image')->nullable();
+            $table->string('background')->nullable();
             $table->string('title');
             $table->text('short_description');
             $table->string('play_store_link')->nullable();

@@ -51,7 +51,8 @@ class ProductDataTable extends DataTable
                 return $query->show_at_home ? "<span class='badge badge-primary'>Yes</span>" : "<span class='badge badge-danger'>No</span>";
             })
             ->addColumn('thumb_image', function ($query) {
-                return "<img width='60px' src='$query->thumb_image' alt='$query->name'/>";
+                $image = asset($query->thumb_image);
+                return "<img width='60px' src='$image' alt='$query->name'/>";
             })
             ->addColumn('category', function ($query) {
                 return $query->category->name;

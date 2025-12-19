@@ -20,7 +20,12 @@ class WhyChooseUsController extends Controller
      */
     public function index(WhyChooseUsDataTable $dataTable)
     {
-        $key = ['why_choose_us_top_title', 'why_choose_us_main_title', 'why_choose_us_sub_title'];
+        $key = [
+            'why_choose_us_top_title',
+            'why_choose_us_main_title',
+            'why_choose_us_sub_title'
+        ];
+
         $titles = $this->getSectionTitles($key);
 
         return $dataTable->render('admin.why-choose-us.index', compact('titles'));

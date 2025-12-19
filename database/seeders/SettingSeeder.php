@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class SettingSeeder extends Seeder
 {
@@ -12,6 +13,11 @@ class SettingSeeder extends Seeder
      */
     public function run(): void
     {
+        $destination = "storage/uploads/logo-settings";
+
+        // Ensure directory exists
+        // Storage::disk('public')->makeDirectory($destination);
+
         $settings = array(
             array(
                 "id" => 1,
@@ -135,28 +141,28 @@ class SettingSeeder extends Seeder
             array(
                 "id" => 18,
                 "key" => "logo",
-                "value" => "/uploads/logo-settings/media_688a83c53c673.png",
+                "value" => "{$destination}/media_688a83c53c673.png",
                 "created_at" => "2025-07-30 20:42:45",
                 "updated_at" => "2025-07-30 20:42:45",
             ),
             array(
                 "id" => 19,
                 "key" => "footer_logo",
-                "value" => "/uploads/logo-settings/media_688a874d5b846.png",
+                "value" => "{$destination}/media_688a874d5b846.png",
                 "created_at" => "2025-07-30 20:42:45",
                 "updated_at" => "2025-07-30 20:57:49",
             ),
             array(
                 "id" => 20,
                 "key" => "favicon",
-                "value" => "/uploads/logo-settings/media_688a83c56bdce.png",
+                "value" => "{$destination}/media_688a83c56bdce.png",
                 "created_at" => "2025-07-30 20:42:45",
                 "updated_at" => "2025-07-30 20:42:45",
             ),
             array(
                 "id" => 21,
                 "key" => "breadcrumb",
-                "value" => "/uploads/logo-settings/media_688a83c57729f.jpg",
+                "value" => "{$destination}/media_688a83c57729f.jpg",
                 "created_at" => "2025-07-30 20:42:45",
                 "updated_at" => "2025-07-30 20:42:45",
             ),

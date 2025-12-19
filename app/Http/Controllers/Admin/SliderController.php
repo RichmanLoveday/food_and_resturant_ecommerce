@@ -10,6 +10,7 @@ use App\Models\Slider;
 use App\Traits\FileUploadTrait;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SliderController extends Controller
 {
@@ -33,26 +34,51 @@ class SliderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(SliderCreateRequest $request)
+
+    public function store(SliderCreateRequest $request): RedirectResponse
     {
-        /** Handle image upload */
-        $imagePath = $this->uploadImage($request, 'image', '/uploads/sliders');
+        DB::beginTransaction();
 
-        $slider = new Slider();
-        $slider->image = $imagePath;
-        $slider->offer = $request->offer;
-        $slider->title = $request->title;
-        $slider->sub_title = $request->sub_title;
-        $slider->short_description = $request->short_description;
-        $slider->button_link = $request->button_link;
-        $slider->status = $request->status ? 1 : 0;
-        $slider->save();
+        try {
+            // 1️⃣ Create slider row first
+            $slider = new Slider();
+            $slider->offer = $request->offer;
+            $slider->title = $request->title;
+            $slider->sub_title = $request->sub_title;
+            $slider->short_description = $request->short_description;
+            $slider->button_link = $request->button_link;
+            $slider->status = $request->status ? 1 : 0;
+            $slider->save(); // save first for Spatie or uploadImage
 
-        //? flash message
-        toastr()->success('Slider created successfully');
+            // 2️⃣ Upload image after saving
+            $imagePath = $this->uploadImage(
+                $request,
+                'image',
+                $slider,
+                'sliders'
+            );
 
-        return to_route('admin.slider.index');
+            if (!is_null($imagePath)) {
+                $slider->image = $imagePath;
+                $slider->save();
+            }
+
+            DB::commit();
+
+            toastr()->success('Slider created successfully');
+            return to_route('admin.slider.index');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            logger()->error('Slider creation failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            toastr()->error('Something went wrong while creating slider');
+            return redirect()->back()->withInput();
+        }
     }
+
 
     /**
      * Display the specified resource.
@@ -74,27 +100,53 @@ class SliderController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
     public function update(SliderUpdateRequest $request, string $id): RedirectResponse
     {
-        $slider = Slider::findOrFail($id);
+        DB::beginTransaction();
 
-        /**Handle Image Upload */
-        $imagePath = $this->uploadImage($request, 'image', '/uploads/sliders', $slider->image);
+        try {
+            // 1️⃣ Fetch slider
+            $slider = Slider::findOrFail($id);
 
-        $slider->image = !is_null($imagePath) ? $imagePath : $slider->image;
-        $slider->offer = $request->offer;
-        $slider->title = $request->title;
-        $slider->sub_title = $request->sub_title;
-        $slider->short_description = $request->short_description;
-        $slider->button_link = $request->button_link;
-        $slider->status = $request->status ? 1 : 0;
-        $slider->save();
+            // 2️⃣ Upload image if provided
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $imagePath = $this->uploadImage(
+                    $request,
+                    'image',
+                    $slider,
+                    'sliders'
+                );
+            }
 
-        //? flash message
-        toastr()->success('Slider updated successfully');
+            // 3️⃣ Update slider fields
+            $slider->image = $imagePath ?? $slider->image;
+            $slider->offer = $request->offer;
+            $slider->title = $request->title;
+            $slider->sub_title = $request->sub_title;
+            $slider->short_description = $request->short_description;
+            $slider->button_link = $request->button_link;
+            $slider->status = $request->status ? 1 : 0;
+            $slider->save();
 
-        return redirect()->route('admin.slider.index');
+            DB::commit();
+
+            toastr()->success('Slider updated successfully');
+            return redirect()->route('admin.slider.index');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            logger()->error('Slider update failed', [
+                'error' => $e->getMessage(),
+                'slider_id' => $id,
+            ]);
+
+            toastr()->error('Something went wrong while updating slider');
+            return redirect()->back()->withInput();
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -104,7 +156,12 @@ class SliderController extends Controller
         try {
             $slider = Slider::findOrFail($id);
             $slider->delete();
-            $this->removeImage($slider->image);
+
+            $this->removeImage(
+                $slider,
+                "sliders",
+                // $slider->image
+            );
 
             return response()->json([
                 'status' => 'success',
