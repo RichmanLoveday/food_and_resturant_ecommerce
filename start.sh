@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
+
 echo "Running composer"
-composer global require hirak/prestissimo
 composer install --no-dev --working-dir=/var/www/html
 
 echo "Generating application key..."
@@ -22,6 +22,8 @@ echo "Running npm"
 npm install
 npm run prod
 
+# Start PHP-FPM in background
+php-fpm &
 
-# Start nginx in foreground
+# Start Nginx in foreground
 nginx -g "daemon off;"
