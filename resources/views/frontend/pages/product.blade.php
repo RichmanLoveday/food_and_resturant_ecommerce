@@ -75,8 +75,9 @@
                                 <ul class="d-flex flex-wrap justify-content-center">
                                     <li><a href="javascript:;" onclick="loadProductModal(this, '{{ $product->id }}')"><i
                                                 class="fas fa-shopping-basket"></i></a></li>
-                                    <li><a href="#"><i class="fal fa-heart"></i></a></li>
-                                    <li><a href="#"><i class="far fa-eye"></i></a></li>
+                                    <li><a onclick="addToWishList(this, '{{ $product->id }}')"
+                                            href="javascript:void();"><i class="fal fa-heart"></i></a></li>
+                                    <li><a href="{{ route('product.show', $product->slug) }}"><i class="far fa-eye"></i></a></li>
                                 </ul>
                             </div>
                         </div>

@@ -1,40 +1,46 @@
 <?php
 
-namespace App\Providers;
-
 use App\Models\Setting;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        if (env('APP_ENV') == 'production') {
+        if (env('APP_ENV') === 'production') {
             $this->app['request']->server->set('HTTPS', true);
         }
 
         Paginator::useBootstrapFive();
 
-        $keys = ['pusher_key', 'pusher_secret', 'pusher_app_id', 'pusher_cluster'];
-        $pusherConf = Setting::whereIn('key', $keys)->pluck('value', 'key')->toArray();
+        // ✅ Prevent failure if settings table does not exist
+        if (!Schema::hasTable('settings')) {
+            return;
+        }
 
-        // dd($pusherConf);
-        config(['broadcasting.connections.pusher.key' => $pusherConf['pusher_key'] ?? '']);
-        config(['broadcasting.connections.pusher.secret' => $pusherConf['pusher_secret'] ?? '']);
-        config(['broadcasting.connections.pusher.app_id' => $pusherConf['pusher_app_id'] ?? '']);
-        config(['broadcasting.connections.pusher.options.cluster' => $pusherConf['pusher_cluster'] ?? '']);
+        $keys = [
+            'pusher_key',
+            'pusher_secret',
+            'pusher_app_id',
+            'pusher_cluster'
+        ];
+
+        $pusherConf = Setting::whereIn('key', $keys)
+            ->pluck('value', 'key')
+            ->toArray();
+
+        config([
+            'broadcasting.connections.pusher.key' => $pusherConf['pusher_key'] ?? '',
+            'broadcasting.connections.pusher.secret' => $pusherConf['pusher_secret'] ?? '',
+            'broadcasting.connections.pusher.app_id' => $pusherConf['pusher_app_id'] ?? '',
+            'broadcasting.connections.pusher.options.cluster' => $pusherConf['pusher_cluster'] ?? '',
+        ]);
     }
 }

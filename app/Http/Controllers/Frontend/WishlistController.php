@@ -41,4 +41,37 @@ class WishlistController extends Controller
             'message' => 'Product added to wishlist'
         ]);
     }
+
+    public function wishlistProductRemove(Request $request, string|int $id): Response|JsonResponse
+    {
+        try {
+            //? check if user is loggedIn
+            if (!Auth::check()) {
+                throw ValidationException::withMessages([
+                    'Please login to remove product from wishlist!'
+                ]);
+            }
+
+            $wishList = Wishlist::where(['user_id' => Auth::user()->id, 'id' => $id])->first();
+
+            if (!$wishList) {
+                throw ValidationException::withMessages([
+                    'Product not found in wishlist!'
+                ]);
+            }
+
+            $wishList->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product removed from wishlist'
+            ]);
+        } catch (\Exception $e) {
+            logger('Unable to remove product from wishlist: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while removing the product from wishlist.',
+            ], 500);
+        }
+    }
 }

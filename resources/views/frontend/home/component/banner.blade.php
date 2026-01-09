@@ -23,7 +23,8 @@
                                         <h3>{!! $slider->sub_title !!}</h3>
                                         <p>{!! $slider->short_description !!}</p>
                                         <ul class="d-flex flex-wrap">
-                                            <li><a class="common_btn" href="#">shop now</a></li>
+                                            <li><a class="common_btn" href="{{ $slider->button_link ?? '#' }}">shop
+                                                    now</a></li>
                                         </ul>
                                     </div>
                                 </div>

@@ -35,7 +35,8 @@
                                 <li><a href="javascript:;"
                                         onclick="loadProductModal(this, '{{ $dailyOffer->product->id }}')"><i
                                             class="fas fa-shopping-basket"></i></a></li>
-                                <li><a href="#"><i class="fal fa-heart"></i></a></li>
+                                <li><a onclick="addToWishList(this, '{{ $dailyOffer->product->id }}')"
+                                        href="javascript:void();"><i class="fal fa-heart"></i></a></li>
                                 <li><a href="{{ route('product.show', $dailyOffer->product->slug) }}"><i
                                             class="far fa-eye"></i></a></li>
                             </ul>

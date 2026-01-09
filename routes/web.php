@@ -20,6 +20,50 @@ Route::get('/ping', fn() => response()->json([
     'time' => now()->toIso8601String(),
 ]));
 
+
+Route::get('/setup/run-migrations', function () {
+    if (!app()->environment(['local', 'staging'])) {
+        abort(403, 'Unauthorized');
+    }
+
+    Artisan::call('migrate:fresh', ['--force' => true]);
+    Artisan::call('db:seed', ['--force' => true]);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Migrations and seeder completed successfully',
+        'output' => Artisan::output(),
+    ]);
+});
+
+Route::get('/setup/run-migration', function () {
+    if (!app()->environment(['local', 'staging'])) {
+        abort(403, 'Unauthorized');
+    }
+
+    Artisan::call('migrate', ['--force' => true]);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Migrations completed',
+        'output' => Artisan::output(),
+    ]);
+});
+
+Route::get('/setup/storage-link', function () {
+    if (!app()->environment(['local', 'staging'])) {
+        abort(403, 'Unauthorized');
+    }
+
+    Artisan::call('storage:link');
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Storage link created',
+        'output' => Artisan::output(),
+    ]);
+});
+
 /** FRONTEND CONTROLLER */
 Route::controller(FrontendController::class)->group(function () {
     /** show home page */
@@ -81,6 +125,7 @@ Route::get('/page/{slug}', CustomPageController::class);
 /** Wishlist Controller */
 Route::controller(WishlistController::class)->group(function () {
     Route::post('/wishlist', 'store')->name('wishlist.store');
+    Route::delete('/wishlist-product-remove/{rowId}', 'wishlistProductRemove')->name('wishlist-product-remove');
 });
 
 /** CART CONTROLLER */

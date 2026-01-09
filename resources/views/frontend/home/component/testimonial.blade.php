@@ -2,15 +2,14 @@
     <div class="container">
         <div class="row wow fadeInUp" data-wow-duration="1s">
             <div class="col-md-8 col-lg-7 col-xl-6 m-auto text-center">
-                <div class="fp__section_heading mb_40">
-                    <h4>testimonial</h4>
-                    <h2>our customar feedbacks</h2>
+                <div class="fp__section_heading mb_50">
+                    <h4>{!! @$sectionTitles['testimonial_top_title'] !!}</h4>
+                    <h2>{!! @$sectionTitles['testimonial_main_title'] !!}</h2>
                     <span>
                         <img src="{{ asset('frontend/images/heading_shapes.png') }}" alt="shapes"
                             class="img-fluid w-100">
                     </span>
-                    <p>Objectively pontificate quality models before intuitive information. Dramatically
-                        recaptiualize multifunctional materials.</p>
+                    <p>{!! @$sectionTitles['testimonial_sub_title'] !!}</p>
                 </div>
             </div>
         </div>

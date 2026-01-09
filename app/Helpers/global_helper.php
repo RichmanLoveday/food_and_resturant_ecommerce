@@ -120,6 +120,7 @@ if (!function_exists('grandCartTotal')) {
     function grandCartTotal(int|float $deliveryFee = 0): int|float
     {
         $catTotal = cartTotal();
+        // dd($catTotal);
         $total = 0;
 
         if (Session::has('coupon')) {
@@ -131,6 +132,8 @@ if (!function_exists('grandCartTotal')) {
             return $total;
         } else {
             $total = $catTotal;
+            $total = number_format($catTotal + $deliveryFee, 2, '.', '');
+
             return $total;
         }
     }
