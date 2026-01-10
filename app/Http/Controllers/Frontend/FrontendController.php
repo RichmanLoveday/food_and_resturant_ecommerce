@@ -136,7 +136,7 @@ class FrontendController extends Controller
             }], 'rating')
             ->withCount(['reviews' => function ($query) {
                 $query->where('status', true);
-            }])->paginate(2)->withQueryString();
+            }])->paginate(10)->withQueryString();
 
         $categories = Category::where('status', true)->get();
 
@@ -568,6 +568,12 @@ class FrontendController extends Controller
     public function loadProductModal(string|int $productId)
     {
         $product = Product::with(['category', 'productSizes', 'productOptions'])
+            ->withAvg(['reviews' => function ($query) {
+                $query->where('status', true);
+            }], 'rating')
+            ->withCount(['reviews' => function ($query) {
+                $query->where('status', true);
+            }])
             ->findOrFail($productId);
 
         return view('frontend.layout.ajax-files.product-popup-modal', compact('product'));

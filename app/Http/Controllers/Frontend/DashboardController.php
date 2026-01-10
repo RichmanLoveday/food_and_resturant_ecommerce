@@ -25,6 +25,7 @@ class DashboardController extends Controller
             ->where('user_id', Auth::user()->id)->get();
         $orders = Order::with(['user', 'userAddress'])
             ->where('user_id', Auth::user()->id)
+            ->orderBy('id', 'desc')
             ->get();
         $reservations = Reservation::where('user_id', Auth::user()->id)
             ->latest()

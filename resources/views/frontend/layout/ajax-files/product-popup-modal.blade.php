@@ -9,13 +9,34 @@
          <div class="fp__cart_popup_text">
              <a href="{{ route('product.show', $product->slug) }}" class="title">{!! $product->name !!}</a>
              <p class="rating">
-                 <i class="fas fa-star"></i>
-                 <i class="fas fa-star"></i>
-                 <i class="fas fa-star"></i>
-                 <i class="fas fa-star-half-alt"></i>
-                 <i class="far fa-star"></i>
-                 <span>(201)</span>
+                 @php
+                     $avgRating = min($product->reviews_avg_rating, 5);
+
+                     $fullStars = floor($avgRating); // full stars (integer part)
+                     $halfStar = $avgRating - $fullStars >= 0.5 ? 1 : 0; // half star if decimal >= 0.5
+                     $emptyStars = 5 - $fullStars - $halfStar; // rest are empty stars
+                 @endphp
+
+                 {{-- Full stars --}}
+                 @for ($i = 0; $i < $fullStars; $i++)
+                     <i class="fas fa-star"></i>
+                 @endfor
+
+                 {{-- Half star --}}
+                 @if ($halfStar)
+                     <i class="fas fa-star-half-alt"></i>
+                 @endif
+
+                 {{-- Empty stars --}}
+                 @for ($i = 0; $i < $emptyStars; $i++)
+                     <i class="fal fa-star"></i>
+                 @endfor
+
+                 @if ($product->reviews_count > 0)
+                     <span>({{ $product->reviews_count }})</span>
+                 @endif
              </p>
+
              <h4 class="price">
 
                  @if ($product->offer_price > 0)

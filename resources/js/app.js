@@ -1,4 +1,5 @@
 import './bootstrap';
+console.log('Alpine.js is loading...');
 
 import Alpine from 'alpinejs';
 

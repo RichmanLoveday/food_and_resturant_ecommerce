@@ -172,6 +172,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/make-payment', 'makePayment')->name('make-payement');
         Route::get('/payment-success', 'paymentSuccess')->name('payment.success');
         Route::get('/payment-cancel', 'paymentCancel')->name('payment.cancel');
+        Route::get('/payment-fail', 'paymentFail')->name('payment.fail');
 
 
         /** Paypal Routes */

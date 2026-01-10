@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use Auth;
 use Cart;
 use DB;
+use Illuminate\Support\Collection;
 use Log;
 
 class OrderService
@@ -63,6 +65,27 @@ class OrderService
 
             Log::error('Error creating order: ' . $e->getMessage());
             return false;
+        }
+    }
+
+
+    public function deductProductQuantities(Collection $orderItems)
+    {
+        try {
+            foreach ($orderItems as $item) {
+                $updated = Product::where('id', $item->product_id)
+                    ->where('quantity', '>=', $item->qty)
+                    ->decrement('quantity', $item->qty);
+
+                if ($updated === 0) {
+                    throw new \Exception(
+                        "Insufficient stock for {$item->product_name}"
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Error updating product quantities: ' . $e->getMessage());
+            throw $e;
         }
     }
 
