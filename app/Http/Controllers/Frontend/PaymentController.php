@@ -219,6 +219,13 @@ class PaymentController extends Controller
         }
 
 
+        //? update order informations
+        $paymentInfo = [
+            'transaction_id' => $capture['id'],
+            'currency' => $capture['amount']['currency_code'],
+            'status' => 'completed',
+        ];
+
         try {
             DB::transaction(function () use ($orderId, $order, $orderService, $capture) {
                 //? deduct stock or product quantity safely
@@ -231,6 +238,15 @@ class PaymentController extends Controller
                 'order_id' => $order->id,
                 'error' => $e->getMessage()
             ]);
+
+            //? fire order payment update event
+            event(new OrderPaymentUpdateEvent($orderId, $paymentInfo, 'PayPal'));
+
+            //? fire event for real time notification
+            event(new RTOrderPlacedNotificationEvent(Order::find($orderId)));
+
+            //? clear session data
+            $orderService->clearSession();
 
             return redirect()->route('payment.fail')
                 ->withErrors([
@@ -379,8 +395,16 @@ class PaymentController extends Controller
         }
 
 
+        //? update order informations
+        $paymentInfo = [
+            'transaction_id' => $response->payment_intent,
+            'currency' => $response->currency,
+            'status' => 'completed',
+        ];
+
+
         try {
-            DB::transaction(function () use ($orderId, $order, $orderService, $response) {
+            DB::transaction(function () use ($orderId, $order, $orderService) {
                 //? deduct stock or product quantity safely
                 // dd($order);
                 $orderService->deductProductQuantities($order->orderItems);
@@ -392,22 +416,24 @@ class PaymentController extends Controller
                 'error' => $e->getMessage()
             ]);
 
+            //? fire order payment update event
+            event(new OrderPaymentUpdateEvent($orderId, $paymentInfo, 'Stripe'));
+
+            //? fire event for real time notification
+            event(new RTOrderPlacedNotificationEvent(Order::find($orderId)));
+
+            //? clear session data
+            $orderService->clearSession();
+
             return redirect()->route('payment.fail')
                 ->withErrors([
                     'errors' => 'Payment received but product is out of stock. Admin has been notified.'
                 ]);
         }
 
-        //? update order informations
-        $paymentInfo = [
-            'transaction_id' => $response->payment_intent,
-            'currency' => $response->currency,
-            'status' => 'completed',
-        ];
-
 
         //? fire order payment update event
-        event(new OrderPaymentUpdateEvent($orderId, $paymentInfo, 'PayPal'));
+        event(new OrderPaymentUpdateEvent($orderId, $paymentInfo, 'Stripe'));
 
         //? fire event for real time notification
         event(new RTOrderPlacedNotificationEvent(Order::find($orderId)));
@@ -562,7 +588,9 @@ class PaymentController extends Controller
                 ->withErrors(['errors' => 'Invalid Razorpay payment']);
         }
 
+
         try {
+
             //? Capture payment
             $response = $api->payment
                 ->fetch($request->razorpay_payment_id)
@@ -571,6 +599,13 @@ class PaymentController extends Controller
             if ($response['status'] !== 'captured') {
                 throw new \Exception('Razorpay payment capture failed');
             }
+
+
+            $paymentInfo = [
+                'transaction_id' => $response['id'],
+                'currency' => $response['currency'],
+                'status' => 'completed',
+            ];
 
             //? Finalize order (atomic)
             DB::transaction(function () use ($order, $orderService, $response) {
@@ -584,17 +619,20 @@ class PaymentController extends Controller
                 'error' => $e->getMessage()
             ]);
 
+            //? fire order payment update event
+            event(new OrderPaymentUpdateEvent($orderId, $paymentInfo, 'PayPal'));
+
+            //? fire event for real time notification
+            event(new RTOrderPlacedNotificationEvent(Order::find($orderId)));
+
+            //? clear session data
+            $orderService->clearSession();
+
             return redirect()->route('payment.fail')
                 ->withErrors([
                     'errors' => 'Payment was successful but stock could not be confirmed. Admin has been notified.'
                 ]);
         }
-
-        $paymentInfo = [
-            'transaction_id' => $response['id'],
-            'currency' => $response['currency'],
-            'status' => 'completed',
-        ];
 
         //? fire order payment update event
         event(new OrderPaymentUpdateEvent($orderId, $paymentInfo, 'Razorpay'));

@@ -41,7 +41,9 @@
                 success: function(response) {
                     toastr.success(response.message);
                 },
-                error: function(xhr, status, error) {}
+                error: function(xhr, status, error) {
+                    toastr.error('An error occurred while updating the status.');
+                }
             })
         })
     </script>

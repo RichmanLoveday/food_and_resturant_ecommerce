@@ -224,7 +224,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::controller(ReservationController::class)->group(function () {
             Route::get('/reservation', 'index')->name('reservation.index');
             Route::post('/reservation', 'update')->name('reservation.update');
-            Route::delete('/reservation', 'destroy')->name('reservation.destroy');
+            Route::delete('/reservation/{id}', 'destroy')->name('reservation.destroy');
         });
 
 

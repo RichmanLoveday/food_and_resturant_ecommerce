@@ -323,7 +323,7 @@ class FrontendController extends Controller
         $reservation->user_id = Auth::user()->id;
         $reservation->reservation_id = rand(0, 5000000);
         $reservation->name = $request->name;
-        $reservation->phone = $request->name;
+        $reservation->phone = $request->phone;
         $reservation->date = $request->date;
         $reservation->time = $request->time;
         $reservation->persons = $request->persons;
@@ -438,6 +438,9 @@ class FrontendController extends Controller
         // dd($categories->toArray());
 
         $blog = Blog::with(['user', 'category'])
+            ->withCount(['comments' => function ($query) {
+                $query->where('status', true);
+            }])
             ->where(['slug' => $slug, 'status' => true])
             ->firstOrFail();
 
@@ -700,6 +703,10 @@ class FrontendController extends Controller
         //? get the final total after applying the discount
         $finalTotal = $subTotal - $discount;
 
+        //? reduce coupon quantity by 1
+        $coupon->quantity = $coupon->quantity - 1;
+        $coupon->save();
+
         //? store discount and code in session
         session()->put('coupon', [
             'code' => $code,
@@ -725,6 +732,16 @@ class FrontendController extends Controller
             if (session()->has('coupon')) {
                 //? remove coupon from session
                 session()->forget('coupon');
+
+                //? increment coupon quantity by 1
+                //? get coupon code from session before removing it
+                $couponCode = session()->get('coupon.code');
+                $coupon = Coupon::where('code', $couponCode)->first();
+
+                if ($coupon) {
+                    $coupon->quantity = $coupon->quantity + 1;
+                    $coupon->save();
+                }
 
                 return response()->json([
                     'status' => 'success',

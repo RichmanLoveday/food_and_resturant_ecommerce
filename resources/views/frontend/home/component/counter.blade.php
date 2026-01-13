@@ -34,7 +34,7 @@
                         <i class="{{ @$counter->counter_icon_four }}"></i>
                         <div class="text">
                             <h2 class="counter">{{ @$counter->counter_count_four }}</h2>
-                            <p>{{ @$counter->counter_count_four }}</p>
+                            <p>{{ @$counter->counter_name_four }}</p>
                         </div>
                     </div>
                 </div>

@@ -70,6 +70,12 @@
                     <a class="common_btn" href="#" data-bs-toggle="modal"
                         data-bs-target="#staticBackdrop">reservation</a>
                 </li>
+
+                @guest
+                    <li>
+                        <a class="common_btn" href="{{ route('login') }}">Login</a>
+                    </li>
+                @endguest
             </ul>
         </div>
     </div>
